@@ -1,0 +1,25 @@
+<% include ./partials/headerUser %>
+  <h2 align='center'>Login to Resume Work</h2>
+<br><br><br>
+<div class = 'row'>
+  <div class = 'col-lg-4 col-lg-offset-4 ' align='center'>
+<form id = 'login' action = '/login' method = 'POST'>
+  <div class="row">
+    <div class="col-xs-12" align='center'>
+    <label for="username">Username</label>
+    <input type="text" class="form-control" placeholder="Username" id="username" name='username' style='width:60%;' required>
+    <br>
+  </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+    <label for="password">Password</label>
+    <input type="password" class="form-control" placeholder="Password" id="password" name='password' style='width:60%;' required>
+  </div>
+  </div> <br>
+  <div class="row">
+  <div class="col-xs-12">
+    <button type="submit" class="btn btn-primary" id='button' style='background:#5A28FF;'>Log In</button><br>
+  </div>
+  </div>
+</form>

@@ -1,0 +1,212 @@
+<% include ../partials/headerUser %>
+ 
+ <div class='row' style='margin-top:20px;'>
+      <div class='col-lg-2' align='RIGHT'>
+          
+          
+
+<nav aria-label="...">
+  <ul class="pager">
+    <li class="active"><a href="/index/<%=user.username%>" style='background: #0084b4; color: white;'>View by Users</a></li>
+    <hr />
+    <li class="disabled"><a href="#">View by Groups</a></li>
+  </ul>
+</nav>
+
+
+
+      </div>
+
+      <div class='col-lg-4 col-lg-offset-2' align='centre'>
+          <div class = 'jumbotron' align='center' style=' background:#ffffff; border: solid 0.5px #0084b4; border-radius: 10px; margin-bottom: 30px;'>
+              <h4 style='color: #0084b4;'>
+                   Showing All (<%=groups.length%>) Groups<br /><br />
+              </h4>
+             
+               <!-- Link trigger modal -->
+              <div class='col-lg-12' align='center'>
+                  <a href='#' class="btn btn-warning" data-toggle="modal" data-target="#creationmodal" style='border:0' id='newGroup'> Create Group <span class="glyphicon glyphicon-plus-sign"></span></a>
+              </div>
+              <!-- END Link trigger modal -->
+                                        <!-- Modal -->
+                                        <div class="modal fade bs-example-modal-lg" id="creationmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal"aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                        <h4 class="modal-title">Creating New Group</h4>
+                                                    </div>
+                                                    
+                                                    <div class="modal-body">
+                                                        <form action='/index/<%=user.username%>/groups/' method='POST'>
+                                                            <div class='row'>
+                                                                <div class='col-lg-6 col-lg-offset-3'  align='left'>
+                                                                    
+                                                                    <div class='container'>
+                                                                        <label> How would you like to call the group? </label> <br /><br />
+                                                                        <input type="text" style='float: left; margin-right: 10px;' class="form-control" name='name' style='padding-bottom: 20px;' required/>
+                                                                    </div>
+                                                                    <br /> <hr /> <br />
+                                                                    <div class='container'>
+                                                                        <label>These people have not been grouped yet. Choose who will be a member of this new group: </label> <br /><br />
+                                                                        
+                                                                        <!-- input-group -->
+                                                                        <div class='container' style='max-height: 400px; overflow: auto;'>
+                                                                          <% freeUsers.forEach(function(theUser){ %>
+                                                                              <div class="checkbox" style='width:380px; padding: 20px; background: #c0deed;' display='inline'>
+                                                                                  <input type="checkbox" value="<%=theUser._id%>" name="chk" style='margin-left:10px;' />
+                                                                                    <h4 align='center'>
+                                                                                        <%=theUser.name.slice(0,1).toUpperCase() + theUser.name.slice(1) %><br />
+                                                                                    </h4>
+                                                                                 
+                                                                               </div>
+                                                                          <% }); %>
+                                                                          </div>
+                                                                       
+                                                                        <!-- END input-group -->
+                                                                    </div>    
+                                                                </div>
+                                                            </div>
+                                                            <br />
+                                                            <button type='submit' class="btn btn-success" style='border:0'> Confirm <span class="glyphicon glyphicon-plus-sign"></span></button>
+                                                        </form>
+                                                    </div>
+                                                    
+                                       
+                                                        
+
+                                                </div>
+                                            </div>
+                                        </div>             
+                                        <!-- END Modal -->
+          </div>
+      </div>
+
+      
+ </div>
+ 
+ 
+ 
+ <div class='row' style='max-height: 540px; overflow:auto;'>
+      <div class='col-lg-12'>
+ 
+ <% groups.forEach(function(group){ %>
+ <% if (group.users.length > 0){ %>
+
+      <div class='row'>
+       <div class='col-lg-4'>
+        <div class='container' align='center' style='color:#0084b4; sbackground:#ffffff; border: solid 0.5px #0084b4; border-radius: 10px; margin-left:-15px; margin-top: 30px; width:100%;'> 
+                <h4 align = 'center'><%= group.name %></h4>
+                <h5><%= group.users.length %> Members</h5>
+                <form action='/index/<%=user.username%>/groups/<%=group._id%>?_method=DELETE' method='POST'>
+                    <button type='submit' style='border:none; background:none;'><span class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span> </button> 
+                    <a href='/index/<%=group.users[0].username%>/messages/group/' style='border:none; background:none;'><span class=' btn btn-sm btn-primary glyphicon glyphicon-envelope'></span> </a> 
+                </form>
+                
+               
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <!-- Want clicking + to open a modal to select who to add to group -->
+                   
+                   <button style='border:none; background:none;' data-toggle="modal" data-target="#<%=group._id%>"><span class=' btn btn-sm btn-info glyphicon glyphicon-plus'></span> </button> 
+              <!-- END Link trigger modal -->
+                                        <!-- Modal -->
+                                        <div class="modal fade bs-example-modal-lg" id="<%=group._id%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal"aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                        <h4 class="modal-title">Adding Members to '<%=group.name%>'</h4>
+                                                    </div>
+                                                    
+                                                    <div class="modal-body">
+                                                        <form action='/index/<%=user.username%>/groups/<%=group._id%>?_method=PUT' method='POST'>
+                                                            <div class='row'>
+                                                                <div class='col-lg-6'  align='left'>
+                                                                    <div class='container'>
+                                                                        <label align='left'>These people have not been grouped yet. Who do you want to add to the existing group: '<%=group.name%>'  </label> <br /><br />
+                                                                        
+                                                                        <!-- input-group -->
+                                                                        <div class='container' style='max-height: 400px; overflow: auto;'>
+                                                                          <% freeUsers.forEach(function(theUser){ %>
+                                                                              <div class="checkbox" style='width:380px; padding: 20px; background: #c0deed;' display='inline'>
+                                                                                  <input type="checkbox" value="<%=theUser._id%>" name="chk" style='margin-left:10px;' />
+                                                                                    <h4 align='center'>
+                                                                                        <%=theUser.name.slice(0,1).toUpperCase() + theUser.name.slice(1) %><br />
+                                                                                    </h4>
+                                                                                 
+                                                                               </div>
+                                                                          <% }); %>
+                                                                          </div>
+                                                                       
+                                                                        <!-- END input-group -->
+                                                                    </div>    
+                                                                </div>
+                                                            </div>
+                                                            <br />
+                                                            <button type='submit' class="btn btn-success" style='border:0'> Confirm <span class="glyphicon glyphicon-plus-sign"></span></button>
+                                                        </form>
+                                                    </div>
+                                                    
+                                       
+                                                        
+
+                                                </div>
+                                            </div>
+                                        </div>             
+                                        <!-- END Modal -->
+                
+                
+                
+                
+
+    </div>
+   </div>
+  </div>
+  
+  <div class = 'container' style='width:100%; padding: 50px;'>
+  <div class='row'>
+   <% group.users.forEach(function(zuser){ %>
+     <div class='col-lg-4'>
+            <div class="container">
+               <div class="row">
+                <div class="col-md-4">
+                    <div class="well well-sm" style='background:#c0deed;'>
+                        <div class="media" style='margin-bottom:-10px;'>
+                            <div class="pull-left" style='width: 100px; height: 60px; padding: 0px; border: 0px; background: #c0deed;'>
+                                <img class="media-object" style='margin: 0px; padding-right: 10px; max-width:100%; max-height:100px;' src="/profile/funny-profile-pictures.jpg">
+                            </div>
+                            <div class="media-body">
+                            <h4 class="media-heading"><%=zuser.name.slice(0,1).toUpperCase() + zuser.name.slice(1) %><form class='pull-right' action='/index/<%=zuser.username%>/?_method=DELETE' method='POST'> 
+                                    <button type='submit' style='background: none; border: none;'><span class="btn-xs btn-danger glyphicon glyphicon-warning-sign"></span></a>
+                                </form></h4>
+                            <p>
+                                <span class="label label-info">x Notifications </span> 
+                            <p>
+                                <a href="/index/<%=zuser.username%>" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-eye-open"></span> View</a>
+                                <a href='/index/<%=zuser.username%>/messages/personal' class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-comment"></span> Message</a>
+                                <a href="/index/<%=zuser.username%>/groups/remove" class="btn btn-xs btn-danger"><span class="	glyphicon glyphicon-minus"></span> Remove </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+   <% }); %>
+  </div>
+  </div>
+  <% } %>
+  <% }); %>
+ 
+ </div>
+ </div>
+

@@ -1,0 +1,54 @@
+<% include ../partials/headerUser %>
+ 
+<div class='row'>
+  <div class='col-lg-12'>
+ 
+ 
+ 
+ <div class='row' style='margin-top:72px;'>
+      <div class='col-lg-4 col-lg-offset-4' align='centre'>
+          <div class = 'jumbotron' align='center' style=' background: #6666F1; color: #FFFFFF; margin-bottom: 45px;'>
+              Creating New Group
+          </div>
+      </div>
+ </div>
+ 
+
+ <form action='/index/<%=user.username%>/groups/new' method='POST'>
+  <div class='row'>
+    <div class='col-lg-12' style='margin:50px;'>
+                    <label for="title">Name of New Group:</label>
+                    <input type="text" class="form-control" name='name' style='width:20%;' required>
+                    <hr />
+    </div>
+  </div>
+  <div class='row'>
+    <div class='col-lg-12' style='margin-right:50px; margin-left:50px;'>
+      <label for="ChooseMembers">Choose People to Insert in Group:</label>
+    </div>
+  </div>
+
+  <div class='row' align='center'>
+    <div class="checkbox">
+      <% users.forEach(function(theUser){ %>
+          <% if (!theUser.group){ %>
+              <div class='col-lg-2' style='margin-left:50px;'>
+                  <div class='container' style='background:#FFFFFF; border: solid 3px #E0F0F7; padding: 10px; width:80%;'> 
+                      <img class="media-object" src="http://placehold.it/80"/>
+                        <h5>
+                          <%=theUser.name.slice(0,1).toUpperCase() + theUser.name.slice(1) %> <br /> <br />
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" value="<%=theUser._id%>" name="chk"/>
+                        </h5>
+                  </div>
+              </div>
+              
+          <% } %>
+        <% }); %>
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='col-lg-3'>
+        <button type='submit' class="btn btn-success" style='background:#6666F1; margin-top:30px; margin-left:86px; margin-bottom:30px;'>Submit</button>
+    </div>
+  </div>           

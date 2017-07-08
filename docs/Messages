@@ -1,0 +1,7 @@
+Personal go to a user's messages list
+group go to a group's messages list
+From is always from the user sending it
+
+A MESSAGE is a COMMENT!
+
+(Still we will have a route for comments, one for messages, because one is attached to a sub, one to a user etc)

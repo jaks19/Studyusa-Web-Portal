@@ -1,0 +1,60 @@
+<% include ./partials/headerUser %>
+
+<div class='row'>
+    
+    <nav aria-label="..." style='margin-top:-30px; margin-bottom: 30px; margin-left: 20px;'>
+      <ul class="pager">
+        <li class="previous"><a href='/index/<%=user.username%>'><span aria-hidden="true">&larr;</span> Dashboard</a></li>
+      </ul>
+    </nav>
+    
+    
+<div class = 'col-lg-4 col-lg-offset-4'>
+        <form action='/index/<%=user.username%>/submit' method='POST' enctype='multipart/form-data'>
+        <div class='row'>
+            <div class='col-lg-5'>
+                    <label for="Select-folder">Save in Existing Folder: </label>
+                    <select class="form-control" id="chosenFolder" name="chosenFolder" placeholder="Browse Existing Folders">
+                    <option disabled selected value>  </option>
+                      <% var seen_folders = []; %>
+                      <% user.submissions.forEach(function(sub){ %>
+                        <% if (seen_folders.indexOf(sub['folder']) == -1) { %>
+                              <option><%=sub['folder']%></option>
+                              <% seen_folders.push(sub['folder']); %>
+                        <% } %>
+                      <% }); %>
+                    </select> <br>
+                    <label for="Select-folder" style='float: left;'> Or, Enter a new Folder Name:</label>
+                    <input type="text" style='float: left; margin-right: 10px;' class="form-control" placeholder="New Folder Name" name='newFolderName' style='padding-bottom: 20px;'>
+            </div>
+        </div>
+        <br><hr><br>
+        <div class='row'>
+            <div class='col-lg-8'>
+                    <label for="title">Submission Title</label>
+                    <input type="text" class="form-control" placeholder="Submission Title" name='title' required>
+                    <br>
+                    <label for="file">Upload your Document</label>
+                    <input type="file" class="form-control" name='doc' id='doc' required> <br>
+                    <label for="title">Message</label>
+                    <textarea class="form-control" rows="5" id="comment" placeholder="Leave a comment for the person reading this document..." name='message' required></textarea>
+                    <br><br> 
+                    <button type="submit" class="btn btn-primary" style='background:#6666F1;'>Submit</button><br> 
+            </div>
+        </div>
+        </form>
+    </div>
+        <script
+  src="https://code.jquery.com/jquery-3.1.1.slim.js"
+  integrity="sha256-5i/mQ300M779N2OVDrl16lbohwXNUdzL/R2aVUXyXWA="
+  crossorigin="anonymous">
+</script>
+
+</div>
+            
+
+<script>
+    // Navbar Init
+        $('#dashboard').css("background-color", "#FFFFFF");
+        $('#dashboardtxt').css("color", "#0084b4"); 
+</script>

@@ -1,0 +1,28 @@
+<div class='row'>
+
+    <div class='col-lg-12' style='margin-left: 50px;'>
+        <ul class="list-group" style='height:660px; overflow:auto; border: 0.5px;'>
+            <li class="list-group-item" align='center'>
+                <% if (!viewer.admin){ %>
+                    <a href='/index/<%=user.username%>/submit' class='pull-right btn btn-xs btn-warning'><span class='glyphicon glyphicon-plus'></span> Create Thread</a>
+                <% } %>
+            <br><h4 class='info'>Assignment Threads</h4></li>
+      <% subs.forEach(function(sub){ %>
+        <% var d = new Date(sub['date']); %>
+            <a href='/index/<%=user.username%>/submit/<%=sub._id%>' class="list-group-item" align='center'>
+                
+                <div class='comment'>
+                <span class='timestring text-muted pull-left '><%= d.toISOString() %></span>
+                </div>
+                
+                <span class="label label-success pull-right"><%=sub['adds'].length%> files</span>
+                <span class="label label-info pull-right"><%=sub['messages'].length%> <%if (sub['messages'].length > 1) {%> comments <% } else { %> comment <% } %> </span> <br>
+                <h5>Assignment Title: <br><h4><%= sub['title']%></h4></h5>
+                <h6>(Folder: <%= sub['folder'] %>)</h6>
+            </a>
+      <% }); %>
+      </li>
+        </ul>
+    </div>
+</div>
+

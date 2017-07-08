@@ -1,0 +1,26 @@
+{
+  "presets": ["env", "es2015"],
+  "plugins": ["syntax-async-functions","transform-regenerator", "transform-runtime"],
+  //"ignore": [
+  //  ".c9",
+  //  ".git",
+  //  "data",
+  //  "docs",
+  //  "heroku",
+  //  "node_modules",
+  //  "notifJson",
+  //  "public",
+  //  "uploads",
+  //  "views",
+  //  ".babelrc",
+  //  ".gitignore",
+  //  "mongod",
+  //  "package.json"
+  // ]
+  
+  // Usually you would have an 'ignore' config here with a list of files and folders to ignore when transpiling
+  // A bug in babel prevents doing so so pass in the ignore arg in the CLI
+
+  // babel . --ignore .c9,git,data,docs,heroku,node_modules,notifJson,public,uploads,views,.babelrc,.gitignore,mongod,package.json
+  
+}

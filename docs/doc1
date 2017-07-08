@@ -1,0 +1,56 @@
+There are Users, Submissions, Payments
+Basic level views are: Website Home, User Home, Payment Page, File Submission Page
+
+Start Goals:
+- Route these primary pages
+- Create the views with zero content
+- Initialize the dB and define the models (I assume the model will change A LOT).
+
+
+
+Middleware definition:
+A function defined somewhere else just like a helper fn
+But not called somewhere.
+Placed as an argument in fn calls e.g.
+    app.get(asdfafs, middleware(), function(){
+    });
+Middleware called before the next function.
+Middleware has the word next to go to that next fn called
+Can use that to allow program to go to next fn or not depending on conditions
+
+First example, to allow things to occur if logged in. else request to login.
+This is the middleware defined somehere as follows:
+function isLoggedIn(req, res, next){
+    if (req.isAuthenticated()){ // Fn from passport
+        return next();
+    }
+    res.redirect('/login');
+}
+Will be used in all the routes where we want people logged in to have access
+E.g.
+app.get('/index/:username', isLoggedIn, function(req, res) {
+});
+
+
+
+---
+In the server code, thanks to passport, we have req.user object giving info about the user logged in
+If none logged in, it is undefined
+Because we can block routes if no user logged in, we are sure users in those routes are logged in 
+So, to render pages, no need to search by id and get user and feed to rendered pages
+ANYTIME need user identity: req.user IS YOUR FRIEND
+
+
+----
+
+CNN API
+key:c8e7fde98b5a4983b913761b2e7db0f6
+email: mit
+pass; royalmari##
+https://newsapi.org/account
+
+--------
+
+In all the routes rendering our views, if the page can be seen by a user and by admin for the user, we render 
+with the variables: client (the person whose account is being viewed) and viewer (the person viewing the page 
+right now, can be an admin or the user who has the account being viewed itself.)

@@ -1,0 +1,37 @@
+{
+  "comment": {
+    "color-code": "success",
+    "text": " commented on the thread: ",
+    "more": true
+  },
+  "msg": {
+    "color-code": "info",
+    "text": " sent you a message",
+    "more": true
+  },
+  "msg-group": {
+    "color-code": "info",
+    "text": " sent a message to your group: ",
+    "more": true
+  },
+  "add": {
+    "color-code": "warning",
+    "text": " posted a file on the thread: ",
+    "more": true
+  },
+  "group-add": {
+    "color-code": "danger",
+    "text": " added you to the group: ",
+    "more": true
+  },
+  "group-remove": {
+    "color-code": "danger",
+    "text": " removed you from the group: ",
+    "more": true
+  },
+  "pay": {
+    "color-code": "success",
+    "text": " paid an amount of: ",
+    "more": true
+  }
+}
