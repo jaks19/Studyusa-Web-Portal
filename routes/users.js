@@ -78,7 +78,6 @@ router.get('/:username/welcome', middleware.isLoggedIn, async function(req, res)
             users: users,
             user: populatedUser,
             client: populatedUser,
-            viewer: req.user,
             format: format,
             notifs: allNotifs,
             unseenNotifs: unseenNotifs,
@@ -95,7 +94,6 @@ router.get('/:username/welcome', middleware.isLoggedIn, async function(req, res)
             unseenNotifs: unseenNotifs,
             subs: populatedUser.submissions.reverse(),
             articles: articles,
-            viewer: req.user,
             firstContact: true
         });
     }
@@ -147,8 +145,7 @@ router.get('/:username', middleware.isLoggedIn, function(req, res) {
                             notifs: allNotifs.reverse(),
                             unseenNotifs: unseenNotifs,
                             firstContact: false,
-                            client: foundUser,
-                            viewer: req.user,
+                            client: foundUser
                         });
                     }
                 });
@@ -173,7 +170,6 @@ router.get('/:username', middleware.isLoggedIn, function(req, res) {
                                     unseenNotifs: unseenNotifs,
                                     subs: foundUser.submissions.reverse(),
                                     articles: articles,
-                                    viewer: req.user,
                                     firstContact: false
                                 });
                         }

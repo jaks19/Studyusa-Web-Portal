@@ -24,8 +24,7 @@ router.get('/', middleware.isLoggedIn, function(req, res) {
                 user: foundUser,
                 loggedIn: true,
                 headerUser: 'pay',
-                client: foundUser,
-                viewer: req.user
+                client: foundUser
             });
         }
     });

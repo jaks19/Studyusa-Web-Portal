@@ -21,11 +21,11 @@ userServices.findAllUsers =
      });
     }
     
-userServices.renderUserPage = 
-    function renderUserPage(username, populatedUser, allNotifs, unseenNotifs, loggedIn=false, users=[], , ) {
-      return User.findOne({
-        'username': username
-      })
-    }
+// userServices.renderUserPage = 
+//     function renderUserPage(username, populatedUser, allNotifs, unseenNotifs, loggedIn=false, users=[], , ) {
+//       return User.findOne({
+//         'username': username
+//       })
+//     }
     
 module.exports = userServices;

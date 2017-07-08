@@ -30,8 +30,7 @@ router.get('/', middleware.isLoggedIn, function(req, res) {
             res.render('submit', {
                 loggedIn: true,
                 user: foundUser,
-                client: foundUser,
-                viewer: req.user
+                client: foundUser
             });
         }
     });
@@ -181,7 +180,6 @@ router.get('/:id', middleware.isLoggedIn, function(req, res) {
             res.render('viewFile', {
                 sub: foundSub,
                 user: req.user,
-                viewer: req.user,
                 client: foundSub.user,
                 loggedIn: true
             });

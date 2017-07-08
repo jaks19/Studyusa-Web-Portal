@@ -41,7 +41,6 @@ router.get('/', middleware.isLoggedIn, middleware.isAdmin, function(req, res) {
                                 freeUsers: freeUsers,
                                 groups: groups,
                                 loggedIn: true,
-                                viewer: req.user,
                                 client: foundUser
                             });
                         }

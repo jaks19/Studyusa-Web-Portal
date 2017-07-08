@@ -26,7 +26,6 @@ router.get('/personal/', middleware.isLoggedIn, function(req, res) {
         else {
             res.render('personalMessages', {
                 user: client,
-                viewer: req.user,
                 loggedIn: true,
                 client: client
             });
@@ -57,7 +56,6 @@ router.get('/group/', middleware.isLoggedIn, function(req, res) {
                         loggedIn: true,
                         user: foundClient,
                         users: foundGroup.users,
-                        viewer: req.user,
                         client: foundClient
                     });
                 }

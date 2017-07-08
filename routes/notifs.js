@@ -33,7 +33,6 @@ router.get('/', middleware.isLoggedIn, function(req, res) {
             format: format,
             unseenNotifs: unseenNotifs.reverse(),
             seenNotifs: seenNotifs.reverse(),
-            viewer: req.user,
             client: foundUser
         });
     });

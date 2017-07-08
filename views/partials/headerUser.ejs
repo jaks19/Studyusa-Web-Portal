@@ -46,7 +46,7 @@
         <li><a href='#' style='color: #FFFFFF;'>About</a></li>
         <li><a href='/index/new' style='color: #FFFFFF;'>Sign Up</a></li>
         <% } else { %>
-          <% if (!viewer.admin){ %>
+          <% if (!user.admin){ %>
         <li id='dashboard' ><a href='/index/<%=client.username%>' id='dashboardtxt' style='color: #FFFFFF;'>Dashboard</a></li>
         <li><a href='/index/<%=client.username%>/notifs' style='color: #FFFFFF;'>Notifications</a></li>
         <li id='pay'><a href='/index/<%=user.username%>/pay' id='paytxt' style='color: #FFFFFF;'>Payment</a></li>
@@ -63,7 +63,7 @@
           </ul>
         </li>
         <% } else { %>
-          <li><a href='/index/<%=viewer.username%>' style='color: #FFFFFF;'>Dashboard</a></li>
+          <li><a href='/index/<%=user.username%>' style='color: #FFFFFF;'>Dashboard</a></li>
           <li><a href='/index/<%=client.username%>/notifs' style='color: #FFFFFF;'>Notifications</a></li>
         <% } %>
         <li><a href='/logout' style='color: #FFFFFF;'>Log Out</a></li> 

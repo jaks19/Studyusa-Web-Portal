@@ -3,10 +3,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js"></script>
 
 <div class='row'>
-    <%if (viewer.admin){ %>
+    <%if (user.admin){ %>
         <nav aria-label="..." style='margin-top:-30px; margin-bottom: 30px; margin-left: 20px;'>
           <ul class="pager">
-            <li class="previous"><a href="/index/<%=viewer.username%>"><span aria-hidden="true">&larr;</span> Administrator Control Panel </a></li>
+            <li class="previous"><a href="/index/<%=user.username%>"><span aria-hidden="true">&larr;</span> Administrator Control Panel </a></li>
           </ul>
         </nav>
     <% } %>

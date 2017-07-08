@@ -3,7 +3,7 @@
     <div class='col-lg-11 square' style='border: 0.5px #d5d5d5 solid; margin: 55px; margin-top:0px; padding: 10px; border-radius:10px; width:290px; max-height: 660px; padding-bottom: 20px;'>
         <div class="square" style='' align='center'>
             
-            <% if (!viewer.admin){ %>
+            <% if (!user.admin){ %>
                 <h5>Welcome</h5><h4><%=user.name %></h4>
             <% } else { %>
                 <h5> You are viewing the Dashboard of</h5><h4><%=user.name %></h4><h5>as Administrator</h5>
@@ -17,7 +17,7 @@
 
         <div class="square" style='' align='center'>
             
-            <% if (!viewer.admin){ %>
+            <% if (!user.admin){ %>
                 <a href='' class='btn btn-xs' style='background: none; border: none;'><span class='glyphicon glyphicon-pencil' style='color:black'></span> Edit Profile</a>
                 <a href='' class='btn btn-xs' style='background: none; border: none;'><span class='glyphicon glyphicon-pencil' style='color:black'></span> Edit Intake Information</a>
             <% } %>
