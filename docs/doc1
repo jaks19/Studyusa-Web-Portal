@@ -40,6 +40,12 @@ Because we can block routes if no user logged in, we are sure users in those rou
 So, to render pages, no need to search by id and get user and feed to rendered pages
 ANYTIME need user identity: req.user IS YOUR FRIEND
 
+example, when trying to process a request for a user:
+if (username != req.user.username){
+        req.flash('error', 'You do not have the required permissions to view this page');
+        res.redirect('back');
+        return;
+    }
 
 ----
 

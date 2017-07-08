@@ -65,6 +65,11 @@ router.post('/', function(req, res) {
 // Show User (First Contact)
 router.get('/:username/welcome', middleware.isLoggedIn, async function(req, res) {
     let username = req.params.username;
+    if (username != req.user.username){
+        req.flash('error', 'You do not have the required permissions to view this page');
+        res.redirect('back');
+        return;
+    }
     let foundUser = userServices.findUser(username);
     let populatedUser = await dbOpsServices.populateEntry(foundUser, ['submissions', 'notifs'], req, res);
     let allNotifs = populatedUser.notifs.reverse();
