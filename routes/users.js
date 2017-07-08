@@ -11,7 +11,8 @@ var express = require("express"),
 var userServices = require('../services/user-services'),
     notifServices = require('../services/notif-services'),
     dbOpsServices = require('../services/dbops-services'),
-    apiServices = require('../services/api-services');
+    apiServices = require('../services/api-services'),
+    authServices = require('../services/auth-services');
 
 
 // Models
@@ -64,44 +65,23 @@ router.post('/', function(req, res) {
 
 // Show User
 router.get('/:username', middleware.isLoggedIn, async function(req, res) {
-    let firstContact = req.query.welcome ? true : false;
     let username = req.params.username;
-    if (username != req.user.username){
-        req.flash('error', 'You do not have the required permissions to view this page');
-        res.redirect('back');
-        return;
-    }
+    let loggedIn = authServices.confirmCredentials(username, req, res);
+    if (!loggedIn) {return};
+    
     let foundUser = userServices.findUser(username);
     let populatedUser = await dbOpsServices.populateEntry(foundUser, ['submissions', 'notifs'], req, res);
     let allNotifs = populatedUser.notifs.reverse();
     let unseenNotifs = notifServices.getUnseenNotifs(populatedUser.notifs);
+    let firstContact = req.query.welcome ? true : false;
     
-    // FOUNDuser
     if (populatedUser.admin) {
         let users = await userServices.findAllUsers();
-        res.render('./admin/dashboard', {
-            loggedIn: true,
-            users: users,
-            user: populatedUser,
-            client: populatedUser,
-            format: format,
-            notifs: allNotifs,
-            unseenNotifs: unseenNotifs,
-            firstContact: firstContact
-        });
+        userServices.renderAdminDashboard(res, users, loggedIn, populatedUser, allNotifs, unseenNotifs, format, firstContact);
     } else {
         let articles = await apiServices.retrieveNews(req);
-        res.render('show', {
-            format: format,
-            loggedIn: true,
-            user: populatedUser,
-            client: populatedUser,
-            notifs: allNotifs,
-            unseenNotifs: unseenNotifs,
-            subs: populatedUser.submissions.reverse(),
-            articles: articles,
-            firstContact: firstContact
-        });
+        let subs = populatedUser.submissions.reverse();
+        userServices.renderUserDashboard(res, subs, articles, loggedIn, populatedUser, allNotifs, unseenNotifs, format, firstContact);
     }
 });
 

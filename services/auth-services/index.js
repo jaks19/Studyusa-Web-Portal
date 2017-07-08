@@ -1,8 +1,14 @@
-var XXXXServices = {};
+var authServices = {};
 
-XXXXServices.methodName = 
-    function postPersonalMessage(str) {
-      console.log(str);
+authServices.confirmCredentials = 
+    function confirmCredentials(username, req, res) {
+      if (username != req.user.username){
+        req.flash('error', 'You do not have the required permissions to view this page');
+        res.redirect('back');
+        return false;
+      } else {
+        return true;
+      }
     }
     
-module.exports =XXXXServices;
+module.exports =authServices;

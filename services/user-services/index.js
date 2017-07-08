@@ -1,6 +1,4 @@
 var userServices = {};
-
-// Models
 var User = require("../../models/user");
 
 userServices.findUser = 
@@ -20,12 +18,37 @@ userServices.findAllUsers =
       });
      });
     }
+
+userServices.renderAdminDashboard = 
+    function renderAdminDashboard(res, users, loggedIn, populatedUser, allNotifs, unseenNotifs, format, firstContact) {
+        res.render('./admin/dashboard', {
+            users: users,
+            user: populatedUser,
+            client: populatedUser,
+            notifs: allNotifs,
+            unseenNotifs: unseenNotifs,
+            format: format,
+            firstContact: firstContact,
+            loggedIn: loggedIn
+        });
+    }
     
-// userServices.renderUserPage = 
-//     function renderUserPage(username, populatedUser, allNotifs, unseenNotifs, loggedIn=false, users=[], , ) {
-//       return User.findOne({
-//         'username': username
-//       })
-//     }
-    
+userServices.renderUserDashboard = 
+    function renderUserDashboard(res, subs, articles, loggedIn, populatedUser, allNotifs, unseenNotifs, format, firstContact) {
+      res.render('show', {
+            subs: subs,
+            articles: articles,
+            user: populatedUser,
+            client: populatedUser,
+            notifs: allNotifs,
+            unseenNotifs: unseenNotifs,
+            format: format,
+            firstContact: firstContact,
+            loggedIn: loggedIn
+        });
+    }
+
 module.exports = userServices;
+
+
+
