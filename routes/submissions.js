@@ -145,7 +145,7 @@ router.post('/', middleware.isLoggedIn, function(req, res) { //IMPORTANT: normal
                                                                                 res.redirect('back');
                                                                             }
                                                                             else { // After updating db and saving file, redirect to dashboard
-                                                                                helpers.assignNotif(req.user.username, newSub.title, 'add', 'admin');
+                                                                                helpers.assignNotif(req.user.username, newSub.title, 'add', 'admin', req);
                                                                                 res.redirect('/index/' + req.user.username);
                                                                             }
                                                                         });

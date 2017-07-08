@@ -121,9 +121,9 @@ router.post('/', middleware.isLoggedIn, function(req, res) {
                                                     else {
                                                         // After updating db and saving file, redirect to viewFile
                                                         if (req.user.admin){
-                                                            helpers.assignNotif(req.user.username, foundSub.title, 'add', foundSub.user._id);
+                                                            helpers.assignNotif(req.user.username, foundSub.title, 'add', foundSub.user._id, req);
                                                         } else {
-                                                            helpers.assignNotif(req.user.username, foundSub.title, 'add', 'admin');
+                                                            helpers.assignNotif(req.user.username, foundSub.title, 'add', 'admin', req);
                                                         }
                                                         res.redirect('/index/' + username + '/submit/' + updatedSub._id);
                                                     }

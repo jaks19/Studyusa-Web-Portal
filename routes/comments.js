@@ -55,11 +55,11 @@ router.post('/', middleware.isLoggedIn, function(req, res) {
                                         User.findOne({'username': foundSub.user.username}, function(error, foundUser){
                                             if (error){
                                             } else {
-                                                helpers.assignNotif(req.user.username, foundSub.title, 'comment', foundUser._id);
+                                                helpers.assignNotif(req.user.username, foundSub.title, 'comment', foundUser._id, req);
                                             }
                                         });
                                     } else {
-                                        helpers.assignNotif(req.user.username, foundSub.title, 'comment', 'admin');
+                                        helpers.assignNotif(req.user.username, foundSub.title, 'comment', 'admin', req);
                                     }
                                     res.redirect('/index/' + foundSub.user.username + '/submit/' + foundSub._id);
                                 }

@@ -26,7 +26,6 @@ router.get('/', middleware.isLoggedIn, function(req, res) {
             unseenNotifs.push(notif);
         }
     });   
-        console.log('seen', seenNotifs, 'unseen', unseenNotifs)
         res.render('notifs', {
             user: foundUser,
             loggedIn: true,

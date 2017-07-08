@@ -77,7 +77,7 @@ router.post('/', middleware.isLoggedIn, function(req, res) { //IMPORTANT: normal
                                         req.flash('error', 'The payment was not saved in your user records!');
                                     }
                                     else {
-                                        helpers.assignNotif(foundUser.username, newPayment.purpose, 'pay', 'admin');
+                                        helpers.assignNotif(foundUser.username, newPayment.purpose, 'pay', 'admin', req);
                                         res.redirect('/index/' + username + '/pay');
                                     }
                                 });

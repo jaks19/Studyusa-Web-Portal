@@ -105,7 +105,7 @@ router.post('/', middleware.isLoggedIn, middleware.isAdmin, function(req, res) {
                             }
                             else {
                                 req.flash('success', 'Group successfully created! Scroll down to find it!');
-                                helpers.assignNotif(req.user.username, savedGroup.name, 'group-add', user._id);
+                                helpers.assignNotif(req.user.username, savedGroup.name, 'group-add', user._id, req);
                             }
                         });
                     });
@@ -145,7 +145,7 @@ router.delete('/:groupId', middleware.isLoggedIn, middleware.isAdmin, function(r
                                 return res.redirect('back');
                             }
                             else {
-                                helpers.assignNotif(req.user.username, foundGroup.name, 'group-remove', user._id);
+                                helpers.assignNotif(req.user.username, foundGroup.name, 'group-remove', user._id, req);
                             }
                         });
                     });
@@ -189,7 +189,7 @@ router.get('/remove', middleware.isLoggedIn, middleware.isAdmin, function(req, r
                         }
                         else {
                             
-                            helpers.assignNotif(req.user.username, foundGroup.name, 'group-remove', foundUser._id);
+                            helpers.assignNotif(req.user.username, foundGroup.name, 'group-remove', foundUser._id, req);
                             
                             if (foundGroup.users.length == 1) {
                                 Group.findByIdAndRemove(foundGroup._id, function(error) {
@@ -253,7 +253,6 @@ router.put('/:groupId', middleware.isLoggedIn, middleware.isAdmin, function(req,
             var checkedCopy = checkedUsers.slice(0);
             checkedCopy.forEach(function(usr) {
                 foundGroup.users.push(usr);
-                console.log(foundGroup);
             });
 
             foundGroup.save(function(e) {
@@ -269,9 +268,8 @@ router.put('/:groupId', middleware.isLoggedIn, middleware.isAdmin, function(req,
                                 req.flash('error', 'Could not save user: ' + user.username + ' into this new group!');
                             }
                             else {
-                                console.log(user);
                                 req.flash('success', 'Group successfully created! Scroll down to find it!');
-                                helpers.assignNotif(req.user.username, foundGroup.name, 'group-add', user._id);
+                                helpers.assignNotif(req.user.username, foundGroup.name, 'group-add', user._id, req);
                                 
                             }
                         });

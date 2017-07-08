@@ -9,7 +9,7 @@ var helperObj = {};
 
 // Takes in a causerId, an objectId and an eventString, creates the notif
 // Also takes in the receiverId (id of person who will see thenotif) and saves the notif in its records
-helperObj.assignNotif = function assignNotif(causerName, objectName, eventString, receiverId) {
+helperObj.assignNotif = function assignNotif(causerName, objectName, eventString, receiverId, req) {
     var notif = new Notif({
         causerName: causerName,
         objectName: objectName,
@@ -18,7 +18,7 @@ helperObj.assignNotif = function assignNotif(causerName, objectName, eventString
 
     Notif.create(notif, function(err, newNotif) {
         if (err) {
-            console.log('Notif did not go through');
+            req.flash('error', 'Could not create a notification for this change!');
         }
         else {
             if (receiverId == 'admin') {
@@ -28,11 +28,7 @@ helperObj.assignNotif = function assignNotif(causerName, objectName, eventString
                     foundUser.notifs.push(newNotif);
                     foundUser.save(function(Err) {
                         if (Err) {
-                            console.log('Notif did not go through');
-                        }
-                        else {
-                            console.log('Associated notification was created for admin');
-                            console.log(newNotif);
+                            req.flash('error', 'Could not create a notification for this change!');
                         }
                     });
                 });
@@ -40,17 +36,13 @@ helperObj.assignNotif = function assignNotif(causerName, objectName, eventString
             else {
                 User.findById(receiverId, function(error, foundUser) {
                     if (error) {
-                        console.log(error);
+                        req.flash('error', 'Could not create a notification for this change!');
                     }
                     else {
                         foundUser.notifs.push(newNotif);
                         foundUser.save(function(Err) {
                             if (Err) {
-                                console.log('Notif did not go through');
-                            }
-                            else {
-                                console.log('Associated notification was created');
-                                console.log(newNotif);
+                                req.flash('error', 'Could not create a notification for this change!');
                             }
                         });
                     }

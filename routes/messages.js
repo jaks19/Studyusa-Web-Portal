@@ -98,10 +98,10 @@ router.post('/personal/', middleware.isLoggedIn, function(req, res) {
                             }
                             else {
                                 if (sender.admin) {
-                                    helpers.assignNotif(sender.username, newMessage.content.substr(0, 30) + '...', 'msg', foundUser._id);
+                                    helpers.assignNotif(sender.username, newMessage.content.substr(0, 30) + '...', 'msg', foundUser._id, req);
                                 }
                                 else {
-                                    helpers.assignNotif(sender.username, newMessage.content.substr(0, 30) + '...', 'msg', 'admin');
+                                    helpers.assignNotif(sender.username, newMessage.content.substr(0, 30) + '...', 'msg', 'admin', req);
                                 }
 
                                 res.redirect('/index/' + clientUsername + '/messages/personal');
@@ -162,11 +162,11 @@ router.post('/group/', middleware.isLoggedIn, function(req, res) {
                                         else {
                                             foundGroup.users.forEach(function(receiver) {
                                                 if (!(req.user.username === receiver.username)){
-                                                    helpers.assignNotif(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver._id);
+                                                    helpers.assignNotif(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver._id, req);
                                                 }
                                             });
                                             if (!(sender.admin)){
-                                                helpers.assignNotif(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', 'admin');
+                                                helpers.assignNotif(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', 'admin', req);
                                             }
                                             res.redirect('/index/' + clientUsername + '/messages/group');
                                         }
