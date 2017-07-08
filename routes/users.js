@@ -62,8 +62,9 @@ router.post('/', function(req, res) {
     });
 });
 
-// Show User (First Contact)
-router.get('/:username/welcome', middleware.isLoggedIn, async function(req, res) {
+// Show User
+router.get('/:username', middleware.isLoggedIn, async function(req, res) {
+    let firstContact = req.query.welcome ? true : false;
     let username = req.params.username;
     if (username != req.user.username){
         req.flash('error', 'You do not have the required permissions to view this page');
@@ -86,7 +87,7 @@ router.get('/:username/welcome', middleware.isLoggedIn, async function(req, res)
             format: format,
             notifs: allNotifs,
             unseenNotifs: unseenNotifs,
-            firstContact: true
+            firstContact: firstContact
         });
     } else {
         let articles = await apiServices.retrieveNews(req);
@@ -99,91 +100,9 @@ router.get('/:username/welcome', middleware.isLoggedIn, async function(req, res)
             unseenNotifs: unseenNotifs,
             subs: populatedUser.submissions.reverse(),
             articles: articles,
-            firstContact: true
+            firstContact: firstContact
         });
     }
-});
-
-// Show User (Rest of the time)
-router.get('/:username', middleware.isLoggedIn, function(req, res) {
-    var username = req.params.username;
-    var unseenNotifs;
-    User.findOne({
-        'username': username
-    }).populate('submissions').populate('notifs').exec(function(err, foundUser) {
-        if (err) {
-            req.flash('error', 'Could not retrieve your user record!');
-            res.redirect('back');
-        }
-        else {
-            // Create a list of only UNSEEN notifications
-            var allNotifs = foundUser.notifs;
-            var atleastOneUnseen = false;
-            allNotifs.slice(0).forEach(function(notif){
-                if (!notif.seen){
-                    if (!atleastOneUnseen){
-                        unseenNotifs = [];
-                    }
-                    unseenNotifs.push(notif);
-                    atleastOneUnseen = true;
-                }
-            });
-            if (!atleastOneUnseen){
-                unseenNotifs = 'nothingUnseen'
-            } else {
-                unseenNotifs.reverse();
-            }
-
-            // FOUNDuser
-            if (foundUser.admin) {
-                User.find({}, function(error, users) {
-                    if (error) {
-                        req.flash('error', 'Could not retrieve and present all users on this screen!');
-                        res.redirect('back');
-                    }
-                    else {
-                        res.render('./admin/dashboard', {
-                            loggedIn: true,
-                            users: users,
-                            user: foundUser,
-                            format: format,
-                            notifs: allNotifs.reverse(),
-                            unseenNotifs: unseenNotifs,
-                            firstContact: false,
-                            client: foundUser
-                        });
-                    }
-                });
-            } else {
-                // Can be ADMIN wishing to see client's dashboard
-                //Request News API
-                request('https://newsapi.org/v1/articles?source=cnn&sortBy=top&apiKey=c8e7fde98b5a4983b913761b2e7db0f6',
-                    function(error, response, body){
-                        if (error){
-                            req.flash('error', 'Could not fetch live news :(');
-                        } else {
-                            if (response.statusCode == 200){
-
-                                var parsedData = JSON.parse(body);
-                                var articles = parsedData['articles'].splice(0,10);
-                                res.render('show', {
-                                    format: format,
-                                    loggedIn: true,
-                                    user: foundUser,
-                                    client: foundUser,
-                                    notifs: allNotifs.reverse(),
-                                    unseenNotifs: unseenNotifs,
-                                    subs: foundUser.submissions.reverse(),
-                                    articles: articles,
-                                    firstContact: false
-                                });
-                        }
-                    }
-                });
-                // End of API Request
-            }
-        }
-    });
 });
 
 // Delete User - DELETE (admin-only access)

@@ -13,7 +13,7 @@ router.post('/login',
     }),
     function(req, res) {
         var username = req.body.username;
-        res.redirect('/index/' + username + '/welcome');
+        res.redirect('/index/' + username + '?welcome=yes');
     });
 
 // Logout
