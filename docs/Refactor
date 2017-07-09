@@ -1,0 +1,13 @@
+IFF external job unrelated to main purpose (better to have it in 3 english words as fn call)
+OR over 2 nests deep
+OR extremely reusable component
+
+adds
+auth DONE
+comments
+groups
+messages
+notifs
+payments
+submissions
+users DONE

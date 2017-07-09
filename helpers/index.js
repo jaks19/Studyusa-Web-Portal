@@ -9,11 +9,11 @@ var helperObj = {};
 
 // Takes in a causerId, an objectId and an eventString, creates the notif
 // Also takes in the receiverId (id of person who will see thenotif) and saves the notif in its records
-helperObj.assignNotif = function assignNotif(causerName, objectName, eventString, receiverId, req) {
+helperObj.assignNotif = function assignNotif(doerAccountUserName, nameOfTheConcernedObjectChangedOrCreatedOrDeleted, eventStringInNotifJson, receivingAccountUsername, req) {
     var notif = new Notif({
-        causerName: causerName,
-        objectName: objectName,
-        event: eventString,
+        causerName: doerAccountUserName,
+        objectName: nameOfTheConcernedObjectChangedOrCreatedOrDeleted,
+        event: eventStringInNotifJson,
     });
 
     Notif.create(notif, function(err, newNotif) {
@@ -21,7 +21,7 @@ helperObj.assignNotif = function assignNotif(causerName, objectName, eventString
             req.flash('error', 'Could not create a notification for this change!');
         }
         else {
-            if (receiverId == 'admin') {
+            if (receivingAccountUsername == 'admin') {
                 User.findOne({
                     'admin': true
                 }, function(error, foundUser) {
@@ -34,7 +34,7 @@ helperObj.assignNotif = function assignNotif(causerName, objectName, eventString
                 });
             }
             else {
-                User.findById(receiverId, function(error, foundUser) {
+                User.findOne({'username': receivingAccountUsername}, function(error, foundUser) {
                     if (error) {
                         req.flash('error', 'Could not create a notification for this change!');
                     }
