@@ -1,6 +1,6 @@
 // Packages
 var express = require("express"),
-    middleware = require('../middleware');
+    authServices = require('../services/auth-services');
 
 // Models
 var Notif = require("../models/notif"),
@@ -13,7 +13,7 @@ var router = express.Router({
 }); // To allow linking routing from this file to router (For cleaner code)
 
 // View Notifs - GET
-router.get('/', middleware.isLoggedIn, function(req, res) {
+router.get('/', authServices.confirmUserCredentials, function(req, res) {
     var unseenNotifs = [];
     var seenNotifs = [];
     User.findOne({'username' : req.params.username}).populate('notifs').exec(function(error, foundUser){
@@ -38,7 +38,7 @@ router.get('/', middleware.isLoggedIn, function(req, res) {
 });
 
 // Notif Seen - PUT
-router.get('/:id/seen', middleware.isLoggedIn, function(req, res) {
+router.get('/:id/seen', authServices.confirmUserCredentials, function(req, res) {
     Notif.findById(req.params.id, function(error, foundNotif){
         foundNotif.seen = true;
         foundNotif.save(function(error){
@@ -52,7 +52,7 @@ router.get('/:id/seen', middleware.isLoggedIn, function(req, res) {
 });
 
 // Notif Unseen - PUT
-router.get('/:id/unseen', middleware.isLoggedIn, function(req, res) {
+router.get('/:id/unseen', authServices.confirmUserCredentials, function(req, res) {
     Notif.findById(req.params.id, function(error, foundNotif){
         foundNotif.seen = false;
         foundNotif.save(function(error){

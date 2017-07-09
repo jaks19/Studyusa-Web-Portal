@@ -1,17 +1,13 @@
 // Packages
 var express = require("express"),
     passport = require("passport"),
-    middleware = require('../middleware'),
     mkdirp = require('mkdirp'),
     request = require('request'),
     path = require('path'),
     format = require('../notifJson');
 
 // Services
-var userServices = require('../services/user-services'),
-    notifServices = require('../services/notif-services'),
-    dbOpsServices = require('../services/dbops-services'),
-    apiServices = require('../services/api-services'),
+let userServices = require('../services/user-services'),
     authServices = require('../services/auth-services');
 
 
@@ -19,13 +15,8 @@ var userServices = require('../services/user-services'),
 var User = require("../models/user");
 
 // To be Exported
-var router = express.Router(); // To allow linking routing from this file to app (For cleaner code)
-
-// Index
-router.get('/', function(req, res) {
-    res.render('index', {
-        loggedIn: false
-    });
+var router = express.Router({
+    mergeParams: true
 });
 
 // New User - GET
@@ -63,30 +54,41 @@ router.post('/', function(req, res) {
     });
 });
 
-// Show User
-router.get('/:username', middleware.isLoggedIn, async function(req, res) {
+// Show Admin Dashboard
+router.get('/admin', authServices.confirmUserCredentials, async function(req, res) {
+    let username = req.user.username;
+    let adminData = await userServices.getUserData(username, req, res);
+    res.render('./admin/dashboard', {
+            user: adminData.populatedUser,
+            users: adminData.users,
+            client: adminData.populatedUser,
+            notifs: adminData.allNotifs,
+            unseenNotifs: adminData.unseenNotifs,
+            format: format,
+            firstContact: adminData.firstContact,
+            loggedIn: true
+    });
+});
+
+// Show User Dashboard
+router.get('/:username', authServices.confirmUserCredentials, async function(req, res) {
     let username = req.params.username;
-    let loggedIn = authServices.confirmCredentials(username, req, res);
-    if (!loggedIn) {return};
-    
-    let foundUser = userServices.findUser(username);
-    let populatedUser = await dbOpsServices.populateEntry(foundUser, ['submissions', 'notifs'], req, res);
-    let allNotifs = populatedUser.notifs.reverse();
-    let unseenNotifs = notifServices.getUnseenNotifs(populatedUser.notifs);
-    let firstContact = req.query.welcome ? true : false;
-    
-    if (populatedUser.admin) {
-        let users = await userServices.findAllUsers();
-        userServices.renderAdminDashboard(res, users, loggedIn, populatedUser, allNotifs, unseenNotifs, format, firstContact);
-    } else {
-        let articles = await apiServices.retrieveNews(req);
-        let subs = populatedUser.submissions.reverse();
-        userServices.renderUserDashboard(res, subs, articles, loggedIn, populatedUser, allNotifs, unseenNotifs, format, firstContact);
-    }
+    let userData = await userServices.getUserData(username, req, res);
+    res.render('show', {
+            user: userData.populatedUser,
+            client: userData.populatedUser,
+            notifs: userData.allNotifs,
+            unseenNotifs: userData.unseenNotifs,
+            format: format,
+            firstContact: userData.firstContact,
+            subs: userData.subs,
+            articles: userData.articles,
+            loggedIn: true
+    });
 });
 
 // Delete User - DELETE (admin-only access)
-router.delete('/:username', middleware.isLoggedIn, middleware.isAdmin, function(req, res) {
+router.delete('/:username', authServices.confirmUserCredentials, function(req, res) {
     User.findOneAndRemove({'username' : req.params.username}, function(error){
         if (error){
             req.flash('error', 'The user account could not be deleted!');

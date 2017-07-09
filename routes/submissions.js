@@ -3,7 +3,7 @@ var express = require("express"),
     path = require('path'),
     Multiparty = require("multiparty"), // To get file object upon selection from pc for upload
     fs = require("fs"), // To read-from/write-to files
-    middleware = require('../middleware'),
+    authServices = require('../services/auth-services'),
     mkdirp = require('mkdirp'),
     helpers = require('../helpers');
 
@@ -14,10 +14,12 @@ var User = require("../models/user"),
     Add = require("../models/add");
 
 // To be Exported
-var router = express.Router(); // To allow linking routing from this file to router (For cleaner code)
+var router = express.Router({
+    mergeParams: true
+});
 
 // New Submission - GET
-router.get('/', middleware.isLoggedIn, function(req, res) {
+router.get('/',authServices.confirmUserCredentials, function(req, res) {
     var username = req.user.username;
     User.findOne({
         'username': username
@@ -37,7 +39,7 @@ router.get('/', middleware.isLoggedIn, function(req, res) {
 });
 
 // New Submission - POST
-router.post('/', middleware.isLoggedIn, function(req, res) { //IMPORTANT: normally you would use a post request to an index page but I already have one POST req going there for Users
+router.post('/', authServices.confirmUserCredentials, function(req, res) { //IMPORTANT: normally you would use a post request to an index page but I already have one POST req going there for Users
     // Parse form with 'multiparty' because we are uploading a file and it is an encoded form
     var form = new Multiparty.Form();
     form.parse(req, function(err, fields, files) {
@@ -171,7 +173,7 @@ router.post('/', middleware.isLoggedIn, function(req, res) { //IMPORTANT: normal
 });
 
 // Show Submission
-router.get('/:id', middleware.isLoggedIn, function(req, res) {
+router.get('/:id', authServices.confirmUserCredentials, function(req, res) {
     var id = req.params.id;
     Submission.findOne({
         '_id': id

@@ -5,7 +5,7 @@ var express = require("express"),
     path = require('path'),
     Multiparty = require("multiparty"), // To get file object upon selection from pc for upload
     fs = require("fs"), // To read-from/write-to files
-    middleware = require('../middleware'),
+    authServices = require('../services/auth-services'),
     helpers = require('../helpers');
 
 // Models
@@ -18,7 +18,7 @@ var router = express.Router({
 }); // To allow linking routing from this file to router (For cleaner code)
 
 // Download file (Get add)
-router.get('/:addId', middleware.isLoggedIn, function(req, res) { 
+router.get('/:addId', authServices.confirmUserCredentials, function(req, res) { 
     var username = req.params.username;
     var add = Add.findOne({
         '_id' : req.params.addId
@@ -31,7 +31,7 @@ router.get('/:addId', middleware.isLoggedIn, function(req, res) {
 });
 
 // Delete File (Delete add)
-router.delete('/:addId', middleware.isLoggedIn, middleware.isAdmin, function(req, res) { 
+router.delete('/:addId', authServices.confirmUserCredentials, function(req, res) { 
     var username = req.params.username;
     Add.findOne({
         '_id' : req.params.addId
@@ -58,7 +58,7 @@ router.delete('/:addId', middleware.isLoggedIn, middleware.isAdmin, function(req
 });
 
 // New Update file to a thread
-router.post('/', middleware.isLoggedIn, function(req, res) {
+router.post('/', authServices.confirmUserCredentials, function(req, res) {
     // Parse form with 'multiparty' because we are uploading a file and it is an encoded form
     var form = new Multiparty.Form();
     form.parse(req, function(err, fields, files) {

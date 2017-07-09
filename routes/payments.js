@@ -7,14 +7,16 @@ var stripe = require("stripe")("sk_test_2uZMhxT39A3xJsZSKtGNC9rX");
 // Models
 var User = require("../models/user"),
     Payment = require("../models/payment"),
-    middleware = require('../middleware'),
+    authServices = require('../services/auth-services'),
     helpers = require('../helpers');
 
 // To be Exported
-var router = express.Router(); // To allow linking routing from this file to router (For cleaner code)
+var router = express.Router({
+    mergeParams: true
+});
 
 // New Payment - GET
-router.get('/', middleware.isLoggedIn, function(req, res) {
+router.get('/', authServices.confirmUserCredentials, function(req, res) {
     var username = req.user.username;
     User.findOne({
         'username': username
@@ -31,7 +33,7 @@ router.get('/', middleware.isLoggedIn, function(req, res) {
 });
 
 // New Payment - POST
-router.post('/', middleware.isLoggedIn, function(req, res) { //IMPORTANT: normally you would use a post request to an index page but I already have one POST req going there for Users
+router.post('/', authServices.confirmUserCredentials, function(req, res) { //IMPORTANT: normally you would use a post request to an index page but I already have one POST req going there for Users
     // Actions chain so do most prone to fail first (process money)
     // Get the credit card details submitted by the form
     var token = req.body.stripeToken; // Using Express

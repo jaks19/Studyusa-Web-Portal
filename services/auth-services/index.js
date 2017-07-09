@@ -1,14 +1,10 @@
 var authServices = {};
 
-authServices.confirmCredentials = 
-    function confirmCredentials(username, req, res) {
-      if (username != req.user.username){
-        req.flash('error', 'You do not have the required permissions to view this page');
-        res.redirect('back');
-        return false;
-      } else {
-        return true;
-      }
-    }
+authServices.confirmUserCredentials = function confirmUserCredentials(req, res, next) {
+    if (req.isAuthenticated() && req.params.username == req.user.username){ return next() }
+    else if (req.isAuthenticated() && req.user.admin){ return next() }
+    req.flash('error', 'You do not have the required permissions to view this page');
+    res.redirect('/login');
+}
     
-module.exports =authServices;
+module.exports = authServices;

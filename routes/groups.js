@@ -2,7 +2,7 @@
 
 // Packages
 var express = require("express"),
-    middleware = require('../middleware'),
+    authServices = require('../services/auth-services'),
     helpers = require('../helpers');
 
 // Models
@@ -15,7 +15,7 @@ var router = express.Router({
 }); // To allow linking routing from this file to app (For cleaner code)
 
 // Index
-router.get('/', middleware.isLoggedIn, middleware.isAdmin, function(req, res) {
+router.get('/', authServices.confirmUserCredentials, function(req, res) {
     Group.find({}).populate('users').exec(function(error, groups) {
         if (error) {
             req.flash('error', 'Could not retrieve groups!');
@@ -53,7 +53,7 @@ router.get('/', middleware.isLoggedIn, middleware.isAdmin, function(req, res) {
 });
 
 // New Group - POST
-router.post('/', middleware.isLoggedIn, middleware.isAdmin, function(req, res) {
+router.post('/', authServices.confirmUserCredentials, function(req, res) {
     // Look at all the checkboxes and get the users who were checked
     var checked;
     if (req.body.chk == null){
@@ -117,7 +117,7 @@ router.post('/', middleware.isLoggedIn, middleware.isAdmin, function(req, res) {
 });
 
 // Delete a Group - DELETE
-router.delete('/:groupId', middleware.isLoggedIn, middleware.isAdmin, function(req, res) {
+router.delete('/:groupId', authServices.confirmUserCredentials, function(req, res) {
     var groupId = req.params.groupId;
     // Find users with this group and remove the reference
     Group.findOne({
@@ -165,7 +165,7 @@ router.delete('/:groupId', middleware.isLoggedIn, middleware.isAdmin, function(r
 });
 
 // Remove someone from his/her group - PUT
-router.get('/remove', middleware.isLoggedIn, middleware.isAdmin, function(req, res) {
+router.get('/remove', authServices.confirmUserCredentials, function(req, res) {
     var username = req.params.username;
     // Find user, remove its group ref and remove it from group obj
     User.findOne({
@@ -216,7 +216,7 @@ router.get('/remove', middleware.isLoggedIn, middleware.isAdmin, function(req, r
 });
 
 // Add to Group - PUT
-router.put('/:groupId', middleware.isLoggedIn, middleware.isAdmin, function(req, res) {
+router.put('/:groupId', authServices.confirmUserCredentials, function(req, res) {
     // Look at all the checkboxes and get the users who were checked
     var checked;
     if (req.body.chk == null){

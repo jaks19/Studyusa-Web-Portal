@@ -2,7 +2,7 @@
 
 // Packages
 var express = require("express"),
-    middleware = require('../middleware'),
+    authServices = require('../services/auth-services'),
     helpers = require('../helpers');
 
 // Models
@@ -16,7 +16,7 @@ var router = express.Router({
 }); // To allow linking routing from this file to router (For cleaner code)
 
 // New Comment - POST
-router.post('/', middleware.isLoggedIn, function(req, res) {
+router.post('/', authServices.confirmUserCredentials, function(req, res) {
     var subId = req.params.id;
     var content = req.body.textareacontent;
 
@@ -74,7 +74,7 @@ router.post('/', middleware.isLoggedIn, function(req, res) {
 
 // Edit Comment - PUT
 // '/index/:username/submit/:id/comments' + '/commentId'
-router.put('/:commentId/', middleware.isLoggedIn, middleware.isAdmin, function(req, res) {
+router.put('/:commentId/', authServices.confirmUserCredentials, function(req, res) {
     var newText = req.body.newText;
     Comment.findOne({'_id': req.params.commentId}, function(error, foundComment){
         if (error){
@@ -95,7 +95,7 @@ router.put('/:commentId/', middleware.isLoggedIn, middleware.isAdmin, function(r
 
 // Delete Comment - DELETE
 // '/index/:username/submit/:id/comments' + '/commentId'
-router.delete('/:commentId/', middleware.isLoggedIn, middleware.isAdmin, function(req, res) {
+router.delete('/:commentId/', authServices.confirmUserCredentials, function(req, res) {
     Comment.findByIdAndRemove(req.params.commentId, function(error){
         if (error){
             req.flash("error", "Comment could not be deleted!");

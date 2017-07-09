@@ -12,8 +12,9 @@ router.post('/login',
         failureRedirect: '/index',
     }),
     function(req, res) {
-        var username = req.body.username;
-        res.redirect('/index/' + username + '?welcome=yes');
+        var user = req.user;
+        if (user.admin) { res.redirect('/index/' + 'admin' + '?welcome=yes') }
+        else { res.redirect('/index/' + user.username + '?welcome=yes') }
     });
 
 // Logout
