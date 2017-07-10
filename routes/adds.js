@@ -28,27 +28,13 @@ router.get('/:addId', authServices.confirmUserCredentials, function(req, res) {
 });
 
 // Delete File (Delete add)
-router.delete('/:addId', authServices.confirmUserCredentials, function(req, res) { 
-    let username = req.params.username;
-    Add.findOne({
-        '_id' : req.params.addId
-    }).populate('submission').exec(function(error, foundAdd){
-        let filePath = filesystemServices.getExistingFilePath(foundAdd, req);
-        fs.unlink(filePath, function(error){
-        if (error){
-           req.flash("error", "File could not be localized for deletion!");
-           res.redirect('/index/' + username + '/submit/');
-        } else {
-            Add.findByIdAndRemove(foundAdd._id, function(error){
-                if (error){ req.flash("error", "File deleted but entry still in db!") }
-                else {
-                    req.flash("success", "File successfully deleted!");
-                    res.redirect('/index/' + username + '/submit/' + req.params.id); 
-                }
-            });
-            }
-        });
-    });
+router.delete('/:addId', authServices.confirmUserCredentials, async function(req, res) { 
+    let username = req.params.username,
+        foundAdd = await dbopsServices.findOneEntryAndPopulate(Add, { '_id': req.params.addId }, ['submission'], req, res),
+        filePath = filesystemServices.getExistingFilePath(foundAdd, req);
+    fs.unlinkSync(filePath);
+    await dbopsServices.findEntryByIdAndRemove(Add, foundAdd._id, req, res);
+    res.redirect('/index/' + username + '/submit/' + req.params.id);
 });
 
 // New Update file to a thread

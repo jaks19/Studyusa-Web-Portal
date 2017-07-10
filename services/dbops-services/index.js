@@ -26,8 +26,14 @@ function promiseToCreateEntry(model, modelObjectWithData){
   });
 }
 
-dbopsServices.createEntryAndSave = async function createEntryAndSave(model, modelObjectWithData, req, res) {    
-  let newEntry = await promiseToCreateEntry(model, modelObjectWithData);
+dbopsServices.createEntryAndSave = async function createEntryAndSave(model, modelObjectWithData, req, res) { 
+  var newEntry;
+  try { newEntry = await promiseToCreateEntry(model, modelObjectWithData) }
+  catch(error) { 
+    req.flash('error', 'error creating entry');
+    res.redirect('back');
+    return;
+  }
   newEntry.save(function(error, data){
     if (error){ req.flash('error', error) } 
   });
@@ -43,8 +49,22 @@ dbopsServices.savePopulatedEntry = async function savePopulatedEntry(populatedEn
   });
 }
 
+function promiseTofindEntryByIdAndRemove(model, id, req, res){
+  return new Promise(function (resolve, reject) {
+    model.findByIdAndRemove(id, function(error){
+        if (error){ reject(error) }
+        else { resolve() }
+    });
+  });
+}
 
-
-        
+dbopsServices.findEntryByIdAndRemove = async function findEntryByIdAndRemove(model, id, req, res) {    
+  try { 
+    await promiseTofindEntryByIdAndRemove(model, id, req, res) 
+    req.flash('success', 'Deletion Successful');
+  }
+  catch (error) { req.flash('error', 'Could not remove entry from the database') }
+  return;
+}
 
 module.exports = dbopsServices;
