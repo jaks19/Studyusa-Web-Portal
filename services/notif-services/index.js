@@ -12,6 +12,16 @@ notifServices.getUnseenNotifs = function getUnseenNotifs(notifs) {
   return unseenNotifs;
 }
 
+notifServices.getBothSeenAndUnseenNotifs = function getBothSeenAndUnseenNotifs(notifs) {
+  let seenNotifs = [],
+      unseenNotifs = [];
+  notifs.slice(0).forEach(function(notif){
+        if (notif.seen){ seenNotifs.push(notif) } 
+        else { unseenNotifs.push(notif) }
+  });
+  return [seenNotifs, unseenNotifs];
+}
+
 notifServices.assignNotification = function assignNotification(doerAccountUserName, objectName, eventString, receivingAccountUsername, req) {
   if (doerAccountUserName != receivingAccountUsername) {
     helpers.assignNotif(doerAccountUserName, objectName, eventString, receivingAccountUsername, req);
