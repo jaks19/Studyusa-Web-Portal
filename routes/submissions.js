@@ -14,13 +14,11 @@ var User = require("../models/user"),
     Add = require("../models/add");
 
 // To be Exported
-var router = express.Router({
-    mergeParams: true
-});
+var router = express.Router({ mergeParams: true });
 
 // New Submission - GET
 router.get('/',authServices.confirmUserCredentials, function(req, res) {
-    var username = req.user.username;
+    var username = req.params.username;
     User.findOne({
         'username': username
     }).populate('submissions').exec(function(error, foundUser) {

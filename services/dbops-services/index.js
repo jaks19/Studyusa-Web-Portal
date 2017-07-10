@@ -5,16 +5,18 @@ require("babel-polyfill")
 var dbopsServices = {};
 
 dbopsServices.findOneEntryAndPopulate = async function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req, res) {
-  let rawEntry = model.findOne(entryRequirement);
-  let fieldsString = fieldsArray.join(' ');
-  try {
-        let populatedUser = await rawEntry.populate(fieldsString).exec();
-        return populatedUser;
-    } catch (err) {
-        req.flash('error', err);
-        res.redirect('back');
-        return;
-    }
+  let entry = model.findOne(entryRequirement);
+  if (fieldsArray.length > 0) {
+    let fieldsString = fieldsArray.join(' ');
+    try {
+          entry = await entry.populate(fieldsString).exec();
+      } catch (err) {
+          req.flash('error', err);
+          res.redirect('back');
+          return;
+      }
+  }
+  return entry;
 }
 
 function promiseToCreateEntry(model, modelObjectWithData){
@@ -40,7 +42,7 @@ dbopsServices.createEntryAndSave = async function createEntryAndSave(model, mode
   return newEntry;
 }
 
-dbopsServices.savePopulatedEntry = async function savePopulatedEntry(populatedEntry, req, res) {    
+dbopsServices.savePopulatedEntry = function savePopulatedEntry(populatedEntry, req, res) {    
   populatedEntry.save(function(error, savedEntry){
     if (error) {
             req.flash('error', error);
