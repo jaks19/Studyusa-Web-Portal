@@ -105,7 +105,7 @@ router.post('/', authServices.confirmUserCredentials, function(req, res) {
                             }
                             else {
                                 req.flash('success', 'Group successfully created! Scroll down to find it!');
-                                helpers.assignNotif(req.user.username, savedGroup.name, 'group-add', user._id, req);
+                                helpers.assignNotif(req.user.username, savedGroup.name, 'group-add', user.username, req);
                             }
                         });
                     });

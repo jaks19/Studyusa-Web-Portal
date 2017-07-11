@@ -2,186 +2,56 @@
 var express = require("express"),
     authServices = require('../services/auth-services'),
     helpers = require('../helpers'),
-    messageService = require('../services/message-services');
+    messageServices = require('../services/message-services'), 
+    notifServices = require('../services/notif-services'), 
+    dbopsServices = require('../services/dbops-services');
 
 // Models
 var User = require("../models/user"),
     Group = require("../models/group"),
     Message = require("../models/comment");
 
-// To be Exported
-var router = express.Router({
-    mergeParams: true
-}); // To allow linking routing from this file to router (For cleaner code)
+var router = express.Router({ mergeParams: true });
 
-// Show Messages (Personal for User)
-router.get('/personal/', authServices.confirmUserCredentials, function(req, res) {
-    User.findOne({
-        'username': req.params.username
-    }).populate('messages').exec(function(error, client) {
-        if (error) {
-            req.flash('error', 'Could not populate personal messages!');
-            return res.redirect('back');
-        }
-        else {
-            res.render('personalMessages', {
-                user: client,
-                loggedIn: true,
-                client: client
-            });
-        }
-    });
+// Show Personal Messages
+router.get('/personal/', authServices.confirmUserCredentials, async function(req, res) {
+    let client = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ 'messages' ], req, res);
+    res.render('personalMessages', { user: client, loggedIn: true, client: client });
 });
 
-// Show Messages (For a Group)
-router.get('/group/', authServices.confirmUserCredentials, function(req, res) {
-    User.findOne({
-        'username': req.params.username
-    }, function(error, foundClient) {
-        if (error) {
-            req.flash('error', 'Could not locate user record at this time!');
-            return res.redirect('back');
-        }
-        else {
-            Group.findOne({
-                'name': foundClient.group
-            }).populate(['messages', 'users']).exec(function(error, foundGroup) {
-                if (error) {
-                    req.flash('error', 'Could not populate your group messages!');
-                    return res.redirect('back');
-                }
-                else {
-                    res.render('groupMessages', {
-                        messages: foundGroup['messages'],
-                        loggedIn: true,
-                        user: foundClient,
-                        users: foundGroup.users,
-                        client: foundClient
-                    });
-                }
-            });
-        }
-    });
+// Show Group Messages
+router.get('/group/', authServices.confirmUserCredentials, async function(req, res) {
+    let foundClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], req, res),
+        foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { 'name': foundClient.group }, [ 'messages', 'users' ], req, res);
+    res.render('groupMessages', { messages: foundGroup['messages'], loggedIn: true, user: foundClient, users: foundGroup.users, client: foundClient });
 });
 
-// New Message - POST (to a user's personal inbox)
-router.post('/personal/', authServices.confirmUserCredentials, function(req, res) {
-    // Term client is used for when sure that person is the user because we save messages to users, not admin
-    var clientUsername = req.params.username;
-    var sender = req.user; // Can be same or opposite dep on if user or admin is sending
-    var newM = new Message({
-        username: sender.username,
-        content: req.body.textareacontent
-    });
+// New Personal Message
+router.post('/personal/', authServices.confirmUserCredentials, async function(req, res) {
+    let foundClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], req, res),
+        sender = req.user,
+        newM = new Message({ username: sender.username, content: req.body.textareacontent }),
+        newMessage = await dbopsServices.createEntryAndSave(Message, newM, req, res);
 
-    Message.create(newM, function(error, newMessage) {
-        if (error) {
-            req.flash('error', 'Could not post this new message!');
-            return res.redirect('back');
-        }
-        else {
-            newMessage.save(function(error, data) {
-                if (error) {
-                    req.flash('error', 'Could not post this new message!');
-                    return res.redirect('back');
-                }
-                else {
-                    // Need to find client's account
-                    User.findOne({
-                        'username': clientUsername
-                    }, function(error, foundUser) {
-                        foundUser.messages.push(newMessage);
-                        foundUser.save(function(error, data) {
-                            if (error) {
-                                req.flash('error', 'Could not post this new message!');
-                                return res.redirect('back');
-                            }
-                            else {
-                                if (sender.admin) {
-                                    helpers.assignNotif(sender.username, newMessage.content.substr(0, 30) + '...', 'msg', foundUser._id, req);
-                                }
-                                else {
-                                    helpers.assignNotif(sender.username, newMessage.content.substr(0, 30) + '...', 'msg', 'admin', req);
-                                }
-
-                                res.redirect('/index/' + clientUsername + '/messages/personal');
-                            }
-                        });
-                    });
-
-                }
-            });
-        }
-    });
-
+    foundClient.messages.push(newMessage);
+    dbopsServices.savePopulatedEntry(foundClient, req, res);
+    notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg', foundClient.username, req);
+    res.redirect('/index/' + foundClient.username + '/messages/personal');
 });
 
-// New Message - POST (to a group inbox)
-router.post('/group/', authServices.confirmUserCredentials, function(req, res) {
-    var sender = req.user;
-    var clientUsername = req.params.username;
-    var newM = new Message({
-        username: sender.username,
-        content: req.body.textareacontent
-    });
-    User.findOne({
-        'username': clientUsername
-    }, function(error, foundClient) {
-        if (error) {
-            req.flash('error', 'Could not locate user!');
-            return res.redirect('back');
-        }
-        else {
-            var groupName = foundClient.group;
-            Group.findOne({
-                'name': groupName
-            }).populate('users').exec(function(error, foundGroup) {
-                if (error) {
-                    req.flash('error', 'Could not locate user group!');
-                    return res.redirect('back');
-                }
-                else {
-                    Message.create(newM, function(error, newMessage) {
-                        if (error) {
-                            req.flash('error', 'Could not post this new message!');
-                            return res.redirect('back');
-                        }
-                        else {
-                            newMessage.save(function(error, data) {
-                                if (error) {
-                                    req.flash('error', 'Could not post this new message!');
-                                    return res.redirect('back');
-                                }
-                                else {
-                                    foundGroup.messages.push(newMessage);
-                                    foundGroup.save(function(error, data) {
-                                        if (error) {
-                                            req.flash('error', 'Could not add this message to the rest of your group messages');
-                                            return res.redirect('back');
-                                        }
-                                        else {
-                                            foundGroup.users.forEach(function(receiver) {
-                                                if (!(req.user.username === receiver.username)){
-                                                    helpers.assignNotif(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver._id, req);
-                                                }
-                                            });
-                                            if (!(sender.admin)){
-                                                helpers.assignNotif(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', 'admin', req);
-                                            }
-                                            res.redirect('/index/' + clientUsername + '/messages/group');
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-
-
-
-        }
-    });
+// New Group Message
+router.post('/group/', authServices.confirmUserCredentials, async function(req, res) {
+    let sender = req.user,
+        oneClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], req, res),
+        foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { 'name': oneClient.group }, [ 'users' ], req, res),
+        newM = new Message({ username: sender.username, content: req.body.textareacontent }),
+        newMessage = await dbopsServices.createEntryAndSave(Message, newM, req, res);
+        foundGroup.messages.push(newMessage);
+        dbopsServices.savePopulatedEntry(foundGroup, req, res);
+        foundGroup.users.forEach(function(receiver) {
+            notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver.username, req);
+        });
+        res.redirect('back');
 });
 
 module.exports = router;

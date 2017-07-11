@@ -1,5 +1,5 @@
 // Packages
-var express = require("express"),
+let express = require("express"),
     passport = require("passport"),
     mkdirp = require('mkdirp'),
     request = require('request'),
@@ -13,9 +13,9 @@ let userServices = require('../services/user-services'),
 
 
 // Models
-var User = require("../models/user");
+let User = require("../models/user");
 
-var router = express.Router({
+let router = express.Router({
     mergeParams: true
 });
 

@@ -1,5 +1,5 @@
 // Packages
-var express = require("express"),
+let express = require("express"),
     path = require('path'),
     Multiparty = require("multiparty"), // To get file object upon selection from pc for upload
     fs = require("fs"), // To read-from/write-to files
@@ -8,13 +8,13 @@ var express = require("express"),
     helpers = require('../helpers');
 
 // Models
-var User = require("../models/user"),
+let User = require("../models/user"),
     Submission = require("../models/submission"),
     Comment = require("../models/comment"),
     Add = require("../models/add");
 
 // To be Exported
-var router = express.Router({ mergeParams: true });
+let router = express.Router({ mergeParams: true });
 
 // New Submission - GET
 router.get('/',authServices.confirmUserCredentials, function(req, res) {
