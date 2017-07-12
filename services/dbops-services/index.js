@@ -19,6 +19,21 @@ dbopsServices.findOneEntryAndPopulate = async function findOneEntryAndPopulate(m
   return entry;
 }
 
+dbopsServices.findAllEntriesAndPopulate = async function findAllEntriesAndPopulate(model, entryRequirement, fieldsArray, req, res) {
+  let entries = model.find(entryRequirement);
+  if (fieldsArray.length > 0) {
+    let fieldsString = fieldsArray.join(' ');
+    try {
+          entries = await entries.populate(fieldsString).exec();
+      } catch (err) {
+          req.flash('error', err);
+          res.redirect('back');
+          return;
+      }
+  }
+  return entries;
+}
+
 function promiseToCreateEntry(model, modelObjectWithData){
   return new Promise(function (resolve, reject) {
     model.create(modelObjectWithData, function(error, newEntry){
@@ -28,7 +43,7 @@ function promiseToCreateEntry(model, modelObjectWithData){
   });
 }
 
-dbopsServices.createEntryAndSave = async function createEntryAndSave(model, modelObjectWithData, req, res) { 
+dbopsServices.createEntryAndSave = async function createEntryAndSave(model, modelObjectWithData, req, res, save = true) { 
   var newEntry;
   try { newEntry = await promiseToCreateEntry(model, modelObjectWithData) }
   catch(error) { 
@@ -36,9 +51,11 @@ dbopsServices.createEntryAndSave = async function createEntryAndSave(model, mode
     res.redirect('back');
     return;
   }
-  newEntry.save(function(error, data){
-    if (error){ req.flash('error', error) } 
-  });
+  if (save) {
+    newEntry.save(function(error, data){
+      if (error){ req.flash('error', error) } 
+    });
+  }
   return newEntry;
 }
 

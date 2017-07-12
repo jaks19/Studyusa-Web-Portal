@@ -15,9 +15,7 @@ let userServices = require('../services/user-services'),
 // Models
 let User = require("../models/user");
 
-let router = express.Router({
-    mergeParams: true
-});
+let router = express.Router({ mergeParams: true });
 
 // New User Page
 router.get('/new', function(req, res) {

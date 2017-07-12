@@ -43,7 +43,7 @@ function getPromiseToParseForm(req) {
     });
 }
         
-filesystemServices.saveUploadedFile = async function saveUploadedFile(username, foundSub, req, res) {
+filesystemServices.saveAddedFile = async function saveAddedFile(username, foundSub, req, res) {
     try { 
         let files = await getPromiseToParseForm(req),
             file = files['doc'][0],

@@ -29,6 +29,11 @@
     "text": " removed you from the group: ",
     "more": true
   },
+  "group-delete": {
+    "color-code": "danger",
+    "text": " deleted the group: ",
+    "more": true
+  },
   "pay": {
     "color-code": "success",
     "text": " paid an amount of: ",

@@ -41,7 +41,7 @@ router.delete('/:addId', authServices.confirmUserCredentials, async function(req
 router.post('/', authServices.confirmUserCredentials, async function(req, res) {
     let username = req.params.username,
         foundSub = await dbopsServices.findOneEntryAndPopulate(Submission, { '_id': req.params.id }, ['user'], req, res),
-        fileMetadata = await filesystemServices.saveUploadedFile(username, foundSub, req, res),
+        fileMetadata = await filesystemServices.saveAddedFile(username, foundSub, req, res),
         newAddModelData = new Add({file: fileMetadata.filenameNoExt, author: req.user.username, ext:fileMetadata.ext, submission: foundSub}),
         newAdd = await dbopsServices.createEntryAndSave(Add, newAddModelData, req, res);
         
