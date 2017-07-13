@@ -10,14 +10,14 @@
     
     
 <div class = 'col-lg-4 col-lg-offset-4'>
-        <form action='/index/<%=user.username%>/submit' method='POST' enctype='multipart/form-data'>
+        <form action='/index/<%=client.username%>/submit' method='POST' enctype='multipart/form-data'>
         <div class='row'>
             <div class='col-lg-5'>
                     <label for="Select-folder">Save in Existing Folder: </label>
                     <select class="form-control" id="chosenFolder" name="chosenFolder" placeholder="Browse Existing Folders">
                     <option disabled selected value>  </option>
                       <% var seen_folders = []; %>
-                      <% user.submissions.forEach(function(sub){ %>
+                      <% client.submissions.forEach(function(sub){ %>
                         <% if (seen_folders.indexOf(sub['folder']) == -1) { %>
                               <option><%=sub['folder']%></option>
                               <% seen_folders.push(sub['folder']); %>

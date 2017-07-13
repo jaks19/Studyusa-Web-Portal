@@ -28,7 +28,8 @@ router.get('/new', function(req, res) {
 router.post('/', async function(req, res) {
     var newUserObject = new User({ name: req.body.name, username: req.body.username });
     User.register(newUserObject, req.body.password, function(){return});
-    await filesystemServices.createUserFolder(req.body.username, req, res);
+    let userFolderPath = path.resolve(".") + '/uploads/' + req.body.username;
+    await filesystemServices.createFolder(userFolderPath, req, res);
     res.redirect('/login');
 });
 
@@ -53,7 +54,7 @@ router.get('/:username', authServices.confirmUserCredentials, async function(req
     let username = req.params.username;
     let userData = await userServices.getUserData(username, req, res);
     res.render('show', {
-            user: userData.populatedUser,
+            user: req.user,
             client: userData.populatedUser,
             notifs: userData.allNotifs,
             unseenNotifs: userData.unseenNotifs,
