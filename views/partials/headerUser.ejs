@@ -49,16 +49,16 @@
           <% if (!user.admin){ %>
         <li id='dashboard' ><a href='/index/<%=client.username%>' id='dashboardtxt' style='color: #FFFFFF;'>Dashboard</a></li>
         <li><a href='/index/<%=client.username%>/notifs' style='color: #FFFFFF;'>Notifications</a></li>
-        <li id='pay'><a href='/index/<%=user.username%>/pay' id='paytxt' style='color: #FFFFFF;'>Payment</a></li>
+        <li id='pay'><a href='/index/<%=client.username%>/pay' id='paytxt' style='color: #FFFFFF;'>Payment</a></li>
         <li id='messages' class="dropdown">
           <a href="#" id='messagestxt' class="dropdown-toggle" style='color: #FFFFFF;' data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
             Messages             
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu" style='padding:0px;'>
-            <li id='personal' style='background: #0084b4;'><a href='/index/<%=user.username%>/messages/personal' align='center'  style='color: #FFFFFF;' id='personaltxt'>Personal</a></li>
+            <li id='personal' style='background: #0084b4;'><a href='/index/<%=client.username%>/messages/personal' align='center'  style='color: #FFFFFF;' id='personaltxt'>Personal</a></li>
             <% if(user.group != "noGroup"){ %>
-              <li id='group' style='background: #0084b4;'><a href='/index/<%=user.username%>/messages/group' align='center' style='color: #FFFFFF;' id='grouptxt'>Group</a></li>
+              <li id='group' style='background: #0084b4;'><a href='/index/<%=client.username%>/messages/group' align='center' style='color: #FFFFFF;' id='grouptxt'>Group</a></li>
             <% } %>
           </ul>
         </li>
