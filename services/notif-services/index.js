@@ -24,13 +24,8 @@ notifServices.getBothSeenAndUnseenNotifs = function getBothSeenAndUnseenNotifs(n
 }
 
 function assignNotif(doerAccountUserName, nameOfTheConcernedObjectChangedOrCreatedOrDeleted, eventStringInNotifJson, receivingAccountUsername, req) {
-    var notif = new Notif({
-        causerName: doerAccountUserName,
-        objectName: nameOfTheConcernedObjectChangedOrCreatedOrDeleted,
-        event: eventStringInNotifJson,
-    });
-
-    Notif.create(notif, function(err, newNotif) {
+    var notifData = new Notif({ causerName: doerAccountUserName, objectName: nameOfTheConcernedObjectChangedOrCreatedOrDeleted, event: eventStringInNotifJson });
+    Notif.create(notifData, function(err, newNotif) {
         if (err) {
             req.flash('error', 'Could not create a notification for this change!');
         }

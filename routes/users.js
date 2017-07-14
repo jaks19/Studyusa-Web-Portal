@@ -8,7 +8,6 @@ let userServices = require('../services/user-services'),
     authServices = require('../services/auth-services'),
     filesystemServices = require('../services/filesystem-services');
 
-
 // Models
 let User = require("../models/user");
 
