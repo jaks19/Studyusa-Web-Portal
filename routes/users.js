@@ -1,8 +1,5 @@
 // Packages
 let express = require("express"),
-    passport = require("passport"),
-    mkdirp = require('mkdirp'),
-    request = require('request'),
     path = require('path'),
     format = require('../notifJson');
 

@@ -1,8 +1,6 @@
 // Packages
 var express = require("express"),
     authServices = require('../services/auth-services'),
-    helpers = require('../helpers'),
-    messageServices = require('../services/message-services'), 
     notifServices = require('../services/notif-services'), 
     dbopsServices = require('../services/dbops-services');
 

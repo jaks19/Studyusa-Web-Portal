@@ -1,6 +1,7 @@
 var notifServices = {};
 
-let helpers = require('../../helpers');
+let Notif = require('../../models/notif'),
+    User = require('../../models/user');
 
 notifServices.getUnseenNotifs = function getUnseenNotifs(notifs) {
   var unseenNotifs = [];
@@ -22,12 +23,56 @@ notifServices.getBothSeenAndUnseenNotifs = function getBothSeenAndUnseenNotifs(n
   return [seenNotifs, unseenNotifs];
 }
 
+function assignNotif(doerAccountUserName, nameOfTheConcernedObjectChangedOrCreatedOrDeleted, eventStringInNotifJson, receivingAccountUsername, req) {
+    var notif = new Notif({
+        causerName: doerAccountUserName,
+        objectName: nameOfTheConcernedObjectChangedOrCreatedOrDeleted,
+        event: eventStringInNotifJson,
+    });
+
+    Notif.create(notif, function(err, newNotif) {
+        if (err) {
+            req.flash('error', 'Could not create a notification for this change!');
+        }
+        else {
+            if (receivingAccountUsername == 'admin') {
+                User.findOne({
+                    'admin': true
+                }, function(error, foundUser) {
+                    foundUser.notifs.push(newNotif);
+                    foundUser.save(function(Err) {
+                        if (Err) {
+                            req.flash('error', 'Could not create a notification for this change!');
+                        }
+                    });
+                });
+            }
+            else {
+                User.findOne({'username': receivingAccountUsername}, function(error, foundUser) {
+                    if (error) {
+                        req.flash('error', 'Could not create a notification for this change!');
+                    }
+                    else {
+                        foundUser.notifs.push(newNotif);
+                        foundUser.save(function(Err) {
+                            if (Err) {
+                                req.flash('error', 'Could not create a notification for this change!');
+                            }
+                        });
+                    }
+                });
+            }
+
+        }
+    });
+};
+
 notifServices.assignNotification = function assignNotification(doerAccountUserName, objectName, eventString, receivingAccountUsername, req) {
   if (doerAccountUserName != receivingAccountUsername) {
-    helpers.assignNotif(doerAccountUserName, objectName, eventString, receivingAccountUsername, req);
+    assignNotif(doerAccountUserName, objectName, eventString, receivingAccountUsername, req);
   } else {
     // only user to user, no admin to admin
-    helpers.assignNotif(doerAccountUserName, objectName, eventString, 'admin', req);
+    assignNotif(doerAccountUserName, objectName, eventString, 'admin', req);
   }
 }
    

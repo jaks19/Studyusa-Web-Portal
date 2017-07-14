@@ -2,10 +2,8 @@
 
 // Packages
 let express = require("express"),
-    path = require('path'),
     fs = require("fs"), // To read-from/write-to files
     authServices = require('../services/auth-services'),
-    helpers = require('../helpers'),
     filesystemServices = require('../services/filesystem-services'),
     dbopsServices = require('../services/dbops-services'),
     notifServices = require('../services/notif-services');
@@ -19,12 +17,9 @@ let router = express.Router({
 });
 
 // Download file (Get add)
-router.get('/:addId', authServices.confirmUserCredentials, function(req, res) { 
-    let add = Add.findOne({ '_id' : req.params.addId }).populate('submission').exec(
-    function(error, foundAdd){
-        if (error) { req.flash('error', 'Could not load file metadata') }
-        res.download(filesystemServices.getExistingFilePath(foundAdd, req));
-    });
+router.get('/:addId', authServices.confirmUserCredentials, async function(req, res) { 
+    let foundAdd = await dbopsServices.findOneEntryAndPopulate(Add, { '_id' : req.params.addId }, [ 'submission' ], req, res);
+    res.download(filesystemServices.getExistingFilePath(foundAdd, req));
 });
 
 // Delete File (Delete add)

@@ -3,9 +3,8 @@ var express = require("express"),
     authServices = require('../services/auth-services'),
     dbopsServices = require('../services/dbops-services'),
     groupServices = require('../services/group-services'),
-    notifServices = require('../services/notif-services'),
-    helpers = require('../helpers');
-
+    notifServices = require('../services/notif-services');
+    
 // Models
 var Group = require("../models/group"),
     User = require("../models/user");

@@ -7,8 +7,7 @@ var User = require("../models/user"),
     authServices = require('../services/auth-services'),
     dbopsServices = require('../services/dbops-services'),
     paymentServices = require('../services/payment-services'),
-    notifServices = require('../services/notif-services'),
-    helpers = require('../helpers');
+    notifServices = require('../services/notif-services');
 
 // To be Exported
 var router = express.Router({

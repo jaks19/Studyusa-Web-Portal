@@ -7,8 +7,7 @@ var express = require("express"),
 
 // Models
 var Submission = require("../models/submission"),
-    Comment = require("../models/comment"),
-    User = require("../models/user");
+    Comment = require("../models/comment");
 
 var router = express.Router({ mergeParams: true });
 
