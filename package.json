@@ -9,7 +9,7 @@
   "scripts": {
     "clean": "rm -rf build && mkdir build",
     "build-server": "babel --ignore .c9,git,data,docs,heroku,node_modules,uploads,views,.babelrc,.gitignore,mongod,package.json -d ./build . -s",
-    "copy-unbuilt": "cp -R ./views ./public ./notifJson ./package.json ./build/",
+    "copy-unbuilt": "cp -R ./views ./images ./notifJson ./package.json ./build/",
     "build": "npm run clean && npm run build-server && npm run copy-unbuilt",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./build/app.js",

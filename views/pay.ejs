@@ -5,7 +5,7 @@
     
     <nav aria-label="..." style='margin-top:-30px; margin-bottom: 30px; margin-left: 20px;'>
       <ul class="pager">
-        <li class="previous"><a href="/index/<%=user.username%>"><span aria-hidden="true">&larr;</span> Dashboard </a></li>
+        <li class="previous"><a href="/index/<%=client.username%>"><span aria-hidden="true">&larr;</span> Dashboard </a></li>
       </ul>
     </nav>
     
@@ -20,7 +20,7 @@
 <div class='row'>
 <div class = 'col-lg-6 col-lg-offset-2'>
     
-<form action = '/index/<%=user.username%>/pay' id = 'paymentForm' method = 'POST'>
+<form action = '/index/<%=client.username%>/pay' id = 'paymentForm' method = 'POST'>
     <div class="row">
     <div class="col-lg-4">
     <label for="amount">Payment Amount in USD ($) *</label>
@@ -108,7 +108,7 @@
         
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 
-<script type="text/javascript" src="/js/paymentform.js">
+<script type="text/javascript" src="/services/payment-services/frontEndStripe.js">
 </script>
 
 <script>

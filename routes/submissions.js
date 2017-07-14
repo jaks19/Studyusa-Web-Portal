@@ -16,7 +16,6 @@ let User = require("../models/user"),
     Comment = require("../models/comment"),
     Add = require("../models/add");
 
-// To be Exported
 let router = express.Router({ mergeParams: true });
 
 // New Submission - GET
