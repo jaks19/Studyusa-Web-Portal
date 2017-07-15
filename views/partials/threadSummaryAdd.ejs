@@ -22,59 +22,15 @@
         <div class='container' style='background:#0084b4;  border-radius: 25px; margin-left:-30px;color: white; width: 100%; border-bottom: solid 1px #E0F0F7; float:left;'> 
         <h5> Upload an Updated Document </h5>
         </div>
-        
+        <!-- <div id="loading" style="position: absolute; width: 100%; height: 100%; background: url('/images/loader.gif') no-repeat center center"></div> -->
         <div class='container' style='width: 90%; border-bottom: solid 1px #E0F0F7; float:left;'> 
         <br />
-            <form action='/index/<%=client.username%>/submit/<%=sub['_id']%>/adds' method='POST' enctype='multipart/form-data'>
+            <form id='submitAdd' action='/index/<%=client.username%>/submit/<%=sub['_id']%>/adds' method='POST' enctype='multipart/form-data'>
                 <input type="file" class="form-control" name='doc' id='doc' style='width:80%;' required> <br />
-                <button type="submit" class="btn btn-xs btn-info">Add</button> 
+                <button id='sendAdd' type="submit" class="btn btn-xs btn-info">Add</button> 
             </form>
         </div>
-    
     </div>
 </div>
 
-<script>
-(() => {
-  document.getElementById('doc').onchange = () => {
-    let file = document.getElementById('doc').files[0];
-    if(file == null){ return }
-    getSignedRequest(file);
-};
-})();
-    
-function getSignedRequest(file){
-  const xhr = new XMLHttpRequest();
-  xhr.open('GET', '/index/s3/getSignature/' + `?file-name=${file.name}&file-type=${file.type}`);
-  xhr.onreadystatechange = () => {
-    if(xhr.readyState === 4){
-      if(xhr.status === 200){
-        const response = JSON.parse(xhr.responseText);
-        uploadFile(file, response.signedRequest, response.url);
-      }
-      else{
-        alert('Could not get signed URL.');
-      }
-    }
-  };
-  xhr.send();
-}
-
-function uploadFile(file, signedRequest, url){
-console.log(signedRequest);
-console.log('uuuuuu', url);
-  const xhr = new XMLHttpRequest();
-  xhr.open('PUT', signedRequest);
-  xhr.onreadystatechange = () => {
-    if(xhr.readyState === 4){
-      if(xhr.status === 200){
-        console.log('uploaded!');
-      }
-      else{
-        alert('Could not upload file.');
-      }
-    }
-  };
-  xhr.send(file);
-}
-</script>
+<script type="text/javascript" src="/front-end/frontEndS3.js"></script>

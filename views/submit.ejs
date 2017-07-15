@@ -7,30 +7,33 @@
         <li class="previous"><a href='/index/<%=user.username%>'><span aria-hidden="true">&larr;</span> Dashboard</a></li>
       </ul>
     </nav>
-    
-    
+
 <div class = 'col-lg-4 col-lg-offset-4'>
-        <form action='/index/<%=client.username%>/submit' method='POST' enctype='multipart/form-data'>
+        <form id="submitAdd" action='/index/<%=client.username%>/submit' method='POST' enctype='multipart/form-data'>
         <div class='row'>
             <div class='col-lg-8'>
                     <label for="title">Submission Title</label>
-                    <input type="text" class="form-control" placeholder="Submission Title" name='title' required>
+                    <input id="whistlerSubTitle" type="text" class="form-control" placeholder="Submission Title" name='title' required>
+                    <input type='text' id='whistlerUser' value='<%=client.username%>'  style='visibility: hidden;'>
                     <br>
                     <label for="file">Upload your Document</label>
                     <input type="file" class="form-control" name='doc' id='doc' required> <br>
                     <label for="title">Message</label>
                     <textarea class="form-control" rows="5" id="comment" placeholder="Leave a comment for the person reading this document..." name='message' required></textarea>
                     <br><br> 
-                    <button type="submit" class="btn btn-primary" style='background:#6666F1;'>Submit</button><br> 
+                    <button id="sendAdd" type="submit" class="btn btn-primary" style='background:#6666F1;'>Submit</button><br> 
             </div>
         </div>
         </form>
     </div>
-        <script
+
+<script
   src="https://code.jquery.com/jquery-3.1.1.slim.js"
   integrity="sha256-5i/mQ300M779N2OVDrl16lbohwXNUdzL/R2aVUXyXWA="
   crossorigin="anonymous">
 </script>
+
+<script type="text/javascript" src="/front-end/frontEndS3.js"></script>
 
 </div>
             

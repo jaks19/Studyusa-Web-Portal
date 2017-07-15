@@ -10,6 +10,10 @@
       </ul>
     </nav>
     
+    <input type='text' id='whistlerUser' value='<%=client.username%>'  style='visibility: hidden;'>
+    <input type='text' id='whistlerSubId' value='<%=sub._id%>'  style='visibility: hidden;'>
+    <input type='text' id='whistlerSubTitle' value='<%=sub.title%>'  style='visibility: hidden;'>
+    
     <!-- First col: Thread Info -->
     <div class='col-lg-3'>
         <% include ./partials/threadSummaryAdd %>
@@ -36,9 +40,6 @@
 
 </div>
 </div>
-
-<input type='text' id='whistlerUser' value='<%=client.username%>'  style='visibility: hidden;'>
-<input type='text' id='whistlerSub' value='<%=sub._id%>'  style='visibility: hidden;'>
 
 <script>
 
