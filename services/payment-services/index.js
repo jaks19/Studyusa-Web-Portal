@@ -2,8 +2,7 @@ let paymentServices = {};
 
 // Set secret Stripe key: remember to change this your live secret key in production
 // My keys here: https://dashboard.stripe.com/account/apikeys
-let stripe = require("stripe")("sk_test_2uZMhxT39A3xJsZSKtGNC9rX");
-
+let stripe = require("stripe")(process.env.stripeSecret);
 
 function promiseToCreateStripeCharge(amount, token, purpose) {
   return new Promise(function (resolve, reject) {

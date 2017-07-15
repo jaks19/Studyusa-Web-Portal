@@ -9,7 +9,7 @@
   "scripts": {
     "clean": "rm -rf build && mkdir build",
     "build-server": "babel --ignore .c9,git,data,docs,heroku,node_modules,uploads,views,.babelrc,.gitignore,mongod,package.json -d ./build . -s",
-    "copy-unbuilt": "cp -R ./views ./images ./notifJson ./package.json ./build/",
+    "copy-unbuilt": "cp -R ./views ./images ./notifJson ./package.json ./.env ./build/",
     "build": "npm run clean && npm run build-server && npm run copy-unbuilt",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./build/app.js",
@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/jaks19/studyusa-portal#readme",
   "dependencies": {
+    "aws-sdk": "^2.85.0",
     "babel-plugin-syntax-async-functions": "^6.1.4",
     "babel-plugin-transform-regenerator": "^6.1.4",
     "babel-plugin-transform-runtime": "^6.23.0",
