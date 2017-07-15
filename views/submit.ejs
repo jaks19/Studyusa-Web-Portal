@@ -12,24 +12,6 @@
 <div class = 'col-lg-4 col-lg-offset-4'>
         <form action='/index/<%=client.username%>/submit' method='POST' enctype='multipart/form-data'>
         <div class='row'>
-            <div class='col-lg-5'>
-                    <label for="Select-folder">Save in Existing Folder: </label>
-                    <select class="form-control" id="chosenFolder" name="chosenFolder" placeholder="Browse Existing Folders">
-                    <option disabled selected value>  </option>
-                      <% var seen_folders = []; %>
-                      <% client.submissions.forEach(function(sub){ %>
-                        <% if (seen_folders.indexOf(sub['folder']) == -1) { %>
-                              <option><%=sub['folder']%></option>
-                              <% seen_folders.push(sub['folder']); %>
-                        <% } %>
-                      <% }); %>
-                    </select> <br>
-                    <label for="Select-folder" style='float: left;'> Or, Enter a new Folder Name:</label>
-                    <input type="text" style='float: left; margin-right: 10px;' class="form-control" placeholder="New Folder Name" name='newFolderName' style='padding-bottom: 20px;'>
-            </div>
-        </div>
-        <br><hr><br>
-        <div class='row'>
             <div class='col-lg-8'>
                     <label for="title">Submission Title</label>
                     <input type="text" class="form-control" placeholder="Submission Title" name='title' required>

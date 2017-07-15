@@ -26,7 +26,7 @@ router.get('/',authServices.confirmUserCredentials, async function(req, res) {
 // New Submission
 router.post('/', authServices.confirmUserCredentials, async function(req, res) { //IMPORTANT: normally you would use a post request to an index page but I already have one POST req going there for Users
     let fileMetadata = await filesystemServices.saveNewFile(req.params.username, req, res),
-        newSub = new Submission({ title: fileMetadata.title, folder: fileMetadata.foldername }),
+        newSub = new Submission({ title: fileMetadata.title }),
         newSubmission = await dbopsServices.createEntryAndSave(Submission, newSub, req, res, false),
         foundUser = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ ], req, res),
         newA = new Add({ file: fileMetadata.filenameNoExt, author: foundUser.username, ext: fileMetadata.ext, submission: newSubmission }),

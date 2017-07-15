@@ -5,7 +5,6 @@ var submissionSchema = new mongoose.Schema({
     adds: [
         {type: mongoose.Schema.Types.ObjectId, ref: "Add"}
             ],
-    folder: {type: String},
     messages: [
                 {type: mongoose.Schema.Types.ObjectId, ref: "Comment"}
             ],
