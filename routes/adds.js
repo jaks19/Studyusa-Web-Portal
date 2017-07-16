@@ -35,10 +35,10 @@ router.delete('/:addId', authServices.confirmUserCredentials, async function(req
 // New Update file to a thread
 router.post('/', authServices.confirmUserCredentials, async function(req, res) {
     let username = req.params.username,
-        foundSub = await dbopsServices.findOneEntryAndPopulate(Submission, { '_id': req.params.id }, ['user'], req, res),
-        fileMetadata = await filesystemServices.saveAddedFile(username, foundSub, req, res),
-        newAddModelData = new Add({file: fileMetadata.filenameNoExt, author: req.user.username, ext:fileMetadata.ext, submission: foundSub}),
-        newAdd = await dbopsServices.createEntryAndSave(Add, newAddModelData, req, res);
+        foundSub = await dbopsServices.findOneEntryAndPopulate(Submission, { '_id': req.params.id }, [ 'user' ], req, res),
+        fileName = await filesystemServices.getAddedFileName(req, res),
+        newAddData = new Add({file: fileName, author: req.user.username, submission: foundSub}),
+        newAdd = await dbopsServices.createEntryAndSave(Add, newAddData, req, res);
         
     foundSub.adds.push(newAdd);
     dbopsServices.savePopulatedEntry(foundSub, req, res);

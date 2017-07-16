@@ -25,21 +25,22 @@ router.get('/',authServices.confirmUserCredentials, async function(req, res) {
 
 // New Submission
 router.post('/', authServices.confirmUserCredentials, async function(req, res) { //IMPORTANT: normally you would use a post request to an index page but I already have one POST req going there for Users
-    let fileMetadata = await filesystemServices.saveNewFile(req.params.username, req, res),
-        newSub = new Submission({ title: fileMetadata.title }),
-        newSubmission = await dbopsServices.createEntryAndSave(Submission, newSub, req, res, false),
+    let fileData = await filesystemServices.getNewFileMetadata(req, res),
+        newSubData = new Submission({ title: fileData.title }),
+        newSubmission = await dbopsServices.createEntryAndSave(Submission, newSubData, req, res, false),
         foundUser = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ ], req, res),
-        newA = new Add({ file: fileMetadata.filenameNoExt, author: foundUser.username, ext: fileMetadata.ext, submission: newSubmission }),
-        newC = new Comment({ username: req.user.username, content: fileMetadata.message }),
-        newComment = await dbopsServices.createEntryAndSave(Comment, newC, req, res),
-        newAdd = await dbopsServices.createEntryAndSave(Add, newA, req, res);
+        newAddData = new Add({ file: fileData.fileName, author: foundUser.username, submission: newSubmission }),
+        newAdd = await dbopsServices.createEntryAndSave(Add, newAddData, req, res),
+        newCommentData = new Comment({ username: req.user.username, content: fileData.message }),
+        newComment = await dbopsServices.createEntryAndSave(Comment, newCommentData, req, res);
+       
     newSubmission.user = foundUser;
     newSubmission.messages.push(newComment);
     newSubmission.adds.push(newAdd);
     dbopsServices.savePopulatedEntry(newSubmission, req, res);                                         
     foundUser.submissions.push(newSubmission);
     dbopsServices.savePopulatedEntry(foundUser, req, res);         
-    notifServices.assignNotification(req.user.username, newSub.title, 'add', req.params.username, req);
+    notifServices.assignNotification(req.user.username, newSubData.title, 'add', req.params.username, req);
     res.redirect('/index/' + req.params.username);
 });
 
