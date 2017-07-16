@@ -1,0 +1,112 @@
+<% include ./partials/headerUser %>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js"></script>
+
+<div class='row'>
+  <%if (user.admin){ %>
+        <nav aria-label="..." style='margin-top:-30px; margin-bottom: 30px; margin-left: 20px;'>
+          <ul class="pager">
+            <li class="previous"><a href="/index/<%=user.username%>/groups"><span aria-hidden="true">&larr;</span> Administrator Control Panel </a></li>
+          </ul>
+        </nav>
+    <% } else {%>
+        <nav aria-label="..." style='margin-top:-30px; margin-bottom: 30px; margin-left: 20px;'>
+          <ul class="pager">
+            <li class="previous"><a href="/index/<%=user.username%>"><span aria-hidden="true">&larr;</span> Dashboard </a></li>
+          </ul>
+        </nav>
+    <% } %>
+</div>
+
+<div class='col-lg-2 col-lg-offset-1'>
+    <ul class="list-group" style='max-height:680px; overflow:auto;'>
+        <li class="list-group-item" align='center'><strong>People in Group (<%=users.length%>)</strong></li>
+      <% users.forEach(function(us){ %>
+            <li class="list-group-item">
+                <div class="media-body"  align='center'>
+                    <img class="media-object" src="http://placehold.it/80"> <br>
+                    <h4 class="media-heading"><%=us.username.slice(0,1).toUpperCase() + us.username.slice(1) %></h4>
+                </div>
+            </li>
+      <% }); %>
+    </ul>
+</div>
+
+ <div class="col-lg-6 col-lg-offset-2"  style='right: 120px; margin-top:-60px;' position: relative;>
+                
+                <!-- TWEET WRAPPER START -->
+                <div class="twt-wrapper">
+                    <div class="panel panel-info">
+                        <div class="list-group-item" align='center'><strong>Messages in this group</strong></div>
+                        <div class="panel-body">
+                            <form action='/index/<%=user.username%>/messages/group/' id='commentForm' method='POST'>
+                            <textarea class="form-control" placeholder="Enter Message here..." rows="3" name ='textareacontent' style='margin-bottom:5px;'></textarea>
+                            <button type='submit' class="btn btn-primary btn-sm pull-right" name = 'butt' style='background:#6666F1;'>Send</button>
+                            <div class="clearfix"></div>
+                            </form>
+                            <hr>
+                            
+                            <!-- Start the list of comments -->
+                            <ul class="media-list" style='max-height:450px; overflow:auto;'>
+                                
+                                <% if (messages.length == 0){ %>
+                                    <li class="media">
+                                        <div class="media-body">
+                                            <small class="text-muted">No messages exchanged yet. <br> Say Hello!</small>
+                                        </div>
+                                    </li>
+                                <% } else { %>
+                                
+                                <% messages.reverse().forEach(function(message){ %>
+                                <!-- 1 Message's elts start here -->
+                                <li class="media">
+                                    <div class="square" style='margin-left:8px; height: 60px; width: 60px; position: relative; float: left;'>
+                                        <img src="/images/funny-profile-pictures.jpg" style='max-width: 100%; max-height: 100%; border-radius:20px;' />
+                                    </div>
+                                    
+                                    <div class="media-body" style=''>
+                                        <strong style='margin-left:50px;' class="text-success"> <%=message['username']%> </strong>
+                                        <div class = 'comment' style='width: 600px; padding: 20px; padding-left: 50px; padding-top:0px; word-wrap: break-word;'>
+                                            <p>
+                                            <%= message['content'] %>
+                                            </p>
+                                            <% var d = new Date(message['date']) %>
+                                            <span class='timestring pull-left text-muted '><%= d.toISOString() %></span>
+                                        </div>
+                                        <hr />
+                                </li>
+                                <!-- 1 Message's elts end here -->
+                                <% }); %>
+                                <% } %> 
+                            </ul>
+                            <!-- End the list of comments -->
+                        </div>
+                    </div>
+                </div>
+                 <!-- TWEET WRAPPER END -->
+            </div>
+            
+
+<script>
+
+    $(document).ready(function(){
+        
+        // Taking the date from the DB and converting to local time zone and to desired format
+        var spansList = $('.comment > .timestring');
+    
+        $.each(spansList, function( i, val ) {
+              var timeDateText = $(val).text();
+              var momentObj = moment(timeDateText);
+              var timespent = momentObj.fromNow(); /// We have our String e.g. 5 seconds ago, a year ago ...
+              $(this).text(timespent);
+        });
+        
+        // Navbar Init
+        $('#messages').css("background-color", "#FFFFFF");
+        $('#messagestxt').css("color", "#0084b4");   
+        
+        $('#group').css("background-color", "#FFFFFF");
+        $('#grouptxt').css("color", "#0084b4");   
+    });
+
+</script>

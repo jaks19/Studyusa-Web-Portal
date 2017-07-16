@@ -1,0 +1,64 @@
+{
+  "name": "studyusa-portal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "clean": "rm -rf build && mkdir build",
+    "build-server": "babel --ignore .c9,git,data,docs,heroku,node_modules,uploads,views,.babelrc,.gitignore,mongod,package.json,.env -d ./build . -s",
+    "copy-unbuilt": "cp -R ./views ./images ./notifJson ./package.json ./.env ./build/",
+    "build": "npm run clean && npm run build-server && npm run copy-unbuilt",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./build/app.js",
+    "build-and-start": "npm run build && heroku local",
+    "refresh-front" : "rm -rf ./build/views ./build/frontend && cp -R ./views ./front-end ./build/ && heroku local"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaks19/studyusa-portal.git"
+  },
+  "author": "Adarsh K S Jeewajee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jaks19/studyusa-portal/issues"
+  },
+  "homepage": "https://github.com/jaks19/studyusa-portal#readme",
+  "dependencies": {
+    "aws-sdk": "^2.85.0",
+    "babel-plugin-syntax-async-functions": "^6.1.4",
+    "babel-plugin-transform-regenerator": "^6.1.4",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.1.4",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015": "^6.1.4",
+    "babel-runtime": "^6.23.0",
+    "body-parser": "^1.15.2",
+    "busboy": "^0.2.13",
+    "connect-busboy": "0.0.2",
+    "connect-flash": "^0.1.1",
+    "ejs": "^2.5.2",
+    "express": "^4.14.0",
+    "express-session": "^1.14.2",
+    "formidable": "^1.0.17",
+    "fs": "0.0.1-security",
+    "jquery": "^3.1.1",
+    "method-override": "^2.3.7",
+    "mkdirp": "^0.5.1",
+    "mongodb": "^2.2.12",
+    "mongoose": "^4.6.8",
+    "multer": "^1.2.0",
+    "multiparty": "^4.1.2",
+    "nodemailer": "^2.7.0",
+    "npm-collect": "^1.0.5",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^4.0.0",
+    "request": "^2.79.0",
+    "stripe": "^4.13.0",
+    "util": "^0.10.3",
+    "walker": "^1.0.7"
+  }
+}

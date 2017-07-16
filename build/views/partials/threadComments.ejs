@@ -1,0 +1,102 @@
+<!-- TWEET WRAPPER START -->
+            <div class="twt-wrapper">
+                <div class="panel panel-info">
+                   <div class="panel-body">
+                        <div class='container' align='center'style='background:#FFFFFF; width: 100%; border-bottom: solid 1px #eaeaea; float:left;'> 
+                            <h5> Comments </h5>
+                        </div>
+                        <form action='/index/<%=client.username%>/submit/<%=sub['_id']%>/comments/' id = 'commentForm' method = 'POST'>
+                            <textarea class="form-control" placeholder="Enter comment here..." rows="3" name ='textareacontent' style='margin-bottom:5px;'></textarea>
+                            <button type='submit' class="btn btn-info btn-xs pull-right" name = 'butt'>Post</button>
+                            <div class="clearfix"></div>
+                        </form>
+                        <hr>
+                        <!-- Start the list of comments -->
+                            <ul class="media-list" style='max-height:450px; overflow:auto;'>
+                                <% sub['messages'].reverse().forEach(function(comment){ %>
+                                    <!-- 1 Message's elts start here -->
+                                    <li class="media">
+                                        <div class="square" style='margin-left:8px; height: 40px; width: 40px; position: relative; float: left;'>
+                                            <img src="/images/funny-profile-pictures.jpg" style='max-width: 100%; max-height: 100%; border-radius:20px;' />
+                                        </div>
+                                        
+                                        <!-- Pulldown starts -->
+                                        <% if(user['username'] == comment['username'] && user.admin){ %>
+                                            <div class="dropdown pull-right" style='' >
+                                            <button class="btn btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                           &#9662;
+                                            </button>
+                                            
+                                            
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" style='position: absolute;'>
+                                               <!-- Link trigger modal -->
+                                                <li><a href='#' data-toggle="modal" data-target="#edit<%=comment['_id']%>">Edit</a></li>
+                                               <!-- END Link trigger modal -->   
+                                                     
+                                                                                                                   
+                         
+                                                <!-- START 'Delete' does not need a modal, it submits a form (maybe a confirmation box afterwards) -->    
+                                                <li>
+                                                    <a href="#" id='commentDelete' class='<%=comment['_id']%>' >Delete</a>
+                                                </li>
+                                                
+                                                <!-- END 'Delete' does not need a modal, it submits a form (maybe a confirmation box afterwards) -->    
+                                            </ul>
+                                            </div>
+                                        <!-- END Pulldown -->
+                                        
+                                        <!-- START Edit Modal-->
+                                                                <div class="modal fade bs-example-modal-lg" id="edit<%=comment['_id']%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                                                    <div class="modal-dialog modal-lg" align='center' role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                                <h5 style='color:#2563ab;' class="modal-title" id="myModalLabel">Edit Comment</h5>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <form  method='POST' action='/index/<%=client.username%>/submit/<%=sub['_id']%>/comments/<%=comment['_id']%>?_method=PUT'>
+                                                                                    <textarea class="form-control" name='newText' rows="3" style='resize:none'><%=comment['content']%></textarea> <br>
+                                                                                    <button type="submit" class='btn btn-xs btn-success'>OK <span class='glyphicon glyphicon-ok'></span></button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                        <!-- END Edit Modal --> 
+                                        <% } %>
+                                            
+                                        <div class="media-body">
+                                            <strong style='margin-left:50px;' class="text-success"> <%=comment['username']%> </strong> 
+                                            <div class = 'comment' style='width: 350px; p padding: 20px; padding-left: 50px; padding-top:0px; word-wrap: break-word;'>
+                                                <p>
+                                                <%= comment['content'] %></p>
+                                                <% var d = new Date(comment['date']) %>
+                                            <span class='timestring text-muted '><%= d.toISOString() %></span>
+                                            </div><br />
+                                            <hr />
+                                        </div>
+                                    </li>
+                                <!-- 1 Message's elts end here -->
+                                <% }); %>
+                            </ul>
+                            
+        <!-- End the list of comments -->
+                    </div>
+                </div>
+            </div>
+        <!-- TWEET WRAPPER END -->
+        
+<script>
+$('a').click(function(e){
+    console.log(e);
+    if (!e.target.className || !(e.target.id == 'commentDelete')){ return }
+    e.preventDefault();
+    var commentId = e.target.className;
+    var username = $('#whistlerClient').val();
+    var subId = $('#whistlerSubId').val();
+    $('body').append(`<form method='POST' id='formToDeleteComment' action='/index/${username}/submit/${subId}/comments/${commentId}/?_method=DELETE' style='visibility: hidden;'>`);
+    let toBeRemoved = document.getElementById("formToDeleteComment");
+    toBeRemoved.submit();
+    toBeRemoved.parentNode.removeChild(toBeRemoved);
+});
+</script>
