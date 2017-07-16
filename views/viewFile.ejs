@@ -42,26 +42,6 @@
 </div>
 
 <script>
-
-   
-        $('.hook').click(function(e){
-            var target = e['target'];
-            var commentId = target.id;
-            
-            var username = $('#whistlerUser').val();
-            var subId = $('#whistlerSub').val();
-
-            e.preventDefault();
-            var newForm = $('<form>', 
-                {
-                    'action': '/index/' + username + '/submit/' + subId + '/comments/' + commentId + '?_method=DELETE',
-                    'method': 'POST'
-                });
-            newForm.submit();
-        });
-        
-        
-        
         // Taking the date from the DB and converting to local time zone and to desired format
         var spansList = $('.comment > .timestring');
     
@@ -72,11 +52,8 @@
               $(this).text(timespent);
         });
         
-        
-        
         // Navbar Init
         $('#dashboard').css("background-color", "#FFFFFF");
         $('#dashboardtxt').css("color", "#0084b4");                 
-
 </script>
 

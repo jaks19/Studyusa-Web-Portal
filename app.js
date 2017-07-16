@@ -57,7 +57,7 @@ app.use(authRoutes),
 app.use('/index', userRoutes);
 app.use('/index/:username/submit/:id/comments', commentsRoutes);
 app.use('/index/:username/submit/:id/adds', addsRoutes);
-app.use('/index/:username/submit/:subTitle/s3', amazons3Routes);
+app.use('/index/:username/submit/:id/s3/:subTitle', amazons3Routes);
 app.use('/index/:username/submit', submissionRoutes);
 app.use('/index/:username/pay', paymentRoutes),
 app.use('/index/:username/messages', messageRoutes),

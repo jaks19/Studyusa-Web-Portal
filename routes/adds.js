@@ -26,10 +26,10 @@ router.get('/:addId', authServices.confirmUserCredentials, async function(req, r
 router.delete('/:addId', authServices.confirmUserCredentials, async function(req, res) { 
     let username = req.params.username,
         foundAdd = await dbopsServices.findOneEntryAndPopulate(Add, { '_id': req.params.addId }, ['submission'], req, res),
-        filePath = filesystemServices.getExistingFilePath(foundAdd, req);
-    fs.unlinkSync(filePath);
+        foundSub = foundAdd.submission,
+        fileName = foundAdd.file;
     await dbopsServices.findEntryByIdAndRemove(Add, foundAdd._id, req, res);
-    res.redirect('/index/' + username + '/submit/' + req.params.id);
+    res.redirect('/index/' + username + '/submit/' + foundSub._id + '/s3/' + foundSub.title + '/delete/' + fileName);
 });
 
 // New Update file to a thread

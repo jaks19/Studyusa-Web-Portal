@@ -5,13 +5,6 @@ let mkdirp = require('mkdirp'),
     fs = require("fs"), // To read-from/write-to files
     multiparty = require("multiparty"); // To get file object upon selection from pc for upload
 
-filesystemServices.getExistingFilePath = function getExistingFilePath(foundAdd, req) {
-    let username = req.params.username;
-    let filename = foundAdd.file;
-    let ext = foundAdd.ext;
-    return path.resolve(".")+'/uploads/' + username + '/' + filename + ext;
-}
-
 function getPromiseToParseForm(req) {
     // form.parse needs a callback so we make this wrapper to give back a promise instead
     return new Promise(function (resolve, reject) {

@@ -39,7 +39,7 @@
                                     
                                     
                                     <div class="modal-body" align='center'>
-                                        <button id='downloadAdd' value="<%=add['file']%>" class="btn btn-xs btn-info" style='padding:5px;'>Download <span class='glyphicon glyphicon-download'></span></a>
+                                        <button id='downloadAdd' value="<%=add['file']%>" class="btn btn-xs btn-info" style='padding:5px;'>Download <span class='glyphicon glyphicon-download'></span></button>
                                         
                                         <% if(user['username'] == add['author'] && user['admin']){ %>
                                             <form method='POST' action='/index/<%=client.username%>/submit/<%=sub['_id']%>/adds/<%=add['_id']%>?_method=DELETE' style='display:inline;'>
