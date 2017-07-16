@@ -21,11 +21,9 @@ router.get('/new', function(req, res) {
 });
 
 // New User Signup
-router.post('/', async function(req, res) {
+router.post('/', function(req, res) {
     var newUserObject = new User({ name: req.body.name, username: req.body.username });
     User.register(newUserObject, req.body.password, function(){return});
-    let userFolderPath = path.resolve(".") + '/uploads/' + req.body.username;
-    await filesystemServices.createFolder(userFolderPath, req, res);
     res.redirect('/login');
 });
 

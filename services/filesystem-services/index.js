@@ -5,14 +5,6 @@ let mkdirp = require('mkdirp'),
     fs = require("fs"), // To read-from/write-to files
     multiparty = require("multiparty"); // To get file object upon selection from pc for upload
 
-filesystemServices.createFolder = async function createFolder(path, req, res) {
-    try { return await mkdirp(path) } 
-    catch (err) { 
-      req.flash('error', 'Could not create a personal uploads folder!');
-      res.redirect('back');
-    } 
-}
-
 filesystemServices.getExistingFilePath = function getExistingFilePath(foundAdd, req) {
     let username = req.params.username;
     let filename = foundAdd.file;
