@@ -38,5 +38,6 @@ router.put('/:commentId/', authServices.confirmUserCredentials, async function(r
 // Delete Comment
 router.delete('/:commentId/', authServices.confirmUserCredentials, async function(req, res) {
     await dbopsServices.findEntryByIdAndRemove(Comment, req.params.commentId, req, res);
+    res.redirect('back');
 });
 module.exports = router;

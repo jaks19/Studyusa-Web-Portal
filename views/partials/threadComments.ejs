@@ -37,7 +37,7 @@
                          
                                                 <!-- START 'Delete' does not need a modal, it submits a form (maybe a confirmation box afterwards) -->    
                                                 <li>
-                                                    <a href="#" class ='hook' name='<%=user['username']%>' id='<%=comment['_id']%>' >Delete</a>
+                                                    <a href="#" id='commentDelete' class='<%=comment['_id']%>' >Delete</a>
                                                 </li>
                                                 
                                                 <!-- END 'Delete' does not need a modal, it submits a form (maybe a confirmation box afterwards) -->    
@@ -85,3 +85,18 @@
                 </div>
             </div>
         <!-- TWEET WRAPPER END -->
+        
+<script>
+$('a').click(function(e){
+    console.log(e);
+    if (!e.target.className || !(e.target.id == 'commentDelete')){ return }
+    e.preventDefault();
+    var commentId = e.target.className;
+    var username = $('#whistlerClient').val();
+    var subId = $('#whistlerSubId').val();
+    $('body').append(`<form method='POST' id='formToDeleteComment' action='/index/${username}/submit/${subId}/comments/${commentId}/?_method=DELETE' style='visibility: hidden;'>`);
+    let toBeRemoved = document.getElementById("formToDeleteComment");
+    toBeRemoved.submit();
+    toBeRemoved.parentNode.removeChild(toBeRemoved);
+});
+</script>
