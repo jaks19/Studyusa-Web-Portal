@@ -14,7 +14,8 @@
             <div class='col-lg-8'>
                     <label for="title">Submission Title</label>
                     <input id="whistlerSubTitle" type="text" class="form-control" placeholder="Submission Title" name='title' required>
-                    <input type='text' id='whistlerUser' value='<%=client.username%>'  style='visibility: hidden;'>
+                    <input type='text' id='whistlerClient' value='<%=client.username%>'  style='visibility: hidden;'>
+                    <input type='text' id='whistlerSubId' value='tobecreated'  style='visibility: hidden;'>
                     <br>
                     <label for="file">Upload your Document</label>
                     <input type="file" class="form-control" name='doc' id='doc' required> <br>

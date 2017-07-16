@@ -15,9 +15,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended : true})); // To parse the body of a request
 app.use(methodOverride('_method'));
 app.use(express.static(__dirname));
-mongoose.connect('mongodb://localhost/studyusa-portal'); // Initialize and maintain our db
-
-//mongoose.connect('mongodb://jaks19:royalmari2013@ds161950.mlab.com:61950/studyusa'); // Initialize and maintain our db
+mongoose.connect(process.env.dbUrl); 
 
 // Passport Config (For Authentication)
 app.use(require("express-session")({ 
