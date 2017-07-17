@@ -35,12 +35,14 @@ invitationServices.getSortedInvitations = function getSortedInvitations(invitati
     return [ active, expired ];
 }
 
-invitationServices.isValid = async function isValid(req, res){
+invitationServices.isValid = async function isValid(req, res, garbageCollect=true){
     var invitation = await dbopsServices.findOneEntryAndPopulate(Invitation, { code: req.body.code }, [ ], req, res);
     if (!invitation) { return false }
     let thisDate = new Date(invitation.validUntil),
         today = new Date(Date.now());
     if (thisDate < today){ return false }
+    
+    if(garbageCollect) { dbopsServices.findEntryByIdAndRemove(Invitation, invitation._id, req, res) }
     return true;
 }
     

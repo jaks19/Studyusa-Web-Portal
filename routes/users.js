@@ -23,7 +23,7 @@ router.get('/new', function(req, res) {
 
 // New User Signup
 router.post('/', async function(req, res) {
-    let tokenValidity = await invitationServices.isValid(req, res);
+    let tokenValidity = await invitationServices.isValid(req, res, true);
     if (!tokenValidity) {
         req.flash('error', 'The token you entered is either invalid or expired. Please contact your counselor for a new one.')
         res.redirect('back');
