@@ -6,6 +6,7 @@ let express = require("express"),
 // Services
 let userServices = require('../services/user-services'),
     authServices = require('../services/auth-services'),
+    invitationServices = require('../services/invitation-services'),
     filesystemServices = require('../services/filesystem-services');
 
 // Models
@@ -21,7 +22,13 @@ router.get('/new', function(req, res) {
 });
 
 // New User Signup
-router.post('/', function(req, res) {
+router.post('/', async function(req, res) {
+    let tokenValidity = await invitationServices.isValid(req, res);
+    if (!tokenValidity) {
+        req.flash('error', 'The token you entered is either invalid or expired. Please contact your counselor for a new one.')
+        res.redirect('back');
+        return;
+    }
     var newUserObject = new User({ name: req.body.name, username: req.body.username });
     User.register(newUserObject, req.body.password, function(){return});
     res.redirect('/login');

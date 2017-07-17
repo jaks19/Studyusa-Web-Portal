@@ -37,7 +37,7 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
     let username = req.params.username,
         foundSub = await dbopsServices.findOneEntryAndPopulate(Submission, { '_id': req.params.id }, [ 'user' ], req, res),
         fileName = await filesystemServices.getAddedFileName(req, res),
-        newAddData = new Add({file: fileName, author: req.user.username, submission: foundSub}),
+        newAddData = new Add({ file: fileName, author: req.user.username, submission: foundSub }),
         newAdd = await dbopsServices.createEntryAndSave(Add, newAddData, req, res);
         
     foundSub.adds.push(newAdd);

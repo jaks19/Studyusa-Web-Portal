@@ -6,5 +6,11 @@ authServices.confirmUserCredentials = function confirmUserCredentials(req, res, 
     req.flash('error', 'You do not have the required permissions to view this page');
     res.redirect('/login');
 }
+
+authServices.isAdmin = function isAdmin(req, res, next) {
+    if (req.isAuthenticated() && req.user.admin){ return next() }
+    req.flash('error', 'You do not have the required permissions to view this page');
+    res.redirect('/login');
+}
     
 module.exports = authServices;

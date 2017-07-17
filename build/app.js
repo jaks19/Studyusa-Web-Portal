@@ -16,9 +16,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true })); // To parse the body of a request
 app.use(methodOverride('_method'));
 app.use(express.static(__dirname));
-mongoose.connect(process.env.dbUrl); // Initialize and maintain our db
-
-//mongoose.connect('mongodb://jaks19:royalmari2013@ds161950.mlab.com:61950/studyusa'); // Initialize and maintain our db
+mongoose.connect(process.env.dbUrl);
 
 // Passport Config (For Authentication)
 app.use(require("express-session")({
@@ -51,7 +49,8 @@ var authRoutes = require('./routes/auth'),
     messageRoutes = require('./routes/messages'),
     groupRoutes = require('./routes/groups'),
     notifRoutes = require('./routes/notifs'),
-    amazons3Routes = require('./routes/amazons3');
+    amazons3Routes = require('./routes/amazons3'),
+    invitationRoutes = require('./routes/invitations');
 
 app.use(authRoutes), app.use('/index', userRoutes);
 app.use('/index/:username/submit/:id/comments', commentsRoutes);
@@ -59,6 +58,7 @@ app.use('/index/:username/submit/:id/adds', addsRoutes);
 app.use('/index/:username/submit/:id/s3/:subTitle', amazons3Routes);
 app.use('/index/:username/submit', submissionRoutes);
 app.use('/index/:username/pay', paymentRoutes), app.use('/index/:username/messages', messageRoutes), app.use('/index/:username/groups', groupRoutes), app.use('/index/:username/notifs', notifRoutes);
+app.use('/index/:username/invitations', invitationRoutes);
 
 // Wandering Routes
 app.get('/*', function (req, res) {

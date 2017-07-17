@@ -49,7 +49,8 @@ var
     messageRoutes       = require('./routes/messages'),
     groupRoutes         = require('./routes/groups'),
     notifRoutes         = require('./routes/notifs'),
-    amazons3Routes      = require('./routes/amazons3');
+    amazons3Routes      = require('./routes/amazons3'),
+    invitationRoutes    = require('./routes/invitations');
 
 app.use(authRoutes),
 app.use('/index', userRoutes);
@@ -61,6 +62,7 @@ app.use('/index/:username/pay', paymentRoutes),
 app.use('/index/:username/messages', messageRoutes),
 app.use('/index/:username/groups', groupRoutes),
 app.use('/index/:username/notifs', notifRoutes);
+app.use('/index/:username/invitations', invitationRoutes);
 
 // Wandering Routes
 app.get('/*', function(req, res){

@@ -3,3 +3,4 @@ data
 heroku
 node_modules
 .env
+build
