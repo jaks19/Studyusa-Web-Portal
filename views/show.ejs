@@ -38,17 +38,15 @@
   <% } %>  
 </div>
 <script>
-        
+    var spansList = $('.comment > .timestring');
+  
+  $.each(spansList, function( i, val ) {
+        var timeDateText = $(val).text();
+        var momentObj = moment(timeDateText);
+        var timespent = momentObj.fromNow();
+        $(this).text(timespent);
+  });
     $(document).ready(function(){
-         // Taking the date from the DB and converting to local time zone and to desired format
-        var spansList = $('.comment > .timestring');
-    
-        $.each(spansList, function( i, val ) {
-              var timeDateText = $(val).text();
-              var momentObj = moment(timeDateText);
-              var timespent = momentObj.fromNow(); /// We have our String e.g. 5 seconds ago, a year ago ...
-              $(this).text(timespent);
-        });
         $('#greet').modal('show');
     });
 </script>

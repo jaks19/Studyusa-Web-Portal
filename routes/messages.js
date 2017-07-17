@@ -14,14 +14,14 @@ var router = express.Router({ mergeParams: true });
 // Show Personal Messages
 router.get('/personal/', authServices.confirmUserCredentials, async function(req, res) {
     let client = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ 'messages' ], req, res);
-    res.render('personalMessages', { user: client, loggedIn: true, client: client });
+    res.render('personalMessages', { user: req.user, messages: client.messages, loggedIn: true, client: client });
 });
 
 // Show Group Messages
 router.get('/group/', authServices.confirmUserCredentials, async function(req, res) {
     let foundClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], req, res),
         foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { 'name': foundClient.group }, [ 'messages', 'users' ], req, res);
-    res.render('groupMessages', { messages: foundGroup['messages'], loggedIn: true, user: foundClient, users: foundGroup.users, client: foundClient });
+    res.render('groupMessages', { messages: foundGroup['messages'], loggedIn: true, user: req.user, users: foundGroup.users, client: foundClient });
 });
 
 // New Personal Message

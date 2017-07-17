@@ -2,7 +2,7 @@
     <div class='col-xs-8 col-xs-offset-2 col-md-4 col-md-offset-0'>        
         <nav aria-label="..." style='margin-top:-10%; margin-bottom:3%;'>
           <ul class="pager">
-            <li class="previous"><a href="/index/<%=user.username%>"><span aria-hidden="true">&larr;<%if (user.admin){ %></span> Administrator Control Panel </a></li><% } else {%></span> Back to Dashboard </a></li><% } %>
+            <li class="previous"><a href="/index/<%=user.username%>"><span aria-hidden="true">&larr;</span> <%if (user.admin){ %>Administrator Control Panel </a></li><% } else {%> Back to Dashboard </a></li><% } %>
           </ul>
         </nav>
     </div>

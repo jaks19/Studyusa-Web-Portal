@@ -3,72 +3,49 @@
 <% include ./partials/backToDashboard %>
 
 <div class='row'>
-<div class="col-lg-6 col-lg-offset-3 col-xs-10 col-xs-offset-1" style=''>
-    <div class="twt-wrapper">
-        <div class="panel panel-info">
-            <div class="list-group-item" align='center'><strong>Messages between <%=user.username.slice(0,1).toUpperCase() + user.username.slice(1)%> and Anjanita</strong></div>
-            <div class="panel-body">
-                
-                <form action='/index/<%=user.username%>/messages/personal/' id='commentForm' method='POST'>
-                    <textarea class="form-control" placeholder="Enter Message here..." rows="3" name ='textareacontent' style='margin-bottom:1%;'></textarea>
-                    <button type='submit' class="btn btn-primary btn-sm pull-right" name = 'butt' style='background:#6666F1;'>Send</button>
-                    <div class="clearfix"></div>
-                </form>
-                <hr>
-                
-                <ul class="media-list" style='max-height:70%; overflow:auto;'>
-                    <% if (user['messages'].length == 0){ %>
-                        <li class="media">
-                            <div class="media-body">
-                                <small class="text-muted">No messages exchanged yet. <br> Say Hello!</small>
-                            </div>
-                        </li>
-                    <% } %>
+    <div class="col-md-6 col-md-offset-3 col-xs-10 col-xs-offset-1">
+        <div class="twt-wrapper">
+            <div class="panel panel-info">
+                <div class="list-group-item" align='center'><strong>Messages between <%=client.username.slice(0,1).toUpperCase() + client.username.slice(1)%> and Anjanita</strong></div>
+                <div class="panel-body">
                     
-                    <% user['messages'].reverse().forEach(function(message){ %>
-                        <% var d = new Date(message['date']); %>
-                        <li class='media'>
-                            <div class="square" style='margin-left:4%; height:10%; width: 10%; float: left;'>
-                                <img src="/images/funny-profile-pictures.jpg" style='max-width: 100%; max-height: 100%; border-radius:5%;' />
-                            </div>
-                            
-                            <div class="media-body" style='float:left; width: 80%;'>
-                                <strong style='margin-left:5%;' class="text-success"> <%=message['username']%> </strong>
-                                <div class = 'comment' style='word-wrap: break-word; margin-left: 5%;'>
-                                    <p> <%= message['content'] %> </p>
-                                    <% var d = new Date(message['date']) %>
-                                    <span class='timestring text-muted '><%= d.toISOString() %></span>
-                                </div>
-                            </div>
-                        </li>
-                        <hr />
-                    <% }); %>
-                </ul>
+                    <form action='/index/<%=client.username%>/messages/personal/' id='commentForm' method='POST'>
+                        <textarea class="form-control" placeholder="Enter Message here..." rows="3" name ='textareacontent' style='margin-bottom:1%;'></textarea>
+                        <button type='submit' class="btn btn-primary btn-sm pull-right" name = 'butt' style='background:#6666F1;'>Send</button>
+                        <div class="clearfix"></div>
+                    </form>
+                    <hr>
+                    
+                    <ul class="media-list" style='max-height:70%; overflow:auto;'>
+                        <% if (messages.length == 0){ %>
+                            <% include ./partials/noMessageBlock %>
+                        <% } else { %>
+                            <% messages.reverse().forEach(function(message){ %>
+                                <% include ./partials/displayMessage %>
+                            <% }); %>
+                        <% } %>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-        
 <script>
-
+    // Taking the date from the DB and converting to local time zone and to desired format
+    var spansList = $('.comment > .timestring');
     
-        
-        // Taking the date from the DB and converting to local time zone and to desired format
-        var spansList = $('.comment > .timestring');
+    $.each(spansList, function( i, val ) {
+          var timeDateText = $(val).text();
+          var momentObj = moment(timeDateText);
+          var timespent = momentObj.fromNow(); /// We have our String e.g. 5 seconds ago, a year ago ...
+          $(this).text(timespent);
+    });
     
-        $.each(spansList, function( i, val ) {
-              var timeDateText = $(val).text();
-              var momentObj = moment(timeDateText);
-              var timespent = momentObj.fromNow(); /// We have our String e.g. 5 seconds ago, a year ago ...
-              $(this).text(timespent);
-        });
-        
-         // Navbar Init
-        $('#messages').css("background-color", "#FFFFFF");
-        $('#messagestxt').css("color", "#0084b4");    
-        
-        $('#personal').css("background-color", "#FFFFFF");
-        $('#personaltxt').css("color", "#0084b4");   
-
+     // Navbar Init
+    $('#messages').css("background-color", "#FFFFFF");
+    $('#messagestxt').css("color", "#0084b4");    
+    
+    $('#personal').css("background-color", "#FFFFFF");
+    $('#personaltxt').css("color", "#0084b4");   
 </script>
