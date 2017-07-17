@@ -6,7 +6,7 @@
     
     <nav aria-label="..." style='margin-top:-30px; margin-bottom: 30px; margin-left: 20px;'>
       <ul class="pager">
-        <li class="previous"><a href='/index/<%=user.username%>'><span aria-hidden="true">&larr;</span> Dashboard</a></li>
+        <li class="previous"><a href='/index/<%=client.username%>'><span aria-hidden="true">&larr;</span> Dashboard Main Menu </a></li>
       </ul>
     </nav>
     
@@ -16,7 +16,7 @@
     <input type='text' id='whistlerSubTitle' value='<%=sub.title%>'  style='visibility: hidden;'>
     
     <!-- First col: Thread Info -->
-    <div class='col-lg-3'>
+    <div class='col-lg-3 col-md-3 col-sm-3 col-xsm-3'>
         <% include ./partials/threadSummaryAdd %>
     </div>
     <!-- END First col: Thread Info -->
@@ -24,7 +24,7 @@
     
     
     <!-- Second col: File History -->
-    <div class='col-lg-3' align='center' style='margin-left:50px; width:25%;'>
+    <div class='col-lg-3 col-md-3 col-sm-3 col-xsm-3' align='center' style='margin-left:50px; width:25%;'>
         <% include ./partials/threadList %>
     </div>
     <!-- End Second col: File History -->    
@@ -33,7 +33,7 @@
 
 
     <!-- Third col: Comments -->        
-    <div class="col-lg-3" style='margin-left: 75px; width:30%;'>
+    <div class="col-3 col-3 col-sm-3 col-xsm-3" style='margin-left: 75px; width:30%;'>
         <% include ./partials/threadComments %>
     </div>
     <!-- End Third col: Comments -->  

@@ -14,7 +14,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./build/app.js",
     "build-and-start": "npm run build && heroku local",
-    "refresh-front" : "rm -rf ./build/views ./build/frontend && cp -R ./views ./front-end ./build/ && heroku local"
+    "refresh-front-and-start" : "rm -rf ./build/views ./build/frontend && cp -R ./views ./front-end ./build/ && heroku local",
+    "refresh-front" : "rm -rf ./build/views ./build/frontend && cp -R ./views ./front-end ./build/"
   },
   "repository": {
     "type": "git",
