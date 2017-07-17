@@ -13,7 +13,7 @@ let User = require("../models/user"),
 
 let router = express.Router({ mergeParams: true });
 
-// New Submission
+// New Submission View
 router.get('/',authServices.confirmUserCredentials, async function(req, res) {
     let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ 'submissions' ], req, res);
     res.render('submit', {
@@ -23,7 +23,7 @@ router.get('/',authServices.confirmUserCredentials, async function(req, res) {
     });
 });
 
-// New Submission
+// Create New Submission
 router.post('/', authServices.confirmUserCredentials, async function(req, res) { //IMPORTANT: normally you would use a post request to an index page but I already have one POST req going there for Users
     let fileData = await filesystemServices.getNewFileMetadata(req, res),
         newSubData = new Submission({ title: fileData.title }),
