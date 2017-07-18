@@ -1,85 +1,63 @@
 <% include ./partials/headerUser %>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js"></script>
-
 <div class='row'>
-    <div class='col-lg-4 col-lg-offset-4' align='centre'>
-          <div class = 'jumbotron' align='center' style='padding: 10px; background:#ffffff; border: solid 0.5px; border-radius: 10px; color: #0084b4; margin-bottom: -15px; margin-top:-30px;'>
-              <h4>
-                   All Notifications<br /><br />
-                   <small>Click on an active notification to archive it or click on an old notification to bring it back to life!</small>
-              </h4>
+    <div class='col-xs-4 col-xs-offset-4'>
+          <div class ='jumbotron' align='center' style='padding: 5%; background:#ffffff; border: solid 0.5px; border-radius: 3%; color: #0084b4;'>
+              <h4>All Notifications</h4>
+              <small>Click on an active notification to archive it or click on an old notification to bring it back to life!</small>
           </div>
     </div>
 </div>
 
 <div class='row'>
     
-    <div class='col-lg-6 square' style='border: 0.5px #d5d5d5 solid; padding: 10px; border-radius:10px; width:600px; height: 550px; margin: 50px; margin-left: 110px; margin-right: 0px;'>
-                
-                <div class="square" style='' align='center'>
-                    <br />
-                    <p>Active Notifications<hr /></p>
-                </div>
-
-                <% if (unseenNotifs.length == 0){ %>
-                    <div class="square" style='' align='center'>
-                        <hr />
-                        <span class='text-muted'>0 Notifications to Show. You can chill buddy!</span>
-                    </div>
-                <% } else { %>
-                    <div style='max-height:450px; max-width: 100%; overflow-y: auto; overflow-x: hidden;'>
-                        <% unseenNotifs.forEach(function(notif){ %>
-                            <% var formatObject = format[notif['event']]; %>
-                            <a href='/index/<%=user.username%>/notifs/<%=notif['_id']%>/toggle' style='text-decoration: none;'>
-                                <div align='center' class="comment alert alert-<%=formatObject['color-code']%>" style='margin-left: -10px; margin-right: -10px; margin-bottom: 25px; word-wrap: break-word;' align='center'>
-                                    <span><strong><%=notif['causerName'].slice(0,1).toUpperCase() + notif['causerName'].slice(1)%></strong></span>
-                                    <span><%=formatObject['text']%></span>
-                                    <%if (formatObject['more']){%></span><br><strong><%=notif['objectName']%></strong><% } %><br>
-                                    <% var d = new Date(notif['date']) %> 
-                                    <span class='timestring text-muted '><%= d.toISOString() %></span>
-                                </div>
-                            </a>
-                        <% }); %>
-                    </div>
-                <% } %>
-            
+    <div class='col-xs-5 col-xs-offset-1 square' style='margin-top: 3%; margin-right:1%;' align='center'>
+        <h4>Active Notifications<hr /></h4>
+        <% if (unseenNotifs.length == 0){ %>
+            <span class='text-muted'>0 Notifications to Show. You can chill buddy!</span>
+        <% } else { %>
+            <div class='notifbox' style='max-height:88%; max-width: 80%; overflow-x: hidden;'>
+                <% unseenNotifs.forEach(function(notif){ %>
+                    <% var formatObject = format[notif['event']]; %>
+                    <a href='/index/<%=user.username%>/notifs/<%=notif['_id']%>/toggle' style='text-decoration: none;'>
+                        <div class="comment alert alert-<%=formatObject['color-code']%>" style='word-wrap: break-word;' align='center'>
+                            <strong><%=notif['causerName'].slice(0,1).toUpperCase() + notif['causerName'].slice(1)%></strong>
+                            <span><%=formatObject['text']%></span>
+                            <%if (formatObject['more']){%><br><strong><%=notif['objectName']%></strong><% } %><br>
+                            <% var d = new Date(notif['date']) %> 
+                            <span class='timestring text-muted '><%= d.toISOString() %></span>
+                        </div>
+                    </a>
+                <% }); %>
+            </div>
+        <% } %>
+    </div>
+    
+    <div class='col-xs-5 square' style='margin-left: 1%; margin-top: 3%;' align='center'>
+        <h4>Old Notifications<hr /></h4>
+        <% if (seenNotifs.length == 0){ %>
+            <span class='text-muted'>0 Past Notifications to Show</span>
+        <% } else { %>
+            <div class='notifbox' style='max-height:88%; max-width: 80%; overflow-x: hidden;'>
+                <% seenNotifs.forEach(function(notif){ %>
+                    <% var formatObject = format[notif['event']]; %>
+                    <a href='/index/<%=user.username%>/notifs/<%=notif['_id']%>/toggle' style='text-decoration: none;'>
+                        <div align='center' class="comment alert" style='word-wrap: break-word; border:solid 0.5px;' align='center'>
+                            <strong><%=notif['causerName'].slice(0,1).toUpperCase() + notif['causerName'].slice(1)%></strong>
+                            <span><%=formatObject['text']%></span>
+                            <%if (formatObject['more']){%><br><strong><%=notif['objectName']%></strong><% } %><br>
+                            <% var d = new Date(notif['date']) %> 
+                            <span class='timestring text-muted '><%= d.toISOString() %></span>
+                        </div>
+                    </a>
+                <% }); %>
+            </div>
+        <% } %>
     </div>
 
-    <div class='col-lg-6 square' style='border: 0.5px #d5d5d5 solid; padding: 10px; border-radius:10px; width:600px; height: 550px; margin: 50px;'>
-                
-                <div class="square" style='' align='center'>
-                    <br />
-                    <p>Old Notifications<hr /></p>
-                </div>
-
-                <% if (seenNotifs.length == 0){ %>
-                    <div class="square" style='' align='center'>
-                        <hr />
-                        <span class='text-muted'>0 Past Notifications to Show.</span>
-                    </div>
-                <% } else { %>
-                    <div style='max-height:450px; max-width: 100%; overflow-y: auto; overflow-x: hidden;'>
-                        <% seenNotifs.forEach(function(notif){ %>
-                            <% var formatObject = format[notif['event']]; %>
-                            <a href='/index/<%=user.username%>/notifs/<%=notif['_id']%>/toggle' style='text-decoration: none;'>
-                                <div align='center' class="comment alert" style='width: 530px; margin-left: 10px; margin-right: -90px; margin-bottom: 10px; word-wrap: break-word; border: solid 0.5px;' align='center'>
-                                    <span><strong><%=notif['causerName'].slice(0,1).toUpperCase() + notif['causerName'].slice(1)%></strong></span>
-                                    <span><%=formatObject['text']%></span>
-                                    <%if (formatObject['more']){%></span><br><strong><%=notif['objectName']%></strong><% } %><br>
-                                    <% var d = new Date(notif['date']) %> 
-                                    <span class='timestring text-muted '><%= d.toISOString() %></span>
-                                </div>
-                            </a>
-                        <% }); %>
-                    </div>
-                <% } %>
-            
-    </div>
 </div>
 
 <script>
-        
     $(document).ready(function(){
          // Taking the date from the DB and converting to local time zone and to desired format
         var spansList = $('.comment > .timestring');
@@ -91,5 +69,8 @@
               $(this).text(timespent);
         });
         $('#greet').modal('show');
+        
+        $(".notifbox").mouseover(function(){$(this).css("overflow-y","auto");});
+        $(".notifbox").mouseout(function(){$(this).css("overflow-y","hidden");});
     });
 </script>
