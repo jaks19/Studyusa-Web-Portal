@@ -1,0 +1,21 @@
+<div class="col-md-4" style='float: left; padding: 5%;'>
+    <div class="well well-sm" style='background:#c0deed; width:100%;'>
+        <div class="square" style='margin-left:4%; max-height:20%; max-width: 20%; float: left;'>
+            <img class="media-object" style='padding-right: 10%; max-width:100%; max-height:100%;' src="/images/funny-profile-pictures.jpg">
+        </div>
+        <div class="media-body">
+            <h4 class="media-heading"><%=thisUser.name.slice(0,1).toUpperCase() + thisUser.name.slice(1) %>
+                <form class='pull-right' action='/index/<%=thisUser.username%>/?_method=DELETE' method='POST'> 
+                    <button type='submit' style='background: none; border: none;'><span class="btn-xs btn-danger glyphicon glyphicon-warning-sign"></span></a>
+                </form>
+            </h4>
+            <p>
+                <span class="label label-info"><%=thisUser.notifs.length%> Notifications </span> 
+            <p>
+                <a style='z-index:100;' href="/index/<%=thisUser.username%>" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-eye-open"></span> View</a>
+                <a style='z-index:100;' href='/index/<%=thisUser.username%>/messages/personal' class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-comment"></span> Message</a>
+                <a style='z-index:100;' href="/index/<%=thisUser.username%>/groups/remove" class="btn btn-xs btn-danger"><span class="	glyphicon glyphicon-minus"></span> Remove </a>
+            </p>
+        </div>
+    </div>
+</div>

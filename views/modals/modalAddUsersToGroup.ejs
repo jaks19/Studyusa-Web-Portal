@@ -1,0 +1,33 @@
+<div class="modal fade bs-example-modal-lg" id="<%=group._id%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"></button>
+                <h4 class="modal-title">Adding Members to '<%=group.name%>'</h4>
+            </div>
+            
+            <div class="modal-body">
+                <form action='/index/<%=user.username%>/groups/<%=group._id%>?_method=PUT' method='POST'>
+                    <label>These people have not been grouped yet. Who do you want to add to the existing group: '<%=group.name%>'</label><br /><br />
+                    <div class='container' style='max-height: 40%; overflow: auto;' align='center'>
+                      <% freeUsers.forEach(function(theUser){ %>
+                           <div style='padding: 2%;'>
+                                <div class='row'>
+                                    <div class='col-xs-2'>
+                                        <input type="checkbox" value="<%=theUser._id%>" style='margin-top:10%;' name="chk" />
+                                    </div>
+                                    <div class='col-xs-10' align='left'>
+                                        <h4 style='width: 40%;'><%=theUser.name.slice(0,1).toUpperCase() + theUser.name.slice(1) %></h4>
+                                    </div>
+                                </div>    
+                            </div>
+                        <% }); %>
+                    </div>
+                    <button type='submit' class="btn btn-success" style='border:0'> Confirm <span class="glyphicon glyphicon-plus-sign"></span></button>
+                </form>
+            </div>
+        
+        </div>
+    </div>
+</div> 

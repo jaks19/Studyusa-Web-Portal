@@ -1,0 +1,12 @@
+<% var pov; %>
+<% mode=='groups' ? pov=groups : pov=users %>
+<% mode=='groups' ? text='Groups' : text='Users' %>
+<div class = 'jumbotron' align='center' style=' background:#ffffff; border: solid 0.5px #0084b4; border-radius: 10px; color: #0084b4;'>
+    <h4> Showing All (<%=pov.length%>) <%=text%> <br /></h4>
+    <% if (mode=='groups') { %>
+      <div class='col-lg-12' align='center'>
+          <a href='#' class="btn btn-warning" data-toggle="modal" data-target="#creationmodal" style='border:0' id='newGroup'> Create Group <span class="glyphicon glyphicon-plus-sign"></span></a>
+       </div>
+       <% include ../modals/modalCreateGroup %>
+     <% } %>
+</div>
