@@ -18,15 +18,9 @@
 
 <% include ./whistlers/whistlerSub %>
 
+<% include ../front-end/timestampToElapsed %>
+
 <script>
-var spansList = $('.comment > .timestring');
-  
-  $.each(spansList, function( i, val ) {
-        var timeDateText = $(val).text();
-        var momentObj = moment(timeDateText);
-        var timespent = momentObj.fromNow();
-        $(this).text(timespent);
-  });
         // Navbar Init
         $('#dashboard').css("background-color", "#FFFFFF");
         $('#dashboardtxt').css("color", "#0084b4");                 

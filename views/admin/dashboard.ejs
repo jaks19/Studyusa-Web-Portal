@@ -1,19 +1,12 @@
 <% include ../partials/headerUser %>
 
-<div class='row' style='margin-top:20px;'>
-    <div class='col-lg-2' align='RIGHT'>  
-      <nav aria-label="...">
+<div class='row'>
+    <div class='col-lg-2'>  
           <ul class="pager">
-            <li class='disabled'><a href="#">View by Users</a></li>
-            <hr />
+            <li class='disabled'><a href="#">View by Users</a></li><hr />
             <li class="active"><a href='/index/<%=user.username%>/groups/' style='background: #0084b4; color: white;'>View by Groups</a></li>
           </ul>
-      </nav>
     </div> 
-    
-    <% if (typeof variable !== 'undefined') { %> <a href='#'>www</a> <% } %>
-    
-    
     
     <div class='col-lg-4 col-lg-offset-2' align='centre'>
           <div class = 'jumbotron' align='center' style=' background:#ffffff; border: solid 0.5px #0084b4; border-radius: 10px; color: #0084b4; margin-bottom: 30px;'>
@@ -70,22 +63,7 @@
      </div>            
 <% } %>
 
-<script>
-        
-    $(document).ready(function(){
-        // Taking the date from the DB and converting to local time zone and to desired format
-        var spansList = $('.comment > .timestring');
-    
-        $.each(spansList, function( i, val ) {
-              var timeDateText = $(val).text();
-              var momentObj = moment(timeDateText);
-              var timespent = momentObj.fromNow(); /// We have our String e.g. 5 seconds ago, a year ago ...
-              $(this).text(timespent);
-        });
-        
-        $('#greet').modal('show');
-    });
-</script>
+<% include ../../front-end/timestampToElapsed %>
 
 <!--<a href='/index/:username/invitations/'>see invitations</a>-->
 

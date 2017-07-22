@@ -45,16 +45,9 @@
     </div>
 </div>    
 
-<script>
-var spansList = $('.comment > .timestring');
-  
-$.each(spansList, function( i, val ) {
-    var timeDateText = $(val).text();
-    var momentObj = moment(timeDateText);
-    var timespent = momentObj.fromNow();
-    $(this).text(timespent);
-});
+<% include ../front-end/timestampToElapsed %>
 
+<script>
 $(document).ready(function(){
     // Navbar Init
     $('#messages').css("background-color", "#FFFFFF");
