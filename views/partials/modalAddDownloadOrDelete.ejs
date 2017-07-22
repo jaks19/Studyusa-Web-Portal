@@ -1,0 +1,32 @@
+<div class="modal fade bs-example-modal-sm" id="<%=add['_id']%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h5 style='color:#2563ab;' class="modal-title" id="myModalLabel">File: <%=add['file']%></h5>
+          </div>
+          <div class="modal-body">
+              <ul class="media-list">
+                  <li class="media">
+                      <h5>Author: <%= add['author'] %></h5>
+                      <h5>File Type: <%=add['ext']%> </h5>
+                  </li>
+              </ul>
+          </div>
+          
+          
+          <div class="modal-body" align='center'>
+              <button id='downloadAdd' value="<%=add['file']%>" class="btn btn-xs btn-info" style='padding:5px;'>Download <span class='glyphicon glyphicon-download'></span></button>
+              
+              <% if(user['username'] == add['author'] && user['admin']){ %>
+                  <form method='POST' action='/index/<%=client.username%>/submit/<%=sub['_id']%>/adds/<%=add['_id']%>?_method=DELETE' style='display:inline;'>
+                      <button type="submit" class='btn btn-xs btn-danger' style='padding:5px;'>Delete <span class='glyphicon glyphicon-trash'></span></button>     
+                  </form>
+              <% } %>
+          </div>
+          
+          
+          
+      </div>
+  </div>
+</div>             
