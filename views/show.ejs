@@ -30,17 +30,15 @@
     </div>
     
     <% if (firstContact){ %>
-    <!-- Greeting & Notifications Modal START -->
-    <div class="modal fade bs-example-modal-lg" id="greet" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog modal-lg" role="document">
-          <div class="modal-content">
-              <div class="modal-body">
-                <% include ./partials/notifsWelcome %>
-              </div>
-          </div>
-      </div>
-  </div>            
-    <!-- Greeting & Notifications Modal END -->
+      <div class="modal fade bs-example-modal-lg" id="greet" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                  <% include ./partials/notifsWelcome %>
+                </div>
+            </div>
+        </div>
+    </div>            
   <% } %>  
 </div>
 <script>

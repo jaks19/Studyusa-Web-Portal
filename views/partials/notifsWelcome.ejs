@@ -1,54 +1,20 @@
-<div class='row'>
-    <div class='col-lg-6 col-lg-offset-2'>
-        <div class='row'>
-        
-            <div class='col-lg-12 square' style='border: 0.5px #d5d5d5 solid; padding: 10px; border-radius:10px; width:600px; max-height: 660px;'>
-                <div class="square" style='' align='center'>
-                    <h2>Welcome back, <%=user.name.slice(0,1).toUpperCase() + user.name.slice(1)%>!</h1>
-                    <br />
-                </div>
-                
-                <div class="square" style='' align='center'>
-                    <br />
-                    <p>What happened in your absence:<hr /></p>
-                </div>
+<div class='row' align='center'>
+    <div class='col-xs-10 col-xs-offset-1 square' style='border: 0.5px #d5d5d5 solid; border-radius:10px; height: 80%;'>
+        <h2>Welcome back, <%=user.name.slice(0,1).toUpperCase() + user.name.slice(1)%>!</h2><br />
+        <p>What happened in your absence:<hr /></p>
 
-                <% if (unseenNotifs.length == 0){ %>
-                    <div class="square" style='' align='center'>
-                        <hr />
-                        <span class='text-muted'>0 Notifications to Show. You can chill buddy!</span>
-                    </div>
-                <% } else { %>
-                    <div style='max-height:350px; max-width: 100%; overflow-y: auto; overflow-x: hidden;'>
-                        <% unseenNotifs.forEach(function(notif){ %>
-                                <% var formatObject = format[notif['event']]; %>
-                                <a href='/index/<%=user.username%>/notifs/<%=notif['_id']%>/toggle' style='text-decoration: none;'>
-                                    <div  align='center' class="comment alert alert-<%=formatObject['color-code']%>" style='margin-left: -10px; margin-right: -10px; margin-bottom: 25px;' align='center'>
-                                        <span><strong><%=notif['causerName'].slice(0,1).toUpperCase() + notif['causerName'].slice(1)%></strong></span>
-                                        <span><%=formatObject['text']%></span>
-                                        <%if (formatObject['more']){%></span><br><strong><%=notif['objectName']%></strong><% } %><br>
-                                        <% var d = new Date(notif['date']) %> 
-                                        <span class='timestring text-muted '><%= d.toISOString() %></span>
-                                    </div>
-                                </a>
-                        <% }); %>
-                    </div>
-                <% } %>
+        <% if (unseenNotifs.length == 0){ %> <span class='text-muted'>0 Notifications to Show. You can chill buddy!</span> 
+        <% } else { %>
+            <div style='overflow-y: auto; max-height:75%;'>
+                <% unseenNotifs.forEach(function(notif){ %>
+                    <% active=true %>
+                    <% include ../endviews/displayNotif %>
+                <% }); %>
             </div>
-        </div>
+        <% } %>
         
-        <br />
-        
-        <div class='row'>
-            <div class='col-lg-12 square' style='border: 0.5px #d5d5d5 solid; padding: 10px; border-radius:10px; width:600px; max-height: 660px;'>
-                <div class="square" style='' align='center'>
-                    <p class='text-muted'> Tips: </p>
-                    <p class='text-muted'>- You can clear any notification by clicking on it</p>
-                    <p class='text-muted'>- Let notifications stay active if you have unfinished work related to them, to remind you of your to-dos!</p>
-                </div>
-            </div>
-        </div>
+        <p class='text-muted'> <br /> Tips: <br /> - You can clear any notification by clicking on it <br /> - Let notifications stay active if you have unfinished work related to them, to remind you of your to-dos! </p>
     </div>
-    
 </div>
-</div>
+
+

@@ -16,18 +16,10 @@
         <% if (unseenNotifs.length == 0){ %>
             <span class='text-muted'>0 Notifications to Show. You can chill buddy!</span>
         <% } else { %>
-            <div class='notifbox' style='max-height:88%; max-width: 80%; overflow-x: hidden;'>
+            <div style='max-height:88%; max-width: 80%; overflow-x: hidden;'>
+                <% active = true %>
                 <% unseenNotifs.forEach(function(notif){ %>
-                    <% var formatObject = format[notif['event']]; %>
-                    <a href='/index/<%=user.username%>/notifs/<%=notif['_id']%>/toggle' style='text-decoration: none;'>
-                        <div class="comment alert alert-<%=formatObject['color-code']%>" align='center'>
-                            <strong><%=notif['causerName'].slice(0,1).toUpperCase() + notif['causerName'].slice(1)%></strong>
-                            <span><%=formatObject['text']%></span>
-                            <%if (formatObject['more']){%><br><strong><%=notif['objectName']%></strong><% } %><br>
-                            <% var d = new Date(notif['date']) %> 
-                            <span class='timestring text-muted '><%= d.toISOString() %></span>
-                        </div>
-                    </a>
+                    <% include ./endviews/displayNotif %>
                 <% }); %>
             </div>
         <% } %>
@@ -38,18 +30,10 @@
         <% if (seenNotifs.length == 0){ %>
             <span class='text-muted'>0 Past Notifications to Show</span>
         <% } else { %>
-            <div class='notifbox' style='max-height:88%; max-width: 80%; overflow-x: hidden;'>
+            <div style='max-height:88%; max-width: 80%; overflow-x: hidden;'>
+                <% active = false %>
                 <% seenNotifs.forEach(function(notif){ %>
-                    <% var formatObject = format[notif['event']]; %>
-                    <a href='/index/<%=user.username%>/notifs/<%=notif['_id']%>/toggle' style='text-decoration: none;'>
-                        <div align='center' class="comment alert" style='border:solid 0.5px;' align='center'>
-                            <strong><%=notif['causerName'].slice(0,1).toUpperCase() + notif['causerName'].slice(1)%></strong>
-                            <span><%=formatObject['text']%></span>
-                            <%if (formatObject['more']){%><br><strong><%=notif['objectName']%></strong><% } %><br>
-                            <% var d = new Date(notif['date']) %> 
-                            <span class='timestring text-muted '><%= d.toISOString() %></span>
-                        </div>
-                    </a>
+                    <% include ./endviews/displayNotif %>
                 <% }); %>
             </div>
         <% } %>

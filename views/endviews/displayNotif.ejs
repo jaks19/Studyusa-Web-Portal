@@ -1,0 +1,10 @@
+<% var formatObject = format[notif['event']]; %>
+<a href='/index/<%=user.username%>/notifs/<%=notif['_id']%>/toggle' style='text-decoration: none;'>
+    <div class="comment alert <% if(active){ %> alert-<%=formatObject['color-code']%>" <% } else { %>" style="border:solid 0.5px;"<% } %>
+        <strong><%=notif['causerName'].slice(0,1).toUpperCase() + notif['causerName'].slice(1)%></strong>
+        <span><%=formatObject['text']%></span>
+        <%if (formatObject['more']){%><br><strong><%=notif['objectName']%></strong><% } %><br>
+        <% var d = new Date(notif['date']) %> 
+        <span class='timestring text-muted '><%= d.toISOString() %></span>
+    </div>
+</a>
