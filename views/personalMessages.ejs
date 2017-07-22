@@ -18,10 +18,10 @@
                     
                     <ul class="media-list" style='max-height:70%; overflow:auto;'>
                         <% if (messages.length == 0){ %>
-                            <% include ./partials/noMessageBlock %>
+                            <% include ./repeats/noMessageBlock %>
                         <% } else { %>
                             <% messages.reverse().forEach(function(message){ %>
-                                <% include ./partials/displayMessage %>
+                                <% include ./repeats/displayMessage %>
                             <% }); %>
                         <% } %>
                     </ul>

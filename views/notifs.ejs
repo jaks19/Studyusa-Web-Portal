@@ -19,7 +19,7 @@
             <div style='max-height:88%; max-width: 80%; overflow-x: hidden;'>
                 <% active = true %>
                 <% unseenNotifs.forEach(function(notif){ %>
-                    <% include ./endviews/displayNotif %>
+                    <% include ./repeats/displayNotif %>
                 <% }); %>
             </div>
         <% } %>
@@ -33,7 +33,7 @@
             <div style='max-height:88%; max-width: 80%; overflow-x: hidden;'>
                 <% active = false %>
                 <% seenNotifs.forEach(function(notif){ %>
-                    <% include ./endviews/displayNotif %>
+                    <% include ./repeats/displayNotif %>
                 <% }); %>
             </div>
         <% } %>
