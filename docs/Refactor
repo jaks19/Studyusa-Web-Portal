@@ -32,6 +32,5 @@ groupMessages DONE
 personalMessages DONE
 show DONE
 viewFile DONE
-admin/dashboard
-admin/groups
-admin/newGroup
+admin/dashboard DONE
+admin/groups DONE
