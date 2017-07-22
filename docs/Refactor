@@ -17,6 +17,8 @@ HTML:
 - Every element should open its own row and column
 - Col-xs makes size apply for sm,md,lg too. Say xs to md good with 12 but too big in lg for instance then specify an xs and a lg
   (Same with offsets)
+- For responsiveness, usually if say 2 boxes side by side, in md will be each say 4 col with 1 col space total, in xs you would 
+  make each box be say 11px so they go one on top of the other on a cell phone screen
 - Use least nestedness i.e. some can be cleverly eliminated after observation
 - Only percentages, no pixels
 
@@ -24,8 +26,8 @@ submit DONE
 index DONE
 new DONE
 notifs DONE
-pay
+pay DONE
 groupMessages DONE
 personalMessages DONE
-show
-viewFile
+show DONE
+viewFile DONE

@@ -6,7 +6,7 @@
     
     <div class="media-body" style='float:left; width: 80%;'>
         <strong style='margin-left:5%;' class="text-success"> <%=message['username']%> </strong>
-        <div class = 'comment' style='word-wrap: break-word; margin-left: 5%;'>
+        <div class = 'comment' style='margin-left: 5%;'>
             <p> <%= message['content'] %> </p>
             <% var d = new Date(message['date']) %>
             <span class='timestring text-muted '><%= d.toISOString() %></span>

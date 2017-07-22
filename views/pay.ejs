@@ -1,118 +1,118 @@
 <% include ./partials/headerUser %>
 
+<% include ./partials/backToDashboard %>
 
 <div class='row'>
-    
-    <nav aria-label="..." style='margin-top:-30px; margin-bottom: 30px; margin-left: 20px;'>
-      <ul class="pager">
-        <li class="previous"><a href="/index/<%=client.username%>"><span aria-hidden="true">&larr;</span> Dashboard </a></li>
-      </ul>
-    </nav>
-    
     <div class='container' style='width: 60%;'>
       <div class="alert alert-danger hidden" align='center' id='errorMsg' role="alert">
-        <h5 align='center'><%= error%></h5>
+        <h5 align='center'><%= error %></h5>
       </div>  
     </div>
 </div>
 
 
 <div class='row'>
-<div class = 'col-lg-6 col-lg-offset-2'>
+  <div class = 'col-lg-6 col-lg-offset-2 col-xs-10 col-xs-offset-1'>
+    <form action = '/index/<%=client.username%>/pay' id = 'paymentForm' method = 'POST'>
+  
+      <div class="row">
+        <div class="col-xs-4">
+          <label for="amount">Payment Amount in USD ($) *</label>
+          <input type="number" class="form-control" name = 'amount' id = 'amount' placeholder = '0.00' required> <br>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-xs-8">
+          <label for="title">Name on Card *</label>
+          <input type="text" class="form-control" name = 'name' id = 'name' placeholder = 'E.g. Smith Paul Ryan' size='2' required> <br>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-xs-8">
+          <label for="cardNumber">Card Number *</label>
+          <input type="text" class="form-control" id = 'cardNumber' placeholder = 'XXXX-XXXX-XXXX-XXXX' data-stripe="number" required> <br>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-xs-2">
+          <label for="cvc">CVC Code *</label>
+          <input type="text" class="form-control" id = 'cvc' placeholder = 'E.g. 111' required> <br>
+        </div>
+        <div class="col-xs-3">
+          <label for="mm">Expiry (mm)* </label>
+          <input type="text" class="form-control" id = 'month' placeholder = 'E.g. 08' required> <br>
+        </div>
+        <div class="col-xs-3">
+          <label for="year">Expiry Year (yyyy) *</label>
+          <input type="text" class="form-control" id = 'year' placeholder = 'E.g. 2020' required> <br>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-xs-12">
+          <hr>
+          <div class="row">
+            <div class="col-xs-8">
+              <label for="StreetAddress1">Street Address Line 1 *</label>
+              <input type="text" class="form-control" name = 'street' id = 'street' placeholder = 'E.g. 17 John Kennedy Rd' required> <br>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-8">
+              <label for="StreetAddress2">Street Address Line 2</label>
+              <input type="text" class="form-control" name = 'apt' id = 'apt' placeholder = 'E.g. Apt #543' required> <br>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-xs-4">
+              <label for="city">City *</label>
+                <input type="text" class="form-control" name = 'city' id = 'city' placeholder = 'E.g. Los Angeles'  required> <br>
+            </div>
+            <div class="col-xs-4">
+                <label for="state">State or District</label>
+                <input type="text" class="form-control" name = 'state' id = 'state' placeholder = 'E.g. MA'> <br>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-xs-4">
+              <label for="city">Zip Code</label>
+              <input type="text" class="form-control" name = 'zip' id = 'zip' placeholder = 'E.g. 12345'> <br>
+            </div>
+            <div class="col-xs-4">
+                <label for="country">Country *</label>
+                <input type="text" class="form-control" name = 'country' id = 'country' placeholder = 'E.g. USA'  required> <br>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <hr>
+      <div class="row">
+        <div class="col-xs-8">
+          <label for="title">Purpose of Payment: *</label>
+          <textarea class="form-control" rows="3" name = 'purpose' id = 'purpose' placeholder = 'Leave a comment explaining the purpose of this payment...'  required></textarea><br><br>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-info" id='butt'>Pay</button>
     
-<form action = '/index/<%=client.username%>/pay' id = 'paymentForm' method = 'POST'>
-    <div class="row">
-    <div class="col-lg-4">
-    <label for="amount">Payment Amount in USD ($) *</label>
-    <input type="number" class="form-control" name = 'amount' id = 'amount' placeholder = '0.00' required> <br>
+    </form>
   </div>
+  
+  <div class='col-xs-4 hidden-xs' style='margin-top:5%;'>
+  <% include ./partials/paymentHistory %>
   </div>
-  <div class="row">
-    <div class="col-lg-8">
-    <label for="title">Name on Card *</label>
-    <input type="text" class="form-control" name = 'name' id = 'name' placeholder = 'E.g. Smith Paul Ryan' size='2' required> <br>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-8">
-    <label for="cardNumber">Card Number *</label>
-    <input type="text" class="form-control" id = 'cardNumber' placeholder = 'XXXX-XXXX-XXXX-XXXX' data-stripe="number" required> <br>
-  </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-12 col-lg-2">
-        <label for="cvc">CVC Code *</label>
-        <input type="text" class="form-control" id = 'cvc' placeholder = 'E.g. 111' required> <br>
-    </div>
-    <div class="col-xs-12 col-lg-3">
-        <label for="mm">Expiry (mm)* </label>
-        <input type="text" class="form-control" id = 'month' placeholder = 'E.g. 08' required> <br>
-    </div>
-    <div class="col-xs-12 col-lg-3">
-        <label for="year">Expiry Year (yyyy) *</label>
-        <input type="text" class="form-control" id = 'year' placeholder = 'E.g. 2020' required> <br>
-    </div>
-    </div>
-  <div class="row">
-    <div class="col-xs-12">
-    <hr>
-    <div class="row">
-        <div class="col-lg-8">
-    <label for="StreetAddress1">Street Address Line 1 *</label>
-    <input type="text" class="form-control" name = 'street' id = 'street' placeholder = 'E.g. 17 John Kennedy Rd' required> <br>
-    </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-8">
-    <label for="StreetAddress2">Street Address Line 2</label>
-    <input type="text" class="form-control" name = 'apt' id = 'apt' placeholder = 'E.g. Apt #543' required> <br>
-    </div>
-    </div>
-    <div class="row">
-    <div class="col-xs-12 col-lg-4">
-        <label for="city">City *</label>
-        <input type="text" class="form-control" name = 'city' id = 'city' placeholder = 'E.g. Los Angeles'  required> <br>
-    </div>
-    <div class="col-xs-12 col-lg-4">
-        <label for="state">State or District</label>
-        <input type="text" class="form-control" name = 'state' id = 'state' placeholder = 'E.g. MA'> <br>
-    </div>
-    </div>
-    <div class="row">
-    <div class="col-xs-12 col-lg-4">
-        <label for="city">Zip Code</label>
-        <input type="text" class="form-control" name = 'zip' id = 'zip' placeholder = 'E.g. 12345'> <br>
-    </div>
-    <div class="col-xs-12 col-lg-4">
-        <label for="country">Country *</label>
-        <input type="text" class="form-control" name = 'country' id = 'country' placeholder = 'E.g. USA'  required> <br>
-    </div>
-    </div>
-  </div>
-  </div>
-  <hr>
-  <div class="row">
-    <div class="col-lg-8">
-    <label for="title">Purpose of Payment: *</label>
-    <textarea class="form-control" rows="3" name = 'purpose' id = 'purpose' placeholder = 'Leave a comment explaining the purpose of this payment...'  required></textarea><br><br>
-  </div>
-  </div>
-  <button type="submit" class="btn btn-info" id='butt'>Pay</button>
-</form>
-
-</div>
-<div class='col-lg-4 '>
-<% include ./partials/paymentHistory %>
-</div>
+  
 </div>
         
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-
-<script type="text/javascript" src="/front-end/frontEndStripe.js">
-</script>
+<script type="text/javascript" src="/front-end/frontEndStripe.js"></script>
 
 <script>
-    // Navbar Init
         $('#pay').css("background-color", "#FFFFFF");
         $('#paytxt').css("color", "#0084b4"); 
 </script>

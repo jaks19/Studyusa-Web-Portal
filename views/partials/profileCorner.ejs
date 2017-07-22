@@ -1,28 +1,16 @@
-<div class='row'>
-
-    <div class='col-lg-11 square' style='border: 0.5px #d5d5d5 solid; margin: 55px; margin-top:0px; padding: 10px; border-radius:10px; width:290px; max-height: 660px; padding-bottom: 20px;'>
-        <div class="square" style='' align='center'>
-            
-            <% if (!user.admin){ %>
-                <h5>Welcome</h5><h4><%=user.name %></h4>
-            <% } else { %>
-                <h5> You are viewing the Dashboard of</h5><h4><%=client.name %></h4><h5>as Administrator</h5>
-            <% } %>
-       
-        </div>
-        
-        <div class="card" style='height: 150px; width: 150px; position: relative; left: 57px; top:30px;'>
-            <img class='card-img-top' src="/images/funny-profile-pictures.jpg" style='max-width: 100%; max-height: 100%; border-radius:5px;' />
-        </div>
-
-        <div class="square" style='' align='center'>
-            
-            <% if (!user.admin){ %>
-                <a href='' class='btn btn-xs' style='background: none; border: none;'><span class='glyphicon glyphicon-pencil' style='color:black'></span> Edit Profile</a>
-                <a href='' class='btn btn-xs' style='background: none; border: none;'><span class='glyphicon glyphicon-pencil' style='color:black'></span> Edit Intake Information</a>
-            <% } %>
-       
-        </div>
-        
+<div class='col-lg-11 square' align='center' style='border: 0.5px #d5d5d5 solid; margin: 10%; margin-top: 0%; border-radius:2%;'>
+    <% if (!user.admin){ %>
+        <h5>Welcome</h5><h4><%=user.name %></h4>
+    <% } else { %>
+        <h5> Admin View of </h5><h4><%=client.name %></h4>
+    <% } %>
+    
+    <div class="card" style='width: 60%;'>
+        <img class='card-img-top' src="/images/funny-profile-pictures.jpg" style='max-width: 100%; max-height: 100%; border-radius:1%;' />
     </div>
+
+    <% if (!user.admin){ %>
+        <a href='#' class='btn btn-xs' style='width:100%;'>Edit Profile</a>
+        <a href='#' class='btn btn-xs' style='width:100%;'>Edit Intake Information</a>
+    <% } %>
 </div>

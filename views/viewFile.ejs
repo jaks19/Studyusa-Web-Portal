@@ -1,46 +1,22 @@
 <% include ./partials/headerUser %>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js"></script>
+<% include ./partials/backToDashboardMainMenu %>
 
-<div class='row'>
-    
-    <nav aria-label="..." style='margin-top:-30px; margin-bottom: 30px; margin-left: 20px;'>
-      <ul class="pager">
-        <li class="previous"><a href='/index/<%=client.username%>'><span aria-hidden="true">&larr;</span> Dashboard Main Menu </a></li>
-      </ul>
-    </nav>
-    
-    <input type='text' id='whistlerUser' value='<%=user.username%>'  style='visibility: hidden;'>
-    <input type='text' id='whistlerClient' value='<%=client.username%>'  style='visibility: hidden;'>
-    <input type='text' id='whistlerSubId' value='<%=sub._id%>'  style='visibility: hidden;'>
-    <input type='text' id='whistlerSubTitle' value='<%=sub.title%>'  style='visibility: hidden;'>
-    
-    <!-- First col: Thread Info -->
-    <div class='col-lg-3 col-md-3 col-sm-3 col-xsm-3'>
+<div class='row'></div>
+    <div class='col-md-3 col-xs-12' style='max-width:100%; margin-bottom:10%;'>
         <% include ./partials/threadSummaryAdd %>
     </div>
-    <!-- END First col: Thread Info -->
     
-    
-    
-    <!-- Second col: File History -->
-    <div class='col-lg-3 col-md-3 col-sm-3 col-xsm-3' align='center' style='margin-left:50px; width:25%;'>
+    <div class='col-md-3 col-md-offset-1 col-xs-12' align='center' style='max-width:100%; margin-bottom:10%;'>
         <% include ./partials/threadList %>
     </div>
-    <!-- End Second col: File History -->    
 
-
-
-
-    <!-- Third col: Comments -->        
-    <div class="col-3 col-3 col-sm-3 col-xsm-3" style='margin-left: 75px; width:30%;'>
+    <div class="col-md-3 col-md-offset-1 col-xs-12" style='max-width:100%; margin-bottom:10%;'>
         <% include ./partials/threadComments %>
     </div>
-    <!-- End Third col: Comments -->  
 </div>
 
-</div>
-</div>
+<% include ./whistlers/whistlerSub %>
 
 <script>
 var spansList = $('.comment > .timestring');
@@ -55,4 +31,3 @@ var spansList = $('.comment > .timestring');
         $('#dashboard').css("background-color", "#FFFFFF");
         $('#dashboardtxt').css("color", "#0084b4");                 
 </script>
-

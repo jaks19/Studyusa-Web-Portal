@@ -1,7 +1,7 @@
 <% include ./partials/headerUser %>
 
 <div class='row'>
-    <div class='col-xs-4 col-xs-offset-4'>
+    <div class='col-md-4 col-md-offset-4 col-xs-8 col-xs-offset-2'>
           <div class ='jumbotron' align='center' style='padding: 5%; background:#ffffff; border: solid 0.5px; border-radius: 3%; color: #0084b4;'>
               <h4>All Notifications</h4>
               <small>Click on an active notification to archive it or click on an old notification to bring it back to life!</small>
@@ -11,7 +11,7 @@
 
 <div class='row'>
     
-    <div class='col-xs-5 col-xs-offset-1 square' style='margin-top: 3%; margin-right:1%;' align='center'>
+    <div class='col-md-5 col-md-offset-1 col-xs-12 square' style='margin-top: 3%; margin-right:1%;' align='center'>
         <h4>Active Notifications<hr /></h4>
         <% if (unseenNotifs.length == 0){ %>
             <span class='text-muted'>0 Notifications to Show. You can chill buddy!</span>
@@ -20,7 +20,7 @@
                 <% unseenNotifs.forEach(function(notif){ %>
                     <% var formatObject = format[notif['event']]; %>
                     <a href='/index/<%=user.username%>/notifs/<%=notif['_id']%>/toggle' style='text-decoration: none;'>
-                        <div class="comment alert alert-<%=formatObject['color-code']%>" style='word-wrap: break-word;' align='center'>
+                        <div class="comment alert alert-<%=formatObject['color-code']%>" align='center'>
                             <strong><%=notif['causerName'].slice(0,1).toUpperCase() + notif['causerName'].slice(1)%></strong>
                             <span><%=formatObject['text']%></span>
                             <%if (formatObject['more']){%><br><strong><%=notif['objectName']%></strong><% } %><br>
@@ -33,7 +33,7 @@
         <% } %>
     </div>
     
-    <div class='col-xs-5 square' style='margin-left: 1%; margin-top: 3%;' align='center'>
+    <div class='col-md-5 col-md-offset-1 col-xs-12 square' style='margin-left: 1%; margin-top: 3%;' align='center'>
         <h4>Old Notifications<hr /></h4>
         <% if (seenNotifs.length == 0){ %>
             <span class='text-muted'>0 Past Notifications to Show</span>
@@ -42,7 +42,7 @@
                 <% seenNotifs.forEach(function(notif){ %>
                     <% var formatObject = format[notif['event']]; %>
                     <a href='/index/<%=user.username%>/notifs/<%=notif['_id']%>/toggle' style='text-decoration: none;'>
-                        <div align='center' class="comment alert" style='word-wrap: break-word; border:solid 0.5px;' align='center'>
+                        <div align='center' class="comment alert" style='border:solid 0.5px;' align='center'>
                             <strong><%=notif['causerName'].slice(0,1).toUpperCase() + notif['causerName'].slice(1)%></strong>
                             <span><%=formatObject['text']%></span>
                             <%if (formatObject['more']){%><br><strong><%=notif['objectName']%></strong><% } %><br>

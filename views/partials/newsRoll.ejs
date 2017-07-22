@@ -1,45 +1,32 @@
-<div class='row'>
-
-    <div class='col-lg-10 col-lg-offset-2' style='padding: 50px; padding-top:2px;'>
-        
-            <div class="list-group-item" style='margin-bottom: 15px;' align='center'>
-            <h4 class='info'>Latest News</h4>
-            <h5>United States of America</h5>
-            </div>
+<div class="list-group-item" align='center'>
+    <h4 class='info'>Latest News</h4>
+    <h5>United States of America</h5>
+</div>
             
             
-            <div class="list-group" style='height:483px; overflow:auto; padding: 0px; '>
+<div class='' style='height:78%; overflow:auto;'>
                 
-      <% articles.forEach(function(article){ %>
-          <% if (typeof article['description'] == 'string' && typeof article['title'] == 'string'
-              && typeof article['urlToImage'] == 'string') { %>
-            <% var d = new Date(article['publishedAt']); %>
-                
-                
- 
-                <div class='card' align='center' style='border: 0.5px solid; padding: 10px;'>
-                    <h5><%=article['title']%></h5>
-                    <img src='<%=article['urlToImage']%>' class="card-img-top" style="max-width:100%;max-height:100%;"></img>
-                    <div class="card-block" align='center' style='padding:5px; padding-bottom:0px;'>
-                    <p class="card-text comment"><%=article['description'].slice(0,70) + ' ...';%>
-                    <br /><span class='timestring desc text-muted'><%= d.toISOString() %></span><br />
-                    <a href='<%=article['url']%>' target="blank" class='btn btn-xs btn-warning read' style='margin-top: 10px;'>Read <span class='glyphicon glyphicon-info-sign'></span></a>
-                    </p>
+    <% articles.forEach(function(article){ %>
+      <% if (typeof article['description'] == 'string' && typeof article['title'] == 'string'
+          && typeof article['urlToImage'] == 'string') { %>
+        <% var d = new Date(article['publishedAt']); %>
                     
-                                
-                    
-                    </div>
-                </div>
-                <hr />
-            <% } %>        
-      <% }); %>
+        <div class='card' align='center' style='border: 0.5px solid #D5D5D5; padding: 7%;'>
+            <h5><%=article['title']%></h5>
+            <img src='<%=article['urlToImage']%>' class="card-img-top" style="max-width:100%;max-height:100%;"></img>
+            <p style='margin-top: 5%;' class="card-text comment"><%=article['description'].slice(0,70) + ' ...';%>
+                <br />
+                <span class='timestring desc text-muted'><%= d.toISOString() %></span>
+                <br />
+                <a href='<%=article['url']%>' target="blank" class='btn btn-xs btn-warning read' style='margin-top: 10px;'>Read <span class='glyphicon glyphicon-info-sign'></span></a>
+            </p>
+        </div>
+        <hr />
+        <% } %>        
+    <% }); %>
       
-        </div>
+</div>
         
-        <div class="list-group-item" style='padding-top:0px;' align='center'>
-            <br>
-             <h6>Scroll for more</h6>
-        </div>
-        
-    </div>
+<div class="list-group-item" align='center'>
+     <h6>Scroll for more</h6>
 </div>
