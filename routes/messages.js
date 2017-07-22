@@ -33,7 +33,7 @@ router.post('/personal/', authServices.confirmUserCredentials, async function(re
 
     foundClient.messages.push(newMessage);
     dbopsServices.savePopulatedEntry(foundClient, req, res);
-    notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg', foundClient.username, req);
+    notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg', foundClient.username, req, res);
     res.redirect('/index/' + foundClient.username + '/messages/personal');
 });
 
@@ -47,7 +47,7 @@ router.post('/group/', authServices.confirmUserCredentials, async function(req, 
         foundGroup.messages.push(newMessage);
         dbopsServices.savePopulatedEntry(foundGroup, req, res);
         foundGroup.users.forEach(function(receiver) {
-            notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver.username, req);
+            notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver.username, req, res);
         });
         res.redirect('back');
 });

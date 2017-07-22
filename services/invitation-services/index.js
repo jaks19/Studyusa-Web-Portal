@@ -22,9 +22,11 @@ invitationServices.garbageCollectInvitations = async function garbageCollectInvi
     return;
 }
 
-invitationServices.getSortedInvitations = function getSortedInvitations(invitations){
-    let active = [],
+invitationServices.getSortedInvitations = async function getSortedInvitations(req, res){
+    let invitations = await dbopsServices.findAllEntriesAndPopulate(Invitation, { }, [ ], req, res),
+        active = [],
         expired = [];
+        
     for (var i = 0; i < invitations.length; i++) {
         let thisInvitation = invitations[i],
             thisValidDate = new Date(thisInvitation.validUntil),

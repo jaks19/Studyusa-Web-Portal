@@ -20,7 +20,7 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
         newComment =  await dbopsServices.createEntryAndSave(Comment, newC, req, res);
     foundSub.messages.push(newComment);
     dbopsServices.savePopulatedEntry(foundSub, req, res);
-    notifServices.assignNotification(req.user.username, foundSub.title, 'comment', req.params.username, req);
+    notifServices.assignNotification(req.user.username, foundSub.title, 'comment', req.params.username, req, res);
     res.redirect('/index/' + foundSub.user.username + '/submit/' + foundSub._id);
 });
 

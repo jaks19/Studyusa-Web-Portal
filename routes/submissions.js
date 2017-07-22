@@ -40,7 +40,7 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
     dbopsServices.savePopulatedEntry(newSubmission, req, res);                                         
     foundUser.submissions.push(newSubmission);
     dbopsServices.savePopulatedEntry(foundUser, req, res);         
-    notifServices.assignNotification(req.user.username, newSubData.title, 'add', req.params.username, req);
+    notifServices.assignNotification(req.user.username, newSubData.title, 'add', req.params.username, req, res);
     res.redirect('/index/' + req.params.username);
 });
 

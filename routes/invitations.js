@@ -9,14 +9,6 @@ const validDays  = 7,
       garbageCollectDays = 7,
       codeLength = 10;
 
-// View Invitations
-router.get('/', authServices.isAdmin, async function(req, res) {
-    let invitations = await dbopsServices.findAllEntriesAndPopulate(Invitation, { }, [ ], req, res),
-        [ active, expired ] = invitationServices.getSortedInvitations(invitations);
-        console.log('active', active, 'expired', expired);
-    res.redirect('back');
-});
-
 // New Invitation
 router.post('/new', authServices.isAdmin, async function(req, res) {
     let newCode = invitationServices.generateCode(codeLength),

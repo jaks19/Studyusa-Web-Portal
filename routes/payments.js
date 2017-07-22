@@ -35,7 +35,7 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
     foundUser.payments.push(newPayment);
     foundUser.balance -= req.body.amount;
     dbopsServices.savePopulatedEntry(foundUser, req, res);
-    notifServices.assignNotification(req.user.username, newPayment.purpose, 'pay', req.params.username, req);
+    notifServices.assignNotification(req.user.username, newPayment.purpose, 'pay', req.params.username, req, res);
     req.flash('success', 'Card successfully charged! Thank you!');
     res.redirect('/index/' + username + '/pay');
 });

@@ -36,8 +36,9 @@ router.post('/', async function(req, res) {
 
 // Admin Dashboard
 router.get('/admin', authServices.confirmUserCredentials, async function(req, res) {
-    let username = req.user.username;
-    let adminData = await userServices.getUserData(username, req, res);
+    let username = req.user.username,
+        adminData = await userServices.getUserData(username, req, res);
+    
     res.render('./admin/dashboard', {
             user: adminData.populatedUser,
             users: adminData.users,
@@ -45,24 +46,27 @@ router.get('/admin', authServices.confirmUserCredentials, async function(req, re
             notifs: adminData.allNotifs,
             unseenNotifs: adminData.unseenNotifs,
             format: format,
-            firstContact: adminData.firstContact,
+            activeInvitations: adminData.activeInvitations,
+            expiredInvitations: adminData.expiredInvitations,
+            context: adminData.context,
             loggedIn: true
     });
 });
 
 // User Dashboard
 router.get('/:username', authServices.confirmUserCredentials, async function(req, res) {
-    let username = req.params.username;
-    let userData = await userServices.getUserData(username, req, res);
+    let username = req.params.username,
+        userData = await userServices.getUserData(username, req, res);
+        
     res.render('show', {
             user: req.user,
             client: userData.populatedUser,
             notifs: userData.allNotifs,
             unseenNotifs: userData.unseenNotifs,
             format: format,
-            firstContact: userData.firstContact,
             subs: userData.subs,
             articles: userData.articles,
+            context: userData.context,
             loggedIn: true
     });
 });

@@ -42,7 +42,7 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
         
     foundSub.adds.push(newAdd);
     dbopsServices.savePopulatedEntry(foundSub, req, res);
-    notifServices.assignNotification(req.user.username, foundSub.title, 'add', foundSub.user.username, req);
+    notifServices.assignNotification(req.user.username, foundSub.title, 'add', foundSub.user.username, req, res);
     req.flash('success', 'file successfully uploaded for review');
     res.redirect('/index/' + username + '/submit/' + foundSub._id);
 });

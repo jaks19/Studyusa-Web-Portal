@@ -1,8 +1,6 @@
 <% include ../partials/headerUser %>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js"></script>
-
-  <div class='row' style='margin-top:20px;'>
+<div class='row' style='margin-top:20px;'>
     <div class='col-lg-2' align='RIGHT'>  
       <nav aria-label="...">
           <ul class="pager">
@@ -11,14 +9,10 @@
             <li class="active"><a href='/index/<%=user.username%>/groups/' style='background: #0084b4; color: white;'>View by Groups</a></li>
           </ul>
       </nav>
-      
     </div> 
     
-    <!--<form action='/index/:username/invitations/new/?nickname=mamad' method='POST'> -->
-    <!--        <button type='submit' style='background: none; border: none;'>new code</a>-->
-    <!--</form>-->
+    <% if (typeof variable !== 'undefined') { %> <a href='#'>www</a> <% } %>
     
-    <a href='/index/:username/invitations/'>see invitations</a>
     
     
     <div class='col-lg-4 col-lg-offset-2' align='centre'>
@@ -64,18 +58,16 @@
 </div>
 </div>
 
-<% if (firstContact){ %>
-    <!-- Greeting & Notifications Modal START -->
-        <div class="modal fade bs-example-modal-lg" id="greet" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-          <div class="modal-dialog modal-lg" role="document">
-              <div class="modal-content">
-                  <div class="modal-body">
-                    <% include ../partials/notifsWelcome %>
-                  </div>
+<% if (context=='justLoggedIn'){ %>
+    <div class="modal fade bs-example-modal-lg" id="greet" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+              <div class="modal-body">
+                <% include ../partials/notifsWelcome %>
               </div>
           </div>
-         </div>            
-    <!-- Greeting & Notifications Modal END -->
+      </div>
+     </div>            
 <% } %>
 
 <script>
@@ -95,4 +87,9 @@
     });
 </script>
 
+<!--<a href='/index/:username/invitations/'>see invitations</a>-->
 
+<!--<form action='/index/:username/invitations/new/?nickname=mamad' method='POST'> -->
+    <!--        <button type='submit' style='background: none; border: none;'>new code</a>-->
+    <!--</form>-->
+    
