@@ -20,7 +20,7 @@ userServices.getUserData = async function getUserData(username, req, res) {
     userData.unseenNotifs = notifServices.getBothSeenAndUnseenNotifs(userData.populatedUser.notifs)[1],
     userData.context = userPageContext(req);
     if (userData.populatedUser.admin){
-        userData.users = await dbOpsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res);
+        userData.users = await dbOpsServices.findAllEntriesAndPopulate(User, { }, ['payments'], req, res);
         [ userData.activeInvitations, userData.expiredInvitations ] = await invitationServices.getSortedInvitations(req, res);
     } else {
         userData.articles = await apiServices.retrieveNews(req),

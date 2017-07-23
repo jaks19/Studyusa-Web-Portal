@@ -1,6 +1,6 @@
 <div class="col-md-4" style='float: left; padding: 5%;'>
     <div class="well well-sm" style='background:#c0deed; width:100%;'>
-        <div class="square" style='margin-left:4%; max-height:20%; max-width: 20%; float: left;'>
+        <div class="square" style='margin-left:1%; max-height:20%; max-width: 20%; float: left;'>
             <img class="media-object" style='padding-right: 10%; max-width:100%; max-height:100%;' src="/images/funny-profile-pictures.jpg">
         </div>
         <div class="media-body">
@@ -9,13 +9,14 @@
                     <button type='submit' style='background: none; border: none;'><span class="btn-xs btn-danger glyphicon glyphicon-warning-sign"></span></a>
                 </form>
             </h4>
-            <p>
-                <span class="label label-info"><%=thisUser.notifs.length%> Notifications </span> 
-            <p>
-                <a href="/index/<%=thisUser.username%>" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-eye-open"></span> View </a>
-                <a href='/index/<%=thisUser.username%>/messages/personal' class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-comment"></span> Message </a>
-                <% if (mode!=='users') { %><a href="/index/<%=thisUser.username%>/groups/remove" class="btn btn-xs btn-danger"><span class="	glyphicon glyphicon-minus"></span> Remove </a><% } %>
-            </p>
+            <p><span class="label label-info"><%=thisUser.notifs.length%> Notifications </span></p>
+            <a href="/index/<%=thisUser.username%>" class="btn btn-xs btn-success"><span class="glyphicon glyphicon-eye-open"></span> View </a>
+            <a href='/index/<%=thisUser.username%>/messages/personal' class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-comment"></span> Message </a>
+            <% if (mode!=='users') { %><a href="/index/<%=thisUser.username%>/groups/remove" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-minus"></span> Remove </a>
+            <% } else { %>
+                <% include ../modals/modalPaymentHistory %>   
+                <a href='#' class="btn btn-xs btn-danger" data-toggle="modal" data-target="#paymentHistoryModal<%=thisUser.username%>"><span class="glyphicon glyphicon-euro"></span> Payments </a>
+            <% } %>
         </div>
     </div>
 </div>

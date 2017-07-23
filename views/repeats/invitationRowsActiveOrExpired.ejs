@@ -21,8 +21,9 @@
         <div class='col-xs-4'>
             <h5><%=inv.nickname%></h5>
         </div>
+        <% var d = new Date(inv.validUntil); %>
         <div class='col-xs-4'>
-            <h5 class='validUntil'><%=inv.validUntil%></h5>
+            <h5 class='validUntil'><%= d.getMonth() %>/<%= d.getDate() %>/<%= d.getFullYear() %></h5>
         </div>
     </div>
 <% }) %>

@@ -30,16 +30,3 @@
         </div>
     </div>
 </div>             
-
-<script>
-    $(document).ready(function(){
-        var date = $('.validUntil');
-    
-        $.each(date, function( i, thisDate ) {
-              var timeDateText = $(thisDate).text();
-              var momentObj = moment(timeDateText);
-              var formattedString = momentObj.format("MM/DD");
-              $(this).text(formattedString);
-        });
-    });
-</script>

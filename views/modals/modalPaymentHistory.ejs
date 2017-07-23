@@ -1,0 +1,29 @@
+<div class="modal fade bs-example-modal-lg" id="paymentHistoryModal<%=thisUser.username%>" role="dialog" aria-labelledby="myModalLabel" align='center'>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            
+            <div class="modal-header">
+                <h3 class="modal-title"><%=thisUser.name.slice(0,1).toUpperCase() + thisUser.name.slice(1) %>'s Payment History</h3>
+            </div>
+            
+            <div class="modal-body">
+                <% if (thisUser.payments.length == 0){ %>
+                    <div class="media-body">
+                        <h5>No payment made yet</h5>
+                    </div>
+                <% } else { %>
+                    <% thisUser.payments.forEach(function(payment){ %>
+                        <div class='container' style='width: 80%; border-bottom: solid 1px #E0F0F7; margin-bottom: 2%; padding-bottom:2%;'> 
+                            <% var d = new Date(payment['date']); %>
+                            <h5> Date: <%= d.getMonth() %>/<%= d.getDate() %>/<%= d.getFullYear() %></h5>
+                            <h5> Amount: $ <%=payment['amount']%>.00</h5>
+                            <button type="submit" class='btn btn-xs btn-success'> Receipt <span class='glyphicon glyphicon-list-alt'></span></button> 
+                        </div>
+                    <% }) %>
+                <% } %>
+                
+            </div>
+            
+        </div>
+    </div>
+</div>             
