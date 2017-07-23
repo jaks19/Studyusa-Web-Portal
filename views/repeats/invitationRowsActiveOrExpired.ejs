@@ -1,0 +1,28 @@
+<% var color; %>
+<% if (mode=='active') { color='green' } else { color='red' } %>
+
+<h4 align='left' style='margin-bottom: 5%; margin-left:5%;'><% if (mode=='active') { %>Active Invitations<% } else { %>Recently Expired<% } %></h4>
+<div class='row' style='color: <%=color%>'>
+    <div class='col-xs-4'>
+        <h5>Invitation Code(s)</h5>
+    </div>
+    <div class='col-xs-4'>
+        <h5>Nickname Associated</h5>
+    </div>
+    <div class='col-xs-4'>
+        <h5><% if (mode=='active') { %>Valid Until<% } else { %>Expired On<% } %></h5>
+    </div>
+</div>
+<% scope.reverse().forEach(function(inv){ %>
+    <div class='row' style='color: <%=color%>'>
+        <div class='col-xs-4'>
+            <h5><%=inv.code%></h5>
+        </div>
+        <div class='col-xs-4'>
+            <h5><%=inv.nickname%></h5>
+        </div>
+        <div class='col-xs-4'>
+            <h5 class='validUntil'><%=inv.validUntil%></h5>
+        </div>
+    </div>
+<% }) %>

@@ -1,0 +1,45 @@
+<div class="modal fade bs-example-modal-lg" id="invitationModal" role="dialog" aria-labelledby="myModalLabel" align='center'>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            
+            <div class="modal-header">
+                <h3 class="modal-title">Invitation Codes</h3>
+            </div>
+            
+            <div class="modal-body">
+                <form action='/index/<%=user.username%>/invitations/new/' method='POST'>
+                    <label> To generate a new invitation code, enter an associated nickname for future referencing</label> <br /><br />
+                    <input type="text" style='width: 60%; margin-bottom:5%;' class="form-control" placeholder="Nickname" name='nickname' style='padding-bottom: 20px;' required/>
+                    <button type='submit' class="btn btn-warning" style='border:0'> Generate <span class="glyphicon glyphicon-plus-sign"></span></button>
+                </form><hr />
+                
+                <% if (activeInvitations.length > 0) { %>
+                    <% var mode = 'active' %>
+                    <% var scope = activeInvitations %>
+                    <% include ../repeats/invitationRowsActiveOrExpired %>
+                <% } %> <hr />
+                
+                <% if (expiredInvitations.length > 0) { %>
+                    <% var mode = 'expired' %>
+                    <% var scope = expiredInvitations %>
+                    <% include ../repeats/invitationRowsActiveOrExpired %>
+                <% } %>
+                
+            </div>
+            
+        </div>
+    </div>
+</div>             
+
+<script>
+    $(document).ready(function(){
+        var date = $('.validUntil');
+    
+        $.each(date, function( i, thisDate ) {
+              var timeDateText = $(thisDate).text();
+              var momentObj = moment(timeDateText);
+              var formattedString = momentObj.format("MM/DD");
+              $(this).text(formattedString);
+        });
+    });
+</script>
