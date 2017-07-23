@@ -1,11 +1,12 @@
  $('#sendAdd').click(function(e){
-   e.preventDefault();
-   let username = $('#whistlerClient').val(),
-       subId = $('#whistlerSubId').val(),
-       subTitle = $('#whistlerSubTitle').val(),
-       file = document.getElementById('doc').files[0];
-   getSignedRequestAndSend(file, username, subId, subTitle);
-   $('#submitAdd').submit();
+    e.preventDefault();
+    $('#pleaseWaitModal').modal('show');
+    let username = $('#whistlerClient').val(),
+      subId = $('#whistlerSubId').val(),
+      subTitle = $('#whistlerSubTitle').val(),
+      file = document.getElementById('doc').files[0];
+    getSignedRequestAndSend(file, username, subId, subTitle);
+    $('#submitAdd').submit();
  });
 
 function getSignedRequestAndSend(file, username, subId, subTitle){

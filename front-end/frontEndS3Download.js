@@ -1,11 +1,14 @@
  $('button').click(function(e){
    if (!e.target.value || !(e.target.id == 'downloadAdd')){ return } // Because these buttons are created dynamically
    e.preventDefault();
+   $('#pleaseWaitModal').modal('show');
    let username = $('#whistlerClient').val(),
        subId = $('#whistlerSubId').val(),
        subTitle = $('#whistlerSubTitle').val(),
        fileName = e.target.value;
    getSignedRequestAndDownload(fileName, username, subId, subTitle);
+   
+   $('.modal').modal('hide');
  });
 
 function getSignedRequestAndDownload(fileName, username, subId, subTitle){
