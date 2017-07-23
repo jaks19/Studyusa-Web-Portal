@@ -20,7 +20,7 @@
                 <% } else { %>
                   <% if (!user.admin){ %>
                     <li id='dashboard' ><a href='/index/<%=client.username%>' id='dashboardtxt' style='color: #FFFFFF;'>Dashboard</a></li>
-                    <li><a href='/index/<%=client.username%>/notifs' style='color: #FFFFFF;'>Notifications</a></li>
+                    <li id='notifs'><a href='/index/<%=client.username%>/notifs' id='notifstxt' style='color: #FFFFFF;'>Notifications</a></li>
                     <li id='pay'><a href='/index/<%=client.username%>/pay' id='paytxt' style='color: #FFFFFF;'>Payment</a></li>
                     <li id='messages' class="dropdown">
                       <a href="#" id='messagestxt' class="dropdown-toggle" style='color: #FFFFFF;' data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -35,8 +35,8 @@
                       </ul>
                     </li>
                   <% } else { %>
-                    <li><a href='/index/<%=user.username%>' style='color: #FFFFFF;'>Admin Control Panel</a></li>
-                    <li><a href='/index/<%=user.username%>/notifs' style='color: #FFFFFF;'>Admin Notifications</a></li>
+                    <li id='dashboard'><a href='/index/<%=user.username%>' id='dashboardtxt' style='color: #FFFFFF;'>Admin Control Panel</a></li>
+                    <li id='notifs'><a href='/index/<%=user.username%>/notifs' id='notifstxt' style='color: #FFFFFF;'>Admin Notifications</a></li>
                   <% } %>
                   <li><a href='/logout' style='color: #FFFFFF;'>Log Out</a></li> 
                 <% } %>

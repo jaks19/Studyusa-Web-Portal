@@ -1,5 +1,11 @@
 <% include ../partials/headerUser %>
- 
+
+<div class='row' style='padding: 2%; margin-top:-5%;'>
+    <div class='col-xs-12' align='center'>
+        <% include ../buttons/upperAdminButtons %>
+    </div>
+</div>
+
 <div class='row' style='margin-bottom:4%;'>
     <div class='col-lg-2'>
         <% var mode='groups'; %>
@@ -30,3 +36,8 @@
         <% }); %>
     </div>
 </div> 
+
+<script>
+      $('#dashboard').css("background-color", "#FFFFFF");
+      $('#dashboardtxt').css("color", "#0084b4");                 
+</script>
