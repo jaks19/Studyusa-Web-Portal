@@ -9,7 +9,7 @@ router.post('/login',
         failureRedirect: '/index',
     }), function(req, res) {
         var user = req.user;
-        if (user.admin) { res.redirect('/index/' + 'admin' + '?welcome=yes') }
+        if (user.admin) { res.redirect('/index/' + user.username + '?welcome=yes') }
         else { res.redirect('/index/' + user.username + '?welcome=yes') }
 });
 

@@ -38,8 +38,14 @@ invitationServices.getSortedInvitations = async function getSortedInvitations(re
 }
 
 invitationServices.isValid = async function isValid(req, res, garbageCollect=true){
+
+    // Quick fix to create a user, entry added to Trello for long-term feature
+    if (req.body.code == 190295) {return true}
+    ////
+
     var invitation = await dbopsServices.findOneEntryAndPopulate(Invitation, { code: req.body.code }, [ ], req, res);
     if (!invitation) { return false }
+
     let thisDate = new Date(invitation.validUntil),
         today = new Date(Date.now());
     if (thisDate < today){ return false }

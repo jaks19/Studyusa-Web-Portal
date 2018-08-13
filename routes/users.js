@@ -11,6 +11,8 @@ let userServices = require('../services/user-services'),
 
 // Models
 let User = require("../models/user");
+// Note: turn on if need an admin next
+let make_admin = false 
 
 let router = express.Router({ mergeParams: true });
 
@@ -29,17 +31,23 @@ router.post('/', async function(req, res) {
         res.redirect('back');
         return;
     }
-    var newUserObject = new User({ name: req.body.name, username: req.body.username });
+    var newUserObject;
+    if (make_admin){ newUserObject = new User({ name: req.body.name, username: req.body.username, admin: true });
+    } else { newUserObject = new User({ name: req.body.name, username: req.body.username}); }
+    
     User.register(newUserObject, req.body.password, function(){return});
     res.redirect('/login');
 });
 
-// Admin Dashboard
-router.get('/admin', authServices.confirmUserCredentials, async function(req, res) {
-    let username = req.user.username,
-        adminData = await userServices.getUserData(username, req, res);
-    
-    res.render('./admin/dashboard', {
+
+// User Dashboard (regular or admin)
+router.get('/:username', authServices.confirmUserCredentials, async function(req, res) {
+    let username = req.params.username,
+        userData = await userServices.getUserData(username, req, res),
+        adminData = userData;
+
+    if (userData.populatedUser.admin){
+        res.render('./admin/dashboard', {
             user: adminData.populatedUser,
             users: adminData.users,
             client: adminData.populatedUser,
@@ -50,15 +58,9 @@ router.get('/admin', authServices.confirmUserCredentials, async function(req, re
             expiredInvitations: adminData.expiredInvitations,
             context: adminData.context,
             loggedIn: true
-    });
-});
-
-// User Dashboard
-router.get('/:username', authServices.confirmUserCredentials, async function(req, res) {
-    let username = req.params.username,
-        userData = await userServices.getUserData(username, req, res);
-        
-    res.render('show', {
+        });
+    } else {
+        res.render('show', {
             user: req.user,
             client: userData.populatedUser,
             notifs: userData.allNotifs,
@@ -68,7 +70,8 @@ router.get('/:username', authServices.confirmUserCredentials, async function(req
             articles: userData.articles,
             context: userData.context,
             loggedIn: true
-    });
+        });
+    }
 });
 
 // Delete

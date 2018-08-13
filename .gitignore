@@ -4,3 +4,4 @@ heroku
 node_modules
 .env
 build
+mongod

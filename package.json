@@ -14,8 +14,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./build/app.js",
     "build-and-start": "npm run build && heroku local",
-    "refresh-front-and-start" : "rm -rf ./build/views ./build/frontend && cp -R ./views ./front-end ./build/ && heroku local",
-    "refresh-front" : "rm -rf ./build/views ./build/frontend && cp -R ./views ./front-end ./build/"
+    "refresh-front-and-start": "rm -rf ./build/views ./build/frontend && cp -R ./views ./front-end ./build/ && heroku local",
+    "refresh-front": "rm -rf ./build/views ./build/frontend && cp -R ./views ./front-end ./build/"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
   "homepage": "https://github.com/jaks19/studyusa-portal#readme",
   "dependencies": {
     "aws-sdk": "^2.85.0",
+    "babel-cli": "^6.26.0",
     "babel-plugin-syntax-async-functions": "^6.1.4",
     "babel-plugin-transform-regenerator": "^6.1.4",
     "babel-plugin-transform-runtime": "^6.23.0",
