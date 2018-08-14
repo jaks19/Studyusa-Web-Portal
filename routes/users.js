@@ -43,20 +43,19 @@ router.post('/', async function(req, res) {
 // User Dashboard (regular or admin)
 router.get('/:username', authServices.confirmUserCredentials, async function(req, res) {
     let username = req.params.username,
-        userData = await userServices.getUserData(username, req, res),
-        adminData = userData;
+        userData = await userServices.getUserData(username, req, res);
 
     if (userData.populatedUser.admin){
         res.render('./admin/dashboard', {
-            user: adminData.populatedUser,
-            users: adminData.users,
-            client: adminData.populatedUser,
-            notifs: adminData.allNotifs,
-            unseenNotifs: adminData.unseenNotifs,
+            user: userData.populatedUser,
+            users: userData.users,
+            client: userData.populatedUser,
+            notifs: userData.allNotifs,
+            unseenNotifs: userData.unseenNotifs,
             format: format,
-            activeInvitations: adminData.activeInvitations,
-            expiredInvitations: adminData.expiredInvitations,
-            context: adminData.context,
+            activeInvitations: userData.activeInvitations,
+            expiredInvitations: userData.expiredInvitations,
+            context: userData.context,
             loggedIn: true
         });
     } else {

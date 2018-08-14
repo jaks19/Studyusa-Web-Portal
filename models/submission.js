@@ -10,6 +10,8 @@ var submissionSchema = new mongoose.Schema({
             ],
     date: {type: Date, default: Date.now},
     user: {type: mongoose.Schema.Types.ObjectId, ref: "User"}
+}, {
+    usePushEach: true
 });                  
 
 module.exports = mongoose.model("Submission", submissionSchema);

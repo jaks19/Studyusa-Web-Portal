@@ -62,8 +62,16 @@ dbopsServices.createEntryAndSave = async function createEntryAndSave(model, mode
 dbopsServices.savePopulatedEntry = function savePopulatedEntry(populatedEntry, req, res) {    
   populatedEntry.save(function(error, savedEntry){
     if (error) {
-            req.flash('error', error);
-            res.redirect('back');
+      req.flash('error', error);
+      console.log('the full', error);
+      
+      // This allowed us to find that things were not saving since we redirected here THEN again at external level
+      // Which was bad but the double redirects gave an error that had to be slowly retraced to here
+      // Which shows these hidden spots, if properly announce they are malfunctioning, are helpful
+      // We need a form of logging from those hidden parts.
+      
+      // THIS:
+      // res.redirect('back'); 
     }
   });
 }

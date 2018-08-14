@@ -11,6 +11,8 @@ var groupSchema = new mongoose.Schema({
     messages : [
         {type: mongoose.Schema.Types.ObjectId, ref: "Comment"}
     ]
+}, {
+    usePushEach: true
 }); 
 
 module.exports = mongoose.model("Group", groupSchema);

@@ -37,9 +37,12 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
     newSubmission.user = foundUser;
     newSubmission.messages.push(newComment);
     newSubmission.adds.push(newAdd);
-    dbopsServices.savePopulatedEntry(newSubmission, req, res);                                         
+    console.log("just checking");
+    dbopsServices.savePopulatedEntry(newSubmission, req, res);
+    console.log("saved once");                                         
     foundUser.submissions.push(newSubmission);
-    dbopsServices.savePopulatedEntry(foundUser, req, res);         
+    dbopsServices.savePopulatedEntry(foundUser, req, res);
+    console.log("saved twice");         
     notifServices.assignNotification(req.user.username, newSubData.title, 'add', req.params.username, req, res);
     res.redirect('/index/' + req.params.username);
 });

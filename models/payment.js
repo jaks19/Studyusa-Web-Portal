@@ -8,6 +8,8 @@ var paymentSchema = new mongoose.Schema({
     billingAddress : {type: String, required: true},
     merchant: {type: String, default: 'Stripe', required: true}, // TODO: Make this field restricted to our partner payment apis
     merchantTransactionId: {type: String, required: true, default: 'aaaaaa'} // TODO: Collect the real transaction ID!
+}, {
+    usePushEach: true
 });                
 
 module.exports = mongoose.model("Payment", paymentSchema);
