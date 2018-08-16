@@ -12,7 +12,7 @@ let userServices = require('../services/user-services'),
 // Models
 let User = require("../models/user");
 // Note: turn on if need an admin next
-let make_admin = false 
+let make_admin = false
 
 let router = express.Router({ mergeParams: true });
 
@@ -34,7 +34,7 @@ router.post('/', async function(req, res) {
     var newUserObject;
     if (make_admin){ newUserObject = new User({ name: req.body.name, username: req.body.username, admin: true });
     } else { newUserObject = new User({ name: req.body.name, username: req.body.username}); }
-    
+
     User.register(newUserObject, req.body.password, function(){return});
     res.redirect('/login');
 });
@@ -66,6 +66,7 @@ router.get('/:username', authServices.confirmUserCredentials, async function(req
             unseenNotifs: userData.unseenNotifs,
             format: format,
             subs: userData.subs,
+            tasks: userData.tasks,
             articles: userData.articles,
             context: userData.context,
             loggedIn: true

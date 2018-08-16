@@ -50,7 +50,8 @@ var authRoutes = require('./routes/auth'),
     groupRoutes = require('./routes/groups'),
     notifRoutes = require('./routes/notifs'),
     amazons3Routes = require('./routes/amazons3'),
-    invitationRoutes = require('./routes/invitations');
+    invitationRoutes = require('./routes/invitations'),
+    taskRoutes = require('./routes/tasks');
 
 app.use(authRoutes), app.use('/index', userRoutes);
 app.use('/index/:username/submit/:id/comments', commentsRoutes);
@@ -59,6 +60,8 @@ app.use('/index/:username/submit/:id/s3/:subTitle', amazons3Routes);
 app.use('/index/:username/submit', submissionRoutes);
 app.use('/index/:username/pay', paymentRoutes), app.use('/index/:username/messages', messageRoutes), app.use('/index/:username/groups', groupRoutes), app.use('/index/:username/notifs', notifRoutes);
 app.use('/index/:username/invitations', invitationRoutes);
+
+app.use('/tasks', taskRoutes);
 
 // Wandering Routes
 app.get('/*', function (req, res) {

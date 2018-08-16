@@ -2,7 +2,7 @@
 
 <%if (user.admin){ %>
   <div class='row'>
-    <div class='col-xs-12 col-md-4 col-md-offset-0'>        
+    <div class='col-xs-12 col-md-4 col-md-offset-0'>
         <nav aria-label="..." style='margin-top:-10%; margin-bottom:3%;'>
           <ul class="pager">
             <li class="previous"><a href="/index/<%=user.username%>"><span aria-hidden="true">&larr;</span> Administrator Control Panel </a></li>
@@ -11,20 +11,20 @@
     </div>
   </div>
 <% } %>
-    
+
 <div class='row'>
   <div class='col-xs-12 col-md-3'>
       <% include ./partials/profileCorner %>
   </div>
   <div class='col-xs-12 col-md-6'>
-      <% include ./partials/fileSubmissionHistory %>
+      <% include ./partials/userTaskList %>
   </div>
   <div class='hidden-sm hidden-xs col-md-3'>
       <% include ./partials/newsRoll %>
   </div>
 </div>
 
-<% if (context=='justLoggedIn'){ %> <% include ./modals/modalNotifsWelcome %> <% } %>  
+<% if (context=='justLoggedIn'){ %> <% include ./modals/modalNotifsWelcome %> <% } %>
 <% include ../front-end/timestampToElapsed %>
 
 <script>
@@ -35,5 +35,5 @@
 
 <script>
       $('#dashboard').css("background-color", "#FFFFFF");
-      $('#dashboardtxt').css("color", "#0084b4");                 
+      $('#dashboardtxt').css("color", "#0084b4");
 </script>

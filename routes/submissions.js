@@ -37,7 +37,7 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
     newSubmission.user = foundUser;
     newSubmission.messages.push(newComment);
     newSubmission.adds.push(newAdd);
-    dbopsServices.savePopulatedEntry(newSubmission, req, res);                                        
+    dbopsServices.savePopulatedEntry(newSubmission, req, res);
     foundUser.submissions.push(newSubmission);
     dbopsServices.savePopulatedEntry(foundUser, req, res);
     notifServices.assignNotification(req.user.username, newSubData.title, 'add', req.params.username, req, res);

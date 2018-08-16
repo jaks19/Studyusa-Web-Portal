@@ -15,7 +15,7 @@ function userPageContext(req) {
 
 userServices.getUserData = async function getUserData(username, req, res) {
     var userData = {};
-    userData.populatedUser = await dbOpsServices.findOneEntryAndPopulate(User, {'username': username}, ['submissions', 'notifs'], req, res),
+    userData.populatedUser = await dbOpsServices.findOneEntryAndPopulate(User, {'username': username}, ['submissions', 'notifs', 'tasks'], req, res),
     userData.allNotifs = userData.populatedUser.notifs.reverse(),
     userData.unseenNotifs = notifServices.getBothSeenAndUnseenNotifs(userData.populatedUser.notifs)[1],
     userData.context = userPageContext(req);
@@ -25,6 +25,7 @@ userServices.getUserData = async function getUserData(username, req, res) {
     } else {
         userData.articles = await apiServices.retrieveNews(req),
         userData.subs = userData.populatedUser.submissions.reverse();
+        userData.tasks = userData.populatedUser.tasks.reverse();
     }
     return userData;
 }

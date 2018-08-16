@@ -16,24 +16,36 @@ let User = require("../models/user"),
 
 let router = express.Router({ mergeParams: true });
 
+// See a task
+router.get('/:taskId/:userId', authServices.confirmUserIdentity, async function(req, res) {
+    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'users', 'files', 'comments'], req, res),
+        users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res),
+        user = req.user,
+        client = await dbopsServices.findOneEntryAndPopulate(User, { _id: req.params.taskId }, [], req, res);
 
-// All Tasks View
-router.get('/', authServices.isAdmin, async function(req, res) {
+    console.log('HIT');
+    if (user.admin){
+        res.render('viewTaskAdmin', {
+            user: req.user,
+            client: req.user,
+            users: users,
+            task: foundTask,
+            loggedIn: true
+        });
+    } else {
+        res.render('viewTaskUser', {
+            user: req.user,
+            client: req.user,
+            task: foundTask,
+            loggedIn: true
+        });
+    }
 
-    // Fetch tasks
-    let tasks = await dbopsServices.findAllEntriesAndPopulate(Task, { }, ['files', 'comments', 'users'], req, res),
-        users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res);
 
-    res.render('tasks', {
-        user: req.user,
-        tasks: tasks,
-        users: users,
-        loggedIn: true
-    });
 });
 
 // Add to a Task
-router.put('/:taskId', authServices.confirmUserCredentials, async function(req, res) {
+router.put('/:taskId', authServices.isAdmin, async function(req, res) {
     let checkedUserIds = taskServices.getCheckedUsers(req, res),
         foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'users' ], req, res);
 
@@ -49,6 +61,19 @@ router.put('/:taskId', authServices.confirmUserCredentials, async function(req, 
 
 
     res.redirect('back');
+});
+
+// All Tasks View
+router.get('/', authServices.isAdmin, async function(req, res) {
+
+    // Fetch tasks
+    let tasks = await dbopsServices.findAllEntriesAndPopulate(Task, { }, ['files', 'comments', 'users'], req, res);
+
+    res.render('tasks', {
+        user: req.user,
+        tasks: tasks,
+        loggedIn: true
+    });
 });
 
 
