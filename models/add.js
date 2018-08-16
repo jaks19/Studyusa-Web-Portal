@@ -1,3 +1,5 @@
+// To be deprecated
+
 var mongoose = require("mongoose");
 
 var addSchema = new mongoose.Schema({

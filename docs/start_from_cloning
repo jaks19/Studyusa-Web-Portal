@@ -1,0 +1,14 @@
+brew install mongodb
+
+sudo mkdir -p /data/db ------ makes folder for db records, in / directory in pc and has to be there based on how running the mongod daemon looks for things
+
+sudo chown -R `id -un` /data/db ------ makes sure have write authorization again this / folder is well-surveilled
+
+mongod ------ starts local db, end with control-c to prevent problems
+(If problems when startint, run ps and kill all mongod processes: kill -9 PID)
+
+
+mongo ------ open mongo shell to handle records, exit with quit()
+
+
+

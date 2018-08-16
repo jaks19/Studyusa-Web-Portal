@@ -1,3 +1,5 @@
+// To be deprecated
+
 var mongoose = require("mongoose");
 
 var submissionSchema = new mongoose.Schema({

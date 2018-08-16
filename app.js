@@ -11,14 +11,14 @@ var
     methodOverride = require("method-override");
 
 // App Config
-app.set('view engine', 'ejs'); 
+app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended : true})); // To parse the body of a request
 app.use(methodOverride('_method'));
 app.use(express.static(__dirname));
-mongoose.connect(process.env.dbUrl); 
+mongoose.connect(process.env.dbUrl);
 
 // Passport Config (For Authentication)
-app.use(require("express-session")({ 
+app.use(require("express-session")({
     secret: "xyz",
     resave: false,
     saveUninitialized: false
@@ -26,7 +26,7 @@ app.use(require("express-session")({
 
 // More App Config
 app.use(flash());
-app.use(passport.initialize()); 
+app.use(passport.initialize());
 app.use(passport.session());    // Session tracking (Passport sees if user still online)
 passport.use(new LocalStrategy(User.authenticate())); //Strategy on how to authenticate. Provided in library passport-local-mongoose
 passport.serializeUser(User.serializeUser()); // Provide Hash/unhash method (already written in passport-local-mongoose)
@@ -39,7 +39,7 @@ app.use(function(req, res, next){
 });
 
 // Restful Routes
-var 
+var
     authRoutes          = require('./routes/auth'),
     userRoutes          = require('./routes/users'),
     commentsRoutes      = require('./routes/comments'),
@@ -50,7 +50,8 @@ var
     groupRoutes         = require('./routes/groups'),
     notifRoutes         = require('./routes/notifs'),
     amazons3Routes      = require('./routes/amazons3'),
-    invitationRoutes    = require('./routes/invitations');
+    invitationRoutes    = require('./routes/invitations'),
+    taskRoutes          = require('./routes/tasks');
 
 app.use(authRoutes),
 app.use('/index', userRoutes);
@@ -63,6 +64,8 @@ app.use('/index/:username/messages', messageRoutes),
 app.use('/index/:username/groups', groupRoutes),
 app.use('/index/:username/notifs', notifRoutes);
 app.use('/index/:username/invitations', invitationRoutes);
+
+app.use('/tasks', taskRoutes);
 
 // Wandering Routes
 app.get('/*', function(req, res){

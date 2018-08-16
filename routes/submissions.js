@@ -33,16 +33,13 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
         newAdd = await dbopsServices.createEntryAndSave(Add, newAddData, req, res),
         newCommentData = new Comment({ username: req.user.username, content: fileData.message }),
         newComment = await dbopsServices.createEntryAndSave(Comment, newCommentData, req, res);
-       
+
     newSubmission.user = foundUser;
     newSubmission.messages.push(newComment);
     newSubmission.adds.push(newAdd);
-    console.log("just checking");
-    dbopsServices.savePopulatedEntry(newSubmission, req, res);
-    console.log("saved once");                                         
+    dbopsServices.savePopulatedEntry(newSubmission, req, res);                                        
     foundUser.submissions.push(newSubmission);
     dbopsServices.savePopulatedEntry(foundUser, req, res);
-    console.log("saved twice");         
     notifServices.assignNotification(req.user.username, newSubData.title, 'add', req.params.username, req, res);
     res.redirect('/index/' + req.params.username);
 });
@@ -50,6 +47,9 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
 // Show Submission
 router.get('/:id', authServices.confirmUserCredentials, async function(req, res) {
     let foundSub = await dbopsServices.findOneEntryAndPopulate(Submission, { '_id': req.params.id }, [ 'user', 'messages', 'adds' ], req, res);
+
+    console.log(foundSub)
+
     res.render('viewFile', {
         sub: foundSub,
         user: req.user,

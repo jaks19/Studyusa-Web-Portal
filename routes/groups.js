@@ -4,7 +4,7 @@ var express = require("express"),
     dbopsServices = require('../services/dbops-services'),
     groupServices = require('../services/group-services'),
     notifServices = require('../services/notif-services');
-    
+
 // Models
 var Group = require("../models/group"),
     User = require("../models/user");
@@ -27,7 +27,7 @@ router.get('/', authServices.confirmUserCredentials, async function(req, res) {
 // New Group
 router.post('/', authServices.confirmUserCredentials, async function(req, res) {
     let checkedUserIds = groupServices.getCheckedUsers(req, res),
-        groupName = req.body.name, 
+        groupName = req.body.name,
         newGroupData = new Group({ name: groupName }),
         groupEntry = await dbopsServices.createEntryAndSave(Group, newGroupData, req, res, false);
     for (var i = 0; i < checkedUserIds.length; i++) {
@@ -45,7 +45,7 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
 router.put('/:groupId', authServices.confirmUserCredentials, async function(req, res) {
     let checkedUserIds = groupServices.getCheckedUsers(req, res),
         foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users' ], req, res);
-        
+
     for (var i = 0; i < checkedUserIds.length; i++) {
         let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ ], req, res);
         checkedUserEntry.group = foundGroup.name;

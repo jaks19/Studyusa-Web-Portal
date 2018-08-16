@@ -25,6 +25,8 @@ filesystemServices.getAddedFileName = async function getAddedFileName(req, res) 
     catch (error) { req.flash('error', error) }
 }
 
+
+// to be deprecated after no longer use submissions like before
 filesystemServices.getNewFileMetadata = async function getNewFileMetadata(req, res) {
     let fileData = {};
     try { 

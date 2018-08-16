@@ -1,10 +1,10 @@
-<div class='container' align='center' style='color:#0084b4; sbackground:#ffffff; border: solid 0.5px #0084b4; border-radius: 10px; margin-left:-5%; width:100%;'> 
+<div class='container' align='center' style='color:#0084b4; sbackground:#ffffff; border: solid 0.5px #0084b4; border-radius: 10px; margin-left:-5%; width:100%;'>
     <h4 align = 'center'><%= group.name %></h4>
     <h5><%= group.users.length %> Members</h5>
     <form action='/index/<%=user.username%>/groups/<%=group._id%>?_method=DELETE' method='POST'>
-        <button type='submit' style='border:none; background:none;'><span class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span> </button> 
-        <a href='/index/<%=group.users[0].username%>/messages/group/' style='border:none; background:none;'><span class=' btn btn-sm btn-primary glyphicon glyphicon-envelope'></span> </a> 
+        <button type='submit' style='border:none; background:none;'><span class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span> </button>
+        <a href='/index/<%=group.users[0].username%>/messages/group/' style='border:none; background:none;'><span class=' btn btn-sm btn-primary glyphicon glyphicon-envelope'></span> </a>
     </form>
-    <button style='border:none; background:none;' data-toggle="modal" data-target="#<%=group._id%>"><span class=' btn btn-sm btn-info glyphicon glyphicon-plus'></span></button> 
+    <button style='border:none; background:none;' data-toggle="modal" data-target="#<%=group._id%>"><span class=' btn btn-sm btn-info glyphicon glyphicon-plus'></span></button>
     <% include ../modals/modalAddUsersToGroup %>
 </div>
