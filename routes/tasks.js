@@ -38,12 +38,16 @@ router.put('/:taskId', authServices.confirmUserCredentials, async function(req, 
         foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'users' ], req, res);
 
     for (var i = 0; i < checkedUserIds.length; i++) {
-        let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ ], req, res);
+        let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ 'tasks' ], req, res);
         foundTask.users.push(checkedUserEntry);
+        checkedUserEntry.tasks.push(foundTask);
+        dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
         // notifServices.assignNotification(req.user.username, foundGroup.name, 'group-add', checkedUserEntry.username, req, res);
     }
 
     dbopsServices.savePopulatedEntry(foundTask, req, res);
+
+
     res.redirect('back');
 });
 

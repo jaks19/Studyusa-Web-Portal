@@ -25,10 +25,16 @@ var userSchema = new mongoose.Schema({
     ],
     notifs : [
         {type: mongoose.Schema.Types.ObjectId, ref: "Notif"}
-    ]
+    ],
+    tasks: [
+        {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Task"
+        }
+    ],
 }, {
     usePushEach: true
-}); 
+});
 
 userSchema.plugin(passportLocalMongoose); // Adds a bunch of methods usable on the dB for auth. Can bypass this lib and write our own fns (https://www.npmjs.com/package/passport)
 
