@@ -16,11 +16,38 @@ let User = require("../models/user"),
 
 let router = express.Router({ mergeParams: true });
 
+// Add/remove users to a Task
+router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
+    let checkedUserIds = taskServices.getCheckedUsers(req, res),
+        foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'users' ], req, res);
+
+    for (var i = 0; i < checkedUserIds.length; i++) {
+        let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ 'tasks' ], req, res);
+        foundTask.users.push(checkedUserEntry);
+        // notifServices.assignNotification(req.user.username, foundGroup.name, 'group-add', checkedUserEntry.username, req, res);
+    }
+    dbopsServices.savePopulatedEntry(foundTask, req, res);
+    res.redirect('back');
+});
+
+// edit content of a task
+router.put('/:taskId/content', authServices.isAdmin, async function(req, res) {
+    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'users' ], req, res),
+        data = await taskServices.getTaskData(req, res);
+
+    foundTask.title = data.title;
+    foundTask.prompt = data.prompt;
+    dbopsServices.savePopulatedEntry(foundTask, req, res);
+    res.redirect('back');
+});
+
+
+
 // See a task
 router.get('/:taskId/:userId', authServices.confirmUserIdentity, async function(req, res) {
     let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'users', 'files', 'comments'], req, res),
-        users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res),
         user = req.user,
+        users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res),
         client = await dbopsServices.findOneEntryAndPopulate(User, { _id: req.params.taskId }, [], req, res);
 
     console.log('HIT');
@@ -44,22 +71,9 @@ router.get('/:taskId/:userId', authServices.confirmUserIdentity, async function(
 
 });
 
-// Add to a Task
-router.put('/:taskId', authServices.isAdmin, async function(req, res) {
-    let checkedUserIds = taskServices.getCheckedUsers(req, res),
-        foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'users' ], req, res);
-
-    for (var i = 0; i < checkedUserIds.length; i++) {
-        let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ 'tasks' ], req, res);
-        foundTask.users.push(checkedUserEntry);
-        checkedUserEntry.tasks.push(foundTask);
-        dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
-        // notifServices.assignNotification(req.user.username, foundGroup.name, 'group-add', checkedUserEntry.username, req, res);
-    }
-
-    dbopsServices.savePopulatedEntry(foundTask, req, res);
-
-
+// Delete
+router.delete('/:taskId', authServices.isAdmin, async function(req, res) {
+    await dbopsServices.findEntryByIdAndRemove(Task, req.params.taskId, req, res);
     res.redirect('back');
 });
 
@@ -67,10 +81,12 @@ router.put('/:taskId', authServices.isAdmin, async function(req, res) {
 router.get('/', authServices.isAdmin, async function(req, res) {
 
     // Fetch tasks
-    let tasks = await dbopsServices.findAllEntriesAndPopulate(Task, { }, ['files', 'comments', 'users'], req, res);
+    let tasks = await dbopsServices.findAllEntriesAndPopulate(Task, { }, ['files', 'comments', 'users'], req, res),
+        users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res);
 
     res.render('tasks', {
         user: req.user,
+        users: users,
         tasks: tasks,
         loggedIn: true
     });
@@ -82,7 +98,7 @@ router.post('/', authServices.isAdmin, async function(req, res) {
     let data = await taskServices.getTaskData(req, res),
         newTaskEntryData = new Task({
           title: data.title,
-          prompt: data.prompt
+          prompt: data.prompt,
         }),
         newTask = await dbopsServices.createEntryAndSave(Task, newTaskEntryData, req, res, true);
 

@@ -27,6 +27,10 @@ userServices.getUserData = async function getUserData(username, req, res) {
         userData.subs = userData.populatedUser.submissions.reverse();
         userData.tasks = userData.populatedUser.tasks.reverse();
     }
+
+    userData.populatedUser.lastLoggedIn = Date.now();
+    dbOpsServices.savePopulatedEntry(userData.populatedUser, req, res);
+
     return userData;
 }
 

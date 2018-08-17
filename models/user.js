@@ -7,6 +7,8 @@ var userSchema = new mongoose.Schema({
     password: String,
     balance: {type: Number, default: 1500.0},
     admin: {type: Boolean, default: false},
+    dateJoined: {type: Date, default: Date.now},
+    lastLoggedIn: {type: Date, default: Date.now},
     submissions: [
         {
         type: mongoose.Schema.Types.ObjectId,

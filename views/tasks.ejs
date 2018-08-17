@@ -1,7 +1,7 @@
 <% include ./partials/headerUser %>
 
     <div class='row'>
-        <div class='col-xs-12 col-md-6 col-md-offset-3'>
+        <div class='col-xs-12 col-md-8 col-md-offset-2'>
             <ul class="list-group" style='height:100%; overflow:auto;'>
 
                 <li class="list-group-item" align='center'>
@@ -42,43 +42,33 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <div id='tasks-list'>
                     <% tasks.reverse().forEach(function(task){ %>
                         <% var d = new Date(task['date']); %>
-                            <a href='/tasks/<%=task._id%>/<%=user._id%>' class="list-group-item" align='center'>
-                                <div class='comment'> <span class='timestring text-muted pull-left '>Created on <%= d.toDateString() %></span> </div>
-                                <span class="label label-success pull-right"><%=task['files'].length%> files</span>
-                                <span class="label label-info pull-right"><%=task['comments'].length%><%if (task['comments'].length > 1) {%> comments <% } else { %> comment <% } %></span>
-                                <h4 style='margin-top: 7%;'><%= task['title']%></h4>
-                                <h6 style='text-align: justify;'><%= task['prompt']%></h6>
+                            <div class='row'>
 
+                                <div class ='col-xs-12'>
+                                <a href='/tasks/<%=task._id%>/<%=user._id%>' style='z-index:1;' class="list-group-item" align='center'>
+                                    <h4 style='margin-top: 7%;'><%= task['title']%></h4>
+                                    <h6 style='text-align: justify;'><%= task['prompt']%></h6>
+                                    <div class='comment'> <span class='timestring text-muted pull-left '>Created on <%= d.toDateString() %></span> </div>
 
-                            </a>
+                                    <a href='#task-content<%=task['_id']%>' data-toggle="modal" data-target="#task-content<%=task['_id']%>" class=' btn btn-sm btn-primary glyphicon glyphicon-edit'></span></a>
+                                    <% include ./modals/modalEditTask %>
+
+                                    <a href='#task-users<%=task._id%>' data-toggle="modal" data-target="#task-users<%=task._id%>" class=' btn btn-sm btn-success glyphicon glyphicon-user'></span></a>
+                                    <% include ./modals/modalTaskUsers %>
+
+                                    <a href='#task-delete<%=task['_id']%>' data-toggle="modal" data-target="#task-delete<%=task['_id']%>" class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span></a>
+                                    <% include ./modals/modalDeleteTask %>
+                                </a>
+                                </div>
+
+                                <div class ='col-md-3 col-xs-12' style='padding:2% 0% 0% 10%;'>
+
+                                </div>
+
+                            </div>
                     <% }); %>
                 </div>
 

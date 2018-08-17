@@ -12,7 +12,7 @@ let userServices = require('../services/user-services'),
 // Models
 let User = require("../models/user");
 // Note: turn on if need an admin next
-let make_admin = false
+let make_admin = false;
 
 let router = express.Router({ mergeParams: true });
 
@@ -45,6 +45,7 @@ router.get('/:username', authServices.confirmUserCredentials, async function(req
     let username = req.params.username,
         userData = await userServices.getUserData(username, req, res);
 
+
     if (userData.populatedUser.admin){
         res.render('./admin/dashboard', {
             user: userData.populatedUser,
@@ -72,6 +73,7 @@ router.get('/:username', authServices.confirmUserCredentials, async function(req
             loggedIn: true
         });
     }
+
 });
 
 // Delete
