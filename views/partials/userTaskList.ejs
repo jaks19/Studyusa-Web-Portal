@@ -1,0 +1,16 @@
+<ul class="list-group" style='height:100%; overflow:auto;'>
+    <li class="list-group-item" align='center'>
+        <h4 style='margin-top:5%;' class='info'>Assigned Threads</h4>
+    </li>
+    <% tasks.forEach(function(task){ %>
+        <!--  Date below not correct, TODO need date when task was assigned to this user-->
+        <% var d = new Date(task['date']); %>
+        <a href='/tasks/<%=task._id%>/<%=client._id%>' class="list-group-item" align='center'>
+        <!-- <div class='comment'> <span class='timestring text-muted pull-left '><%= //d.toISOString() %></span> </div> -->
+        <span class="label label-success pull-right"><% if(task['files']) { %> <%= task['files'].length%> <% } else { %> <%= 0 %> <%}%> files</span>
+        <span class="label label-info pull-right"><% if(task['comments']) { %> <%= task['comments'].length%> <% } else { %> <%= 0 %> <%}%> comments</span>
+        <h4 style='margin-top: 7%;'><%= task['title']%></h4>
+        <h6 style='text-align: justify;'><%= task['prompt']%></h6>
+        </a>
+    <% }); %>
+</ul>

@@ -1,0 +1,76 @@
+
+<div id="wrap">
+<input type="text" id="myInput" placeholder="Search for a user or group" title="Type in a name">
+
+<table id="myTable" style="display:none">
+
+    <% task.users.forEach(function(taskUser){ %>
+        <tr style='z-index:100;' class='selector'>
+        	<td class='sel' id='<%=taskUser._id%>'> <a href="/tasks/<%=task._id%>/<%=taskUser._id%>"><%=taskUser.name %></a></td>
+        </tr>
+    <% });%>
+
+</table>
+</div>
+
+
+<script>
+
+// For search bar
+
+// Same kind of script when generalizing, only change is the content, X, of a <tr><td> X </td></tr>
+$('#myInput').keyup(function () {
+  var input, filter, table, tr, td, i;
+  input = $("#myInput")[0];
+  filter = input.value.toUpperCase();
+  table = $("#myTable");
+  table.css('display', '');
+  trs = table[0].getElementsByTagName("tr");
+  // Can design any kind of div here then just say getElementsByTagName("div");
+  hrefs = table[0].getElementsByTagName("a");
+
+  for (i = 0; i < hrefs.length; i++) {
+    href = hrefs[i];
+    if (href.innerHTML.toUpperCase().indexOf(filter) > -1) {
+        trs[i].style.display = "";
+    }
+    else { trs[i].style.display = "none"; }
+  }
+});
+
+$('#wrap').mouseleave(function() {
+  $('#myTable').css("display","none");
+});
+
+$('#wrap').click(function() {
+    var table = $('#myTable');
+    if (table.css("display")==="none"){
+        table.css("display","");
+    }
+    else {table.css("display","none");}
+});
+
+$('tr').click(function(e){
+    console.log(e.target.id);
+});
+</script>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+#myInput {
+  background-image: url('/css/searchicon.png');
+  background-position: 1% 50%;
+  background-repeat: no-repeat;
+  width: 100%;
+  font-size: 16px;
+  padding: 2% 10% 2% 10%;
+  border: 1px solid #ddd;
+}
+</style>
+
+
+</body>
+</html>

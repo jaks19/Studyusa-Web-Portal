@@ -1,0 +1,30 @@
+<% include ./partials/headerUser %>
+
+<div class='row'>
+
+    <div class='col-md-3 col-xs-12' align='center' style='max-width:100%; margin-bottom:10%;'>
+        <% include ./partials/search %>
+    </div>
+
+    <div class='col-md-3 col-xs-12' align='center' style='max-width:100%; margin-bottom:10%;'>
+        <% include ./partials/taskFileListOfAUser %>
+    </div>
+
+
+
+    <div class="col-md-3 col-xs-12" style='max-width:100%; margin-bottom:10%;'>
+        <% include ./partials/taskComments %>
+    </div>
+
+</div>
+
+
+
+
+
+<% include ../front-end/timestampToElapsed %>
+
+<script>
+        $('#dashboard').css("background-color", "#FFFFFF");
+        $('#dashboardtxt').css("color", "#0084b4");
+</script>
