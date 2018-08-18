@@ -30,7 +30,8 @@
                       <ul class="dropdown-menu" style='padding:0px;'>
                         <li id='personal' style='background: #0084b4;'><a href='/index/<%=client.username%>/messages/personal' align='center'  style='color: #FFFFFF;' id='personaltxt'>Personal</a></li>
                         <% if(user.group != "noGroup"){ %>
-                          <li id='group' style='background: #0084b4;'><a href='/index/<%=client.username%>/messages/group' align='center' style='color: #FFFFFF;' id='grouptxt'>Group</a></li>
+                            <%console.log(user.group)%>
+                          <li id='group' style='background: #0084b4;'><a href='/index/<%=client.username%>/groups/<%=user.group._id%>/messages' align='center' style='color: #FFFFFF;' id='grouptxt'>Group</a></li>
                         <% } %>
                       </ul>
                     </li>

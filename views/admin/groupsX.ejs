@@ -1,23 +1,10 @@
 <% include ../partials/headerUser %>
 
-
-<% include ../whistlers/whistlerContextAdminDashboard %>
-
-
 <div class='new' align='center'>
-    <input class="search" id="myInput" placeholder="Search for a Student">
-    <button class="sort-chosen">By name</button>
-    <button class="sort-choosable">By Group</button>
+    <input class="search" id="myInput" placeholder="Search for a Group">
+    <button class="sort-choosable"><a class='blend' href ="/index/<%=user.username%>">By name</a></button>
+    <button class="sort-chosen">By Group</button>
 </div>
-
-</div>
-
-
-
-
-
-
-
 
 <div class='row' style='padding: 2%;'>
     <div class='col-xs-12' align='center'>
@@ -28,54 +15,53 @@
                         <div class="main-box-body clearfix">
                             <div class="table-responsive">
 
-
-
+                                <!-- Insert any table of this format -->
                                 <table id="myTable" class="table user-list">
                                     <thead >
                                         <tr>
-                                        <th><span>People</span></th>
-                                        <th><span>Last Online</span></th>
-                                        <th class="text-center"><span>Status</span></th>
+                                        <th><span>Groups</span></th>
+                                        <th><span>Last Meeting</span></th>
+                                        <th><span>Next Meeting</span></th>
+                                        <th class="text-center"><span>Status (etc)</span></th>
                                         <th><span>Email</span></th>
                                         <th>&nbsp;</th>
                                         </tr>
                                     </thead>
+
                                     <tbody>
-
-
-
-
-
                                         <div class='row'>
                                             <div class='col-xs-12'>
-                                                <% users.forEach(function(thisUser){ %>
-                                                <% d = new Date(thisUser.lastLoggedIn) %>
 
+                                                <% d = new Date(Date.now()) %>
+                                                <% groups.forEach(function(group){ %>
                                                     <tr>
-                                                        <td id='<%=thisUser.name%>'>
-                                                            <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
-                                                            <a href="#" class="user-link" style="font-size:20px;"><%=thisUser.name.slice(0,1).toUpperCase() + thisUser.name.slice(1)%></a>
-                                                            <span class="user-subhead"><% if (thisUser.admin){ %>admin<% }else{ %>user <% } %> </span>
+                                                        <td id='<%=group.name%>'>
+                                                            <span class="user-subhead"><%= group.name %></span>
+                                                            <a href="#" class="user-link">Expand (<%= group.users.length %>) member records</a>
                                                         </td>
-                                                        <td id='<%=thisUser.name%>'>
+                                                        <td id='<%=group.name%>'>
                                                             <div class='comment'>
                                                             <span class='timestring text-muted '><%= d.toISOString() %></span>
                                                             </div>
                                                         </td>
-                                                        <td id='<%=thisUser.name%>' class="text-center">
+                                                        <td id='<%=group.name%>'>
+                                                            <div class='comment'>
+                                                            <span class='timestring text-muted '><%= d.toISOString() %></span>
+                                                            </div>
+                                                        </td>
+                                                        <td id='<%=group.name%>' class="text-center">
                                                             <span class="label label-default">pending</span>
                                                             <!--  TODO:Can use label-success for green, label-danger etc etc -->
                                                             <!--  Perhaps cool to use with the deadline/pace tracking system -->
                                                         </td>
-                                                        <td id='<%=thisUser.name%>'>
+                                                        <td id='<%=group.name%>'>
                                                             <a href="#">marlon@brando.com</a>
                                                         </td>
-                                                        <td id='<%=thisUser.name%>' style="width: 20%;">
+                                                        <td id='<%=group.name%>' style="width: 20%;">
 
-                                                            <a href='/index/<%=thisUser.username%>/messages/personal' class=' btn btn-sm btn-primary glyphicon glyphicon-comment'></span></a>
-                                                            <a href="/index/<%=thisUser.username%>" data-toggle="modal" data-target="#" class=' btn btn-sm btn-success glyphicon glyphicon-eye-open'></span></a>
-                                                            <a href='#user-delete<%=thisUser['_id']%>' data-toggle="modal" data-target="#user-delete<%=thisUser['_id']%>" class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span></a>
-                                                            <% include ../modals/modalDeleteUser %>
+                                                            <a href='#' class=' btn btn-sm btn-primary glyphicon glyphicon-comment'></span></a>
+                                                            <a href="#" data-toggle="modal" data-target="#" class=' btn btn-sm btn-success glyphicon glyphicon-eye-open'></span></a>
+                                                            <a href='#' data-toggle="modal" data-target="#" class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span></a>
 
                                                         </td>
                                                     </tr>
@@ -83,12 +69,6 @@
                                                 <% });%>
                                             </div>
                                         </div>
-
-
-
-
-
-
 
                                     </tbody>
                                 </table>
@@ -103,16 +83,8 @@
 </div>
 
 
-<!--
-<div class='row'>
-    <div class='col-xs-12' style='max-height: 65%; overflow:auto;'>
-        <% users.forEach(function(thisUser){ %>
-            <% //include ../repeats/userBoxAdminPov %>
-        <% });%>
-    </div>
-</div> -->
-
 <script>
+// Contexts for notifications etc at login
     $(document).ready(function(){
         var context = $('#whistlerContext').val();
         if (context == 'justLoggedIn') { $('#greet').modal('show') }
@@ -121,12 +93,46 @@
 </script>
 
 <script>
+// Some primitive css
       $('#dashboard').css("background-color", "#FFFFFF");
       $('#dashboardtxt').css("color", "#0084b4");
 </script>
 
+<script>
+
+// For search bar
+
+// (Each one needs a slightly different script due to how the table is formatted)
+// But like in this document, tables of same format can just be plugged in and are good to go
+// Assuming all tables use same field rank to search on
+$('#myInput').keyup(function () {
+  var input, filter, table, tr, td, i;
+  input = $("#myInput")[0];
+  filter = input.value.toUpperCase();
+  table = $("#myTable");
+  tbody = table[0].getElementsByTagName("tbody");
+  trs = tbody[0].getElementsByTagName("tr");
+
+
+  for (i = 0; i < trs.length; i++) {
+    tds = trs[i].getElementsByTagName("td");
+    console.log(tds.length)
+    if (tds[0].id.toUpperCase().indexOf(filter) > -1) {
+        trs[i].style.display = "";
+    }
+    else { trs[i].style.display = "none"; }
+  }
+});
+
+
+$('tr').click(function(e){
+    console.log(e.target.id);
+});
+</script>
+
+
 <style>
-/*  The search bar and buttons */
+/* Search bar and buttons CSS */
 .new input {
     border-radius: 25px;
     padding: 0.8% 1.2%;
@@ -153,11 +159,21 @@ input:focus, textarea, button:focus {
 .sort-chosen{
     color: #eeeeee;
     background-color: #afc2d4;
+    cursor: default;
 }
 
 .sort-choosable {
     color: #eeeeee;
     background-color: rgb(46, 111, 168);
+}
+
+a.blend:link,
+a.blend:visited,
+a.blend:hover,
+a.blend:active
+{
+   color: white;
+   text-decoration: none;
 }
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -177,7 +193,7 @@ input:focus, textarea, button:focus {
 
 
 <style>
-/*  The Table */
+/*  The Table CSS */
 
 body{
     background:#eee;
@@ -208,25 +224,18 @@ body{
     font-weight: 600;
 }
 .user-list tbody td .user-subhead {
-    font-size: 0.875em;
-    font-style: italic;
+    font-size: 29px;
 }
+
 .user-list tbody td .user-link {
     display: block;
-    font-size: 1.25em;
+    font-size: 17px;
     padding-top: 3px;
-    margin-left: 60px;
+    font-weight: 340;
 }
 a {
     color: #3498db;
     outline: none!important;
-}
-.user-list tbody td>img {
-    position: relative;
-    max-width: 50px;
-    max-height: 50px;
-    float: left;
-    margin-right: 15px;
 }
 
 .table thead tr th {
@@ -236,64 +245,31 @@ a {
 .table thead tr th {
     border-bottom: 2px solid #e7ebee;
 }
+
+.table tbody tr td {
+    vertical-align: middle;
+}
+
+/* Widths of columns */
+
 .table tbody tr td:first-child {
     font-size: 1.125em;
     font-weight: 300;
-    width: 35%;
+    width: 26.5%;
 }
 .table tbody tr td:nth-child(2) {
     width: 15%;
 }
+
+table tbody tr td:nth-child(3) {
+    width: 15%;
+
 .table tbody tr td {
     font-size: 0.875em;
     vertical-align: middle;
     border-top: 1px solid #e7ebee;
     padding: 12px 8px;
 }
-
  </style>
 
  <% include ../../front-end/timestampToElapsed %>
-
- <script>
-
- // For search bar
-
- // (Each one needs a slightly different script due to how the table is formatted)
- // But like in this document, we can abstract away the <table> as an interface if we are using same kinds of tables
- // And we just switch around the tables by turning only one of them at on a time
- // The wonderful thing is that if they are same format tables, the same listener script suffices!
- // In summary: only bothersome thing with search bar is that the js needs to be specific to a page because a page's table in general is unique
- // But once this is here, we can use same-type tables and just plug them in
-
- // Same kind of script when generalizing, only change is the content, X, of a <tr><td> X </td></tr>
- $('#myInput').keyup(function () {
-   var input, filter, table, tr, td, i;
-   input = $("#myInput")[0];
-   filter = input.value.toUpperCase();
-   table = $("#myTable");
-   tbody = table[0].getElementsByTagName("tbody");
-   trs = tbody[0].getElementsByTagName("tr");
-
-
-   for (i = 0; i < trs.length; i++) {
-     tds = trs[i].getElementsByTagName("td");
-     console.log(tds.length)
-     if (tds[0].id.toUpperCase().indexOf(filter) > -1) {
-         trs[i].style.display = "";
-     }
-     else { trs[i].style.display = "none"; }
-   }
- });
-
-
- $('tr').click(function(e){
-     console.log(e.target.id);
- });
- </script>
-
- <script>
-// For toggling of people and groups (can be generalized to n features)
-
-
- </script>

@@ -1,22 +1,11 @@
 <% include ../partials/headerUser %>
-
-
 <% include ../whistlers/whistlerContextAdminDashboard %>
-
 
 <div class='new' align='center'>
     <input class="search" id="myInput" placeholder="Search for a Student">
     <button class="sort-chosen">By name</button>
-    <button class="sort-choosable">By Group</button>
+    <button class="sort-choosable"><a class='blend' href ="/index/<%=user.username%>/groups">By Group</a></button>
 </div>
-
-</div>
-
-
-
-
-
-
 
 
 <div class='row' style='padding: 2%;'>
@@ -28,8 +17,7 @@
                         <div class="main-box-body clearfix">
                             <div class="table-responsive">
 
-
-
+                                <!-- Insert any table of this format -->
                                 <table id="myTable" class="table user-list">
                                     <thead >
                                         <tr>
@@ -41,10 +29,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-
-
-
-
 
                                         <div class='row'>
                                             <div class='col-xs-12'>
@@ -84,12 +68,6 @@
                                             </div>
                                         </div>
 
-
-
-
-
-
-
                                     </tbody>
                                 </table>
                             </div>
@@ -103,16 +81,8 @@
 </div>
 
 
-<!--
-<div class='row'>
-    <div class='col-xs-12' style='max-height: 65%; overflow:auto;'>
-        <% users.forEach(function(thisUser){ %>
-            <% //include ../repeats/userBoxAdminPov %>
-        <% });%>
-    </div>
-</div> -->
-
 <script>
+// Contexts for notifications etc at login
     $(document).ready(function(){
         var context = $('#whistlerContext').val();
         if (context == 'justLoggedIn') { $('#greet').modal('show') }
@@ -121,12 +91,46 @@
 </script>
 
 <script>
+// Some primitive css
       $('#dashboard').css("background-color", "#FFFFFF");
       $('#dashboardtxt').css("color", "#0084b4");
 </script>
 
+<script>
+
+// For search bar
+
+// (Each one needs a slightly different script due to how the table is formatted)
+// But like in this document, tables of same format can just be plugged in and are good to go
+// Assuming all tables use same field rank to search on
+$('#myInput').keyup(function () {
+  var input, filter, table, tr, td, i;
+  input = $("#myInput")[0];
+  filter = input.value.toUpperCase();
+  table = $("#myTable");
+  tbody = table[0].getElementsByTagName("tbody");
+  trs = tbody[0].getElementsByTagName("tr");
+
+
+  for (i = 0; i < trs.length; i++) {
+    tds = trs[i].getElementsByTagName("td");
+    console.log(tds.length)
+    if (tds[0].id.toUpperCase().indexOf(filter) > -1) {
+        trs[i].style.display = "";
+    }
+    else { trs[i].style.display = "none"; }
+  }
+});
+
+
+$('tr').click(function(e){
+    console.log(e.target.id);
+});
+</script>
+
+
 <style>
-/*  The search bar and buttons */
+/* Search bar and buttons CSS */
 .new input {
     border-radius: 25px;
     padding: 0.8% 1.2%;
@@ -153,11 +157,21 @@ input:focus, textarea, button:focus {
 .sort-chosen{
     color: #eeeeee;
     background-color: #afc2d4;
+    cursor: default;
 }
 
 .sort-choosable {
     color: #eeeeee;
     background-color: rgb(46, 111, 168);
+}
+
+a.blend:link,
+a.blend:visited,
+a.blend:hover,
+a.blend:active
+{
+   color: white;
+   text-decoration: none;
 }
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -177,7 +191,7 @@ input:focus, textarea, button:focus {
 
 
 <style>
-/*  The Table */
+/*  The Table CSS */
 
 body{
     background:#eee;
@@ -250,50 +264,6 @@ a {
     border-top: 1px solid #e7ebee;
     padding: 12px 8px;
 }
-
  </style>
 
  <% include ../../front-end/timestampToElapsed %>
-
- <script>
-
- // For search bar
-
- // (Each one needs a slightly different script due to how the table is formatted)
- // But like in this document, we can abstract away the <table> as an interface if we are using same kinds of tables
- // And we just switch around the tables by turning only one of them at on a time
- // The wonderful thing is that if they are same format tables, the same listener script suffices!
- // In summary: only bothersome thing with search bar is that the js needs to be specific to a page because a page's table in general is unique
- // But once this is here, we can use same-type tables and just plug them in
-
- // Same kind of script when generalizing, only change is the content, X, of a <tr><td> X </td></tr>
- $('#myInput').keyup(function () {
-   var input, filter, table, tr, td, i;
-   input = $("#myInput")[0];
-   filter = input.value.toUpperCase();
-   table = $("#myTable");
-   tbody = table[0].getElementsByTagName("tbody");
-   trs = tbody[0].getElementsByTagName("tr");
-
-
-   for (i = 0; i < trs.length; i++) {
-     tds = trs[i].getElementsByTagName("td");
-     console.log(tds.length)
-     if (tds[0].id.toUpperCase().indexOf(filter) > -1) {
-         trs[i].style.display = "";
-     }
-     else { trs[i].style.display = "none"; }
-   }
- });
-
-
- $('tr').click(function(e){
-     console.log(e.target.id);
- });
- </script>
-
- <script>
-// For toggling of people and groups (can be generalized to n features)
-
-
- </script>

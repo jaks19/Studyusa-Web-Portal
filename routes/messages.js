@@ -1,7 +1,7 @@
 // Packages
 var express = require("express"),
     authServices = require('../services/auth-services'),
-    notifServices = require('../services/notif-services'), 
+    notifServices = require('../services/notif-services'),
     dbopsServices = require('../services/dbops-services');
 
 // Models
@@ -18,6 +18,7 @@ router.get('/personal/', authServices.confirmUserCredentials, async function(req
 });
 
 // Show Group Messages
+// ROUTE DEPRECATED TO a route from groups /index/username/groups/groupid/messages/
 router.get('/group/', authServices.confirmUserCredentials, async function(req, res) {
     let foundClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], req, res),
         foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { 'name': foundClient.group }, [ 'messages', 'users' ], req, res);

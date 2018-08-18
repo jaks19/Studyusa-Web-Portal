@@ -14,10 +14,13 @@ let router = express.Router({ mergeParams: true });
 // Index
 router.get('/', authServices.confirmUserCredentials, async function(req, res) {
     let groups = await dbopsServices.findAllEntriesAndPopulate(Group, { }, [ 'users' ], req, res),
-        freeUsers = await dbopsServices.findAllEntriesAndPopulate(User, { 'group': 'noGroup' }, [ ], req, res);
-    res.render('./admin/groups', {
+        freeUsers = await dbopsServices.findAllEntriesAndPopulate(User, { 'group': 'noGroup' }, [ ], req, res),
+        users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res);
+
+    res.render('./admin/groupsX', {
         user: req.user,
         freeUsers: freeUsers,
+        users: users,
         groups: groups,
         loggedIn: true,
         client: req.user
@@ -57,6 +60,17 @@ router.put('/:groupId', authServices.confirmUserCredentials, async function(req,
     dbopsServices.savePopulatedEntry(foundGroup, req, res);
     res.redirect('back');
 });
+
+// See group messages
+router.put('/:groupId/messages', authServices.confirmUserCredentials, async function(req, res) {
+    let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users' ], req, res),
+        foundClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], req, res);
+        
+    res.render('groupMessages', { messages: foundGroup['messages'], loggedIn: true, user: req.user, users: foundGroup.users, client: foundClient });
+});
+
+
+
 
 // Remove someone from his/her group
 router.get('/remove', authServices.confirmUserCredentials, async function(req, res) {
