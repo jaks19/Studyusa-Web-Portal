@@ -38,19 +38,4 @@ router.post('/personal/', authServices.confirmUserCredentials, async function(re
     res.redirect('/index/' + foundClient.username + '/messages/personal');
 });
 
-// New Group Message
-router.post('/group/', authServices.confirmUserCredentials, async function(req, res) {
-    let sender = req.user,
-        oneClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], req, res),
-        foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { 'name': oneClient.group }, [ 'users' ], req, res),
-        newM = new Message({ username: sender.username, content: req.body.textareacontent }),
-        newMessage = await dbopsServices.createEntryAndSave(Message, newM, req, res);
-        foundGroup.messages.push(newMessage);
-        dbopsServices.savePopulatedEntry(foundGroup, req, res);
-        foundGroup.users.forEach(function(receiver) {
-            notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver.username, req, res);
-        });
-        res.redirect('back');
-});
-
 module.exports = router;

@@ -1,14 +1,13 @@
-<% var d = new Date(message['date']); %>
 <li class='media'>
     <div class="square" style='margin-left:4%; height:10%; width: 10%; float: left;'>
         <img src="/images/funny-profile-pictures.jpg" style='max-width: 100%; max-height: 100%; border-radius:5%;' />
     </div>
-    
+
     <div class="media-body" style='float:left; width: 80%;'>
         <strong style='margin-left:5%;' class="text-success"> <%=message['username']%> </strong>
         <div class = 'comment' style='margin-left: 5%;'>
-            <p> <%= message['content'] %> </p>
-            <% var d = new Date(message['date']) %>
+            <p> <%= message['content']; %> </p>
+            <% var d = new Date(message['date']); %>
             <span class='timestring text-muted '><%= d.toISOString() %></span>
         </div>
     </div>

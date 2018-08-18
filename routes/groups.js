@@ -7,7 +7,8 @@ var express = require("express"),
 
 // Models
 var Group = require("../models/group"),
-    User = require("../models/user");
+    User = require("../models/user"),
+    Message = require("../models/comment");
 
 let router = express.Router({ mergeParams: true });
 
@@ -17,7 +18,7 @@ router.get('/', authServices.confirmUserCredentials, async function(req, res) {
         freeUsers = await dbopsServices.findAllEntriesAndPopulate(User, { 'group': null }, [ ], req, res),
         users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res);
 
-    res.render('./admin/groups', {
+    res.render('./admin/groupsX', {
         user: req.user,
         freeUsers: freeUsers,
         users: users,
@@ -63,15 +64,28 @@ router.put('/:groupId/add', authServices.confirmUserCredentials, async function(
 });
 
 // See group messages
-router.put('/:groupId/messages', authServices.confirmUserCredentials, async function(req, res) {
-    let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users' ], req, res),
+router.get('/:groupId/messages', authServices.confirmUserCredentials, async function(req, res) {
+    let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users', 'messages' ], req, res),
         foundClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], req, res);
 
-    res.render('groupMessages', { messages: foundGroup['messages'], loggedIn: true, user: req.user, users: foundGroup.users, client: foundClient });
+    res.render('groupMessages', { group: foundGroup, messages: foundGroup['messages'], loggedIn: true, user: req.user, users: foundGroup.users, client: foundClient });
 });
 
-
-
+// post  group message
+router.post('/:groupId/messages', authServices.confirmUserCredentials, async function(req, res) {
+    let sender = req.user,
+        oneClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ 'group' ], req, res),
+        foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { '_id': req.params.groupId }, [ 'users' ], req, res),
+        newM = new Message({ username: sender.username, content: req.body.textareacontent }),
+        newMessage = await dbopsServices.createEntryAndSave(Message, newM, req, res);
+        console.log(foundGroup);
+        foundGroup.messages.push(newMessage);
+        dbopsServices.savePopulatedEntry(foundGroup, req, res);
+        foundGroup.users.forEach(function(receiver) {
+            notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver.username, req, res);
+        });
+        res.redirect('back');
+});
 
 // Remove someone from his/her group
 // need to make it a PUT request by making the thing happen through a form instead of href
