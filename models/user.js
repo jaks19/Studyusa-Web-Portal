@@ -21,7 +21,7 @@ var userSchema = new mongoose.Schema({
         ref: "Payment"
         }
     ],
-    group : {type: String, default: 'noGroup'}, //group name
+    group : {type: mongoose.Schema.Types.ObjectId, ref: "Group"},
     messages : [
         {type: mongoose.Schema.Types.ObjectId, ref: "Comment"}
     ],

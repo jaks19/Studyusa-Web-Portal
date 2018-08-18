@@ -43,35 +43,53 @@ function promiseToCreateEntry(model, modelObjectWithData){
   });
 }
 
-dbopsServices.createEntryAndSave = async function createEntryAndSave(model, modelObjectWithData, req, res, save = true) { 
-  var newEntry;
-  try { newEntry = await promiseToCreateEntry(model, modelObjectWithData) }
-  catch(error) { 
-    req.flash('error', 'error creating entry');
-    res.redirect('back');
-    return;
-  }
-  if (save) {
-    newEntry.save(function(error, data){
-      if (error){ req.flash('error', error) } 
-    });
-  }
-  return newEntry;
+dbopsServices.createEntryAndSave = async function createEntryAndSave(model, modelObjectWithData, req, res, save = true) {
+    var newEntry;
+    try { newEntry = await promiseToCreateEntry(model, modelObjectWithData) }
+    catch(error) {
+      req.flash('error', 'error creating entry');
+      res.redirect('back');
+      return;
+    }
+    if (save) {
+      newEntry.save(function(error, data){
+        if (error){ req.flash('error', error) }
+      });
+    }
+    return newEntry;
 }
 
-dbopsServices.savePopulatedEntry = function savePopulatedEntry(populatedEntry, req, res) {    
+function promiseToUpdateEntryAndSave(model, entryRequirement, changes){
+  return new Promise(function (resolve, reject) {
+    model.update( entryRequirement, changes, function(error, newEntry){
+        if (error) { reject(error) }
+        else { resolve(newEntry) }
+    });
+  });
+}
+
+dbopsServices.updateEntryAndSave = async function updateEntryAndSave(model, entryRequirement, changes, req, res){
+    try { await promiseToUpdateEntryAndSave(model, entryRequirement, changes) }
+    catch(error) {
+      req.flash('error', 'error updating the user entries');
+      res.redirect('back');
+      return;
+    }
+}
+
+dbopsServices.savePopulatedEntry = function savePopulatedEntry(populatedEntry, req, res) {
   populatedEntry.save(function(error, savedEntry){
     if (error) {
       req.flash('error', error);
       console.log('the full', error);
-      
+
       // This allowed us to find that things were not saving since we redirected here THEN again at external level
       // Which was bad but the double redirects gave an error that had to be slowly retraced to here
       // Which shows these hidden spots, if properly announce they are malfunctioning, are helpful
       // We need a form of logging from those hidden parts.
-      
+
       // THIS:
-      // res.redirect('back'); 
+      // res.redirect('back');
     }
   });
 }
@@ -85,9 +103,9 @@ function promiseTofindEntryByIdAndRemove(model, id, req, res){
   });
 }
 
-dbopsServices.findEntryByIdAndRemove = async function findEntryByIdAndRemove(model, id, req, res) {    
-  try { 
-    await promiseTofindEntryByIdAndRemove(model, id, req, res) 
+dbopsServices.findEntryByIdAndRemove = async function findEntryByIdAndRemove(model, id, req, res) {
+  try {
+    await promiseTofindEntryByIdAndRemove(model, id, req, res);
     req.flash('success', 'Deletion Successful');
   }
   catch (error) { req.flash('error', 'Could not remove entry from the database') }

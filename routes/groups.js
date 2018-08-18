@@ -14,10 +14,10 @@ let router = express.Router({ mergeParams: true });
 // Index
 router.get('/', authServices.confirmUserCredentials, async function(req, res) {
     let groups = await dbopsServices.findAllEntriesAndPopulate(Group, { }, [ 'users' ], req, res),
-        freeUsers = await dbopsServices.findAllEntriesAndPopulate(User, { 'group': 'noGroup' }, [ ], req, res),
+        freeUsers = await dbopsServices.findAllEntriesAndPopulate(User, { 'group': null }, [ ], req, res),
         users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res);
 
-    res.render('./admin/groupsX', {
+    res.render('./admin/groups', {
         user: req.user,
         freeUsers: freeUsers,
         users: users,
@@ -27,6 +27,7 @@ router.get('/', authServices.confirmUserCredentials, async function(req, res) {
     });
 });
 
+
 // New Group
 router.post('/', authServices.confirmUserCredentials, async function(req, res) {
     let checkedUserIds = groupServices.getCheckedUsers(req, res),
@@ -35,7 +36,7 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
         groupEntry = await dbopsServices.createEntryAndSave(Group, newGroupData, req, res, false);
     for (var i = 0; i < checkedUserIds.length; i++) {
         let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ ], req, res);
-        checkedUserEntry.group = groupName;
+        checkedUserEntry.group = groupEntry;
         groupEntry.users.push(checkedUserEntry);
         notifServices.assignNotification(req.user.username, groupName, 'group-add', checkedUserEntry.username, req, res);
         dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
@@ -45,13 +46,13 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
 });
 
 // Add to Group
-router.put('/:groupId', authServices.confirmUserCredentials, async function(req, res) {
+router.put('/:groupId/add', authServices.confirmUserCredentials, async function(req, res) {
     let checkedUserIds = groupServices.getCheckedUsers(req, res),
         foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users' ], req, res);
 
     for (var i = 0; i < checkedUserIds.length; i++) {
         let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ ], req, res);
-        checkedUserEntry.group = foundGroup.name;
+        checkedUserEntry.group = foundGroup;
         foundGroup.users.push(checkedUserEntry);
         dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
         notifServices.assignNotification(req.user.username, foundGroup.name, 'group-add', checkedUserEntry.username, req, res);
@@ -65,7 +66,7 @@ router.put('/:groupId', authServices.confirmUserCredentials, async function(req,
 router.put('/:groupId/messages', authServices.confirmUserCredentials, async function(req, res) {
     let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users' ], req, res),
         foundClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], req, res);
-        
+
     res.render('groupMessages', { messages: foundGroup['messages'], loggedIn: true, user: req.user, users: foundGroup.users, client: foundClient });
 });
 
@@ -73,11 +74,12 @@ router.put('/:groupId/messages', authServices.confirmUserCredentials, async func
 
 
 // Remove someone from his/her group
-router.get('/remove', authServices.confirmUserCredentials, async function(req, res) {
-    let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ ], req, res),
-        foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { 'name': foundUser.group }, [ ], req, res);
-    foundUser.group = 'noGroup';
-    dbopsServices.savePopulatedEntry(foundUser, req, res);
+// need to make it a PUT request by making the thing happen through a form instead of href
+router.get('/:groupId/remove', authServices.confirmUserCredentials, async function(req, res){
+    let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ 'group' ], req, res),
+        foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { 'name': foundUser.group.name }, [ ], req, res);
+
+    await dbopsServices.updateEntryAndSave(User, { 'username': req.params.username }, { $unset: {"group": null}});
     notifServices.assignNotification(req.user.username, foundGroup.name, 'group-remove', req.params.username, req, res);
     if (foundGroup.users.length == 1) { await dbopsServices.findEntryByIdAndRemove(Group, foundGroup._id, req, res) }
     else { foundGroup.users.pull(foundUser) }
@@ -87,13 +89,12 @@ router.get('/remove', authServices.confirmUserCredentials, async function(req, r
 
 // Delete a Group
 router.delete('/:groupId', authServices.confirmUserCredentials, async function(req, res) {
-    let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { '_id': req.params.groupId }, [ ], req, res),
-        foundUsers = await dbopsServices.findAllEntriesAndPopulate(User, { 'group': foundGroup.name }, [ ], req, res);
-    for (var i = 0; i < foundUsers.length; i++) {
-        let thisUser = foundUsers[i];
-        thisUser.group = 'noGroup';
-        dbopsServices.savePopulatedEntry(thisUser, req, res);
-        notifServices.assignNotification(req.user.username, foundGroup.name, 'group-delete', thisUser.username, req, res);
+    let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { '_id': req.params.groupId }, [ 'users' ], req, res);
+
+    for (var i = 0; i < foundGroup.users.length; i++) {
+        await dbopsServices.updateEntryAndSave(User, { 'username': foundGroup.users[i].username }, { $unset: {"group": null}})
+        // Notif not created properly, throws a flash card (red)
+        notifServices.assignNotification(req.user.username, foundGroup.name, 'group-delete', foundGroup.users[i].username, req, res);
     }
     await dbopsServices.findEntryByIdAndRemove(Group, foundGroup._id, req, res);
     res.redirect('back');
