@@ -15,6 +15,9 @@
                         <div class="main-box-body clearfix">
                             <div class="table-responsive">
 
+                                <% groups.forEach(function(group){ %>
+                                    <% include ../modals/modalManageUsersGroup %>
+                                <% });%>
                                 <!-- Insert any table of this format -->
                                 <table id="myTable" class="table group-list">
                                     <thead >
@@ -63,60 +66,12 @@
                                                             <a href="#add-<%=group._id%>" data-toggle="modal" data-target='#add-<%=group._id%>' class=' btn btn-sm btn-success glyphicon glyphicon-plus'></span></a>
                                                             <% include ../modals/modalAddUsersToGroup %>
                                                             <a href="#users-<%=group._id%>" data-toggle="modal" data-target='#users-<%=group._id%>' class=' btn btn-sm btn-success glyphicon glyphicon-user'></span></a>
-                                                            <% include ../modals/modalManageUsersGroup %>
+
                                                             <a href='#delete-<%=group._id%>' data-toggle="modal" data-target="#delete-<%=group._id%>" class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span></a>
                                                             <% include ../modals/modalDeleteGroup %>
-
                                                         </td>
+
                                                     </tr>
-
-
-
-<!--  THIS WRECK USED TO BE USER ROWS COMING BELOW A GROUP AS A WAY TO SHOW THE USERS IN THIS GROUP-->
-
-                                                    <!-- Creating a tr from the main table, to then include a sub-table for each main table entry (table of people in each group) -->
-                                                    <!-- <% d = new Date(Date.now()) %> -->
-                                                    <!-- <tr class='users-table <%=group.name%>-users' style='background-color: rgb(249, 255, 240)'>
-                                                    <th style='padding-left: 20px;'><span>People</span></th>
-                                                    <th><span>Last Online</span></th>
-                                                    <th class="text-center"><span>Status</span></th>
-                                                    <th><span>Email</span></th> -->
-                                                    <!-- For buttons -->
-                                                    <!-- <th>&nbsp;</th>
-                                                    </tr>
-
-                                                    <% group.users.forEach(function(thisUser){ %>
-                                                        <tr class='users-table <%=group.name%>-users' style='background-color: rgb(238, 249, 222)'>
-                                                            <td style='padding-left: 20px;'>
-                                                                <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
-                                                                <a href="#" class="user-link" style="font-size:20px;"><%=thisUser.name.slice(0,1).toUpperCase() + thisUser.name.slice(1)%></a>
-                                                            </td>
-                                                            <td>
-                                                                <div class='comment'>
-                                                                <span class='timestring text-muted '><%= d.toISOString() %></span>
-                                                                </div>
-                                                            </td> -->
-                                                            <!-- <td class="text-center">
-                                                                <span class="label label-default">pending</span> -->
-                                                                <!--  TODO:Can use label-success for green, label-danger etc etc -->
-                                                                <!--  Perhaps cool to use with the deadline/pace tracking system -->
-                                                            <!-- </td>
-                                                            <td>
-                                                                <a href="#">marlon@brando.com</a>
-                                                            </td>
-                                                            <td style="width: 20%;"> -->
-
-                                                                <!-- <a href='/index/<%=thisUser.username%>/messages/personal' class=' btn btn-sm btn-primary glyphicon glyphicon-comment'></span></a>
-                                                                <a href="/index/<%=thisUser.username%>" data-toggle="modal" data-target="#" class=' btn btn-sm btn-success glyphicon glyphicon-eye-open'></span></a>
-                                                                <a href='#user-delete<%=thisUser['_id']%>' data-toggle="modal" data-target="#user-delete<%=thisUser['_id']%>" class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span></a>
-                                                                <% include ../modals/modalDeleteUser %>
-
-                                                            </td>
-                                                        </tr>
-
-                                                    <% });%> -->
-
-
 
                                                 <% });%>
                                             </div>
@@ -188,22 +143,6 @@ $('#myInput').keyup(function () {
     }
   }
 });
-//
-// $('a.group-link').click(function(e){
-//     var rows = $('table').find("tr."+e.target.id+"-users");
-//
-//     for (i = 0; i < rows.length; i++) {
-//         if (rows[i].style.display != "table-row"){
-//             rows[i].style.display = "table-row";
-//             e.target.innerHTML = e.target.innerHTML.replace("Expand", "Collapse");
-//         } else {
-//             rows[i].style.display = "none";
-//             e.target.innerHTML = e.target.innerHTML.replace("Collapse", "Expand");
-//         }
-//     }
-// });
-
-
 </script>
 
 
@@ -388,4 +327,4 @@ tr.users-table > td {
 }
  </style>
 
- <% include ../../front-end/timestampToElapsed %>
+<% include ../../front-end/timestampToElapsed %>

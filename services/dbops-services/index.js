@@ -108,7 +108,9 @@ dbopsServices.findEntryByIdAndRemove = async function findEntryByIdAndRemove(mod
     await promiseTofindEntryByIdAndRemove(model, id, req, res);
     req.flash('success', 'Deletion Successful');
   }
-  catch (error) { req.flash('error', 'Could not remove entry from the database') }
+  catch (error) {
+      req.flash('error', 'Could not remove entry from the database')
+  }
   return;
 }
 

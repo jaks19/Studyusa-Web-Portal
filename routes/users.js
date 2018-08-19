@@ -7,7 +7,8 @@ let express = require("express"),
 let userServices = require('../services/user-services'),
     authServices = require('../services/auth-services'),
     invitationServices = require('../services/invitation-services'),
-    filesystemServices = require('../services/filesystem-services');
+    filesystemServices = require('../services/filesystem-services'),
+    dbopsServices = require('../services/dbops-services');
 
 // Models
 let User = require("../models/user");
@@ -74,20 +75,16 @@ router.get('/:username', authServices.confirmUserCredentials, async function(req
             loggedIn: true
         });
     }
-
+    res.redirect('back');
 });
 
 // Delete
-router.delete('/:username', authServices.confirmUserCredentials, function(req, res) {
-    User.findOneAndRemove({'username' : req.params.username}, function(error){
-        if (error){
-            req.flash('error', 'The user account could not be deleted!');
-            return res.redirect('back');
-        } else {
-            req.flash('success', 'The user account was successfully deleted! Ciao to the user! ;)');
-            return res.redirect('/index/' + req.user.username);
-        }
-    });
+router.delete('/:username', authServices.confirmUserCredentials, async function(req, res) {
+    let username = req.params.username,
+        userData = await userServices.getUserData(username, req, res);
+
+    await dbopsServices.findEntryByIdAndRemove(User, userData.populatedUser._id, req, res);
+    res.redirect('back');
 });
 
 module.exports = router;
