@@ -1,5 +1,4 @@
 <% include ../partials/headerUser %>
-<% include ../whistlers/whistlerContextAdminDashboard %>
 
 <div class='new' align='center'>
     <input class="search" id="myInput" placeholder="Search for a Student">
@@ -21,7 +20,7 @@
                                 <table id="myTable" class="table user-list">
                                     <thead >
                                         <tr>
-                                        <th><span>People</span></th>
+                                        <th style='padding-left: 20px;'><span>People</span></th>
                                         <th><span>Last Online</span></th>
                                         <th class="text-center"><span>Status</span></th>
                                         <th><span>Email</span></th>
@@ -32,11 +31,13 @@
 
                                         <div class='row'>
                                             <div class='col-xs-12'>
+
                                                 <% users.forEach(function(thisUser){ %>
                                                 <% d = new Date(thisUser.lastLoggedIn) %>
 
                                                     <tr>
-                                                        <td id='<%=thisUser.name%>'>
+                                                        <!-- Make ids be values to be used for search operation in search bar -->
+                                                        <td style='padding-left: 20px;' id='<%=thisUser.name%>'>
                                                             <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
                                                             <a href="#" class="user-link" style="font-size:20px;"><%=thisUser.name.slice(0,1).toUpperCase() + thisUser.name.slice(1)%></a>
                                                             <span class="user-subhead"><% if (thisUser.admin){ %>admin<% }else{ %>user <% } %> </span>
@@ -51,8 +52,9 @@
                                                             <!--  TODO:Can use label-success for green, label-danger etc etc -->
                                                             <!--  Perhaps cool to use with the deadline/pace tracking system -->
                                                         </td>
-                                                        <td id='<%=thisUser.name%>'>
-                                                            <a href="#">marlon@brando.com</a>
+                                                        <!-- Use class to hold groupid because want search to operate even on group names which is why the group names are in ids of tds -->
+                                                        <td <% if (thisUser.group) {%> id=<%= thisUser.group.name %> class= <%= thisUser.group._id %> <% } else { %> id='none' class='none'<%}%>>
+                                                            <a href="#"><% if (thisUser.group) {%> <%= thisUser.group.name %> <% } else { %> None <%}%> </a>
                                                         </td>
                                                         <td id='<%=thisUser.name%>' style="width: 20%;">
 
@@ -87,6 +89,32 @@
         var context = $('#whistlerContext').val();
         if (context == 'justLoggedIn') { $('#greet').modal('show') }
         else if (context == 'invitation') { $('#invitationModal').modal('show') }
+
+        //  This dashboard serves as all users page or a group's page with all users pre-loaded in the all-users page
+        // I have a groupId when it is used as that group's page with its users pre-loaded
+        var groupId = $('#whistlerGroup').val();
+
+        // I now pre-load this group's entries in the Page
+        table = $("#myTable");
+        tbody = table[0].getElementsByTagName("tbody");
+        trs = tbody[0].getElementsByTagName("tr");
+
+        // If coming to view a group's members, start with them on screen
+        if (groupId != -1 && $('#whistlerGroup')[0]){
+            console.log(groupId)
+            for (i = 0; i < trs.length; i++) {
+              tds = trs[i].getElementsByTagName("td");
+              for (j = 0; j < tds.length; j++) {
+                if (tds[j].className === groupId) {
+                    trs[i].style.display = "";
+                    break;
+                }
+
+                else { trs[i].style.display = "none"; }
+              }
+            }
+        }
+
     });
 </script>
 
@@ -114,12 +142,20 @@ $('#myInput').keyup(function () {
 
   for (i = 0; i < trs.length; i++) {
     tds = trs[i].getElementsByTagName("td");
-    console.log(tds.length)
-    if (tds[0].id.toUpperCase().indexOf(filter) > -1) {
-        trs[i].style.display = "";
+
+    for (j = 0; j < tds.length; j++) {
+        // Loop all tds as will use name, group name etc all of them to search
+      if (tds[j].id.toUpperCase().indexOf(filter) > -1) {
+          trs[i].style.display = "";
+          break;
+      }
+
+      else { trs[i].style.display = "none"; }
     }
-    else { trs[i].style.display = "none"; }
   }
+
+
+
 });
 
 
@@ -200,16 +236,7 @@ body{
     padding-top: 20px;
 }
 .main-box {
-    background: #FFFFFF;
-    -webkit-box-shadow: 1px 1px 2px 0 #CCCCCC;
-    -moz-box-shadow: 1px 1px 2px 0 #CCCCCC;
-    -o-box-shadow: 1px 1px 2px 0 #CCCCCC;
-    -ms-box-shadow: 1px 1px 2px 0 #CCCCCC;
-    box-shadow: 1px 1px 2px 0 #CCCCCC;
-    margin-bottom: 16px;
-    -webikt-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
+    background: #eeeeee;
     height: 80%;
     overflow:auto;
 }
@@ -246,8 +273,6 @@ a {
 .table thead tr th {
     text-transform: uppercase;
     font-size: 0.875em;
-}
-.table thead tr th {
     border-bottom: 2px solid #e7ebee;
 }
 .table tbody tr td:first-child {
@@ -263,7 +288,13 @@ a {
     vertical-align: middle;
     border-top: 1px solid #e7ebee;
     padding: 12px 8px;
+    background-color: #ffffff;
 }
  </style>
 
  <% include ../../front-end/timestampToElapsed %>
+
+
+<% if (groupId != -1){ %>
+     <% include ../whistlers/whistlerGroupAdminDashboard %>
+<% }%>

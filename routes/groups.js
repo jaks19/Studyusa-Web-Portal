@@ -3,7 +3,9 @@ var express = require("express"),
     authServices = require('../services/auth-services'),
     dbopsServices = require('../services/dbops-services'),
     groupServices = require('../services/group-services'),
-    notifServices = require('../services/notif-services');
+    notifServices = require('../services/notif-services'),
+    userServices = require('../services/user-services'),
+    format = require('../notifJson');
 
 // Models
 var Group = require("../models/group"),
@@ -99,6 +101,29 @@ router.get('/:groupId/remove', authServices.confirmUserCredentials, async functi
     else { foundGroup.users.pull(foundUser) }
     dbopsServices.savePopulatedEntry(foundGroup, req, res);
     res.redirect('back');
+});
+
+// See a specific Group's members
+router.get('/:groupId', authServices.confirmUserCredentials, async function(req, res) {
+    let username = req.params.username,
+        userData = await userServices.getUserData(username, req, res);
+
+    res.render('./admin/dashboard', {
+        user: userData.populatedUser,
+        users: userData.users,
+        client: userData.populatedUser,
+        notifs: userData.allNotifs,
+        unseenNotifs: userData.unseenNotifs,
+        format: format,
+        activeInvitations: userData.activeInvitations,
+        expiredInvitations: userData.expiredInvitations,
+        context: userData.context,
+        // This is exactly the traditional admin dashboard, except the users with groupId
+        // provided are pre-loaded and presented to the screen first.
+        // This is the /index/username/groups/groupid/ get page is.
+        groupId: req.params.groupId,
+        loggedIn: true
+    });
 });
 
 // Delete a Group

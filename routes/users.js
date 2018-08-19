@@ -57,7 +57,8 @@ router.get('/:username', authServices.confirmUserCredentials, async function(req
             activeInvitations: userData.activeInvitations,
             expiredInvitations: userData.expiredInvitations,
             context: userData.context,
-            loggedIn: true
+            loggedIn: true,
+            groupId: -1
         });
     } else {
         res.render('show', {
