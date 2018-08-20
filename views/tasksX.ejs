@@ -36,8 +36,8 @@
 
                                                 <% tasks.reverse().forEach(function(task){ %>
                                                     <% var d = new Date(task['date']); %>
-                                                    <tr id='<%=task._id%>+<%=task.prompt%>' class='groups-table main-td'>
-                                                        <td id='<%=task.title%>' class='main-td' style='padding-left: 20px;'>
+                                                    <tr id='<%=task._id%>' class='groups-table main-td'>
+                                                        <td id='<%=task.title%>+<%=task.prompt%>' class='main-td' style='padding-left: 20px;'>
                                                             <span class="group-subhead"><%= task.title %></span>
                                                             <span class="group-link" style='font-size:14px; color: black; height:80px; overflow: auto;'><%= task.prompt.slice(0, 200); %>...</a>
                                                         </td>

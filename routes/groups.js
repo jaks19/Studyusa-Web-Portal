@@ -51,12 +51,12 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
 router.put('/:groupId/add', authServices.confirmUserCredentials, async function(req, res) {
     let [incomingIds, outgoingIds] = groupServices.getCheckedUsers(req, res),
         foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users' ], req, res),
-        incoming = []; // Keep an array of incoming Group objects too for including in group
+        incoming = []; // Keep an array of incoming User objects too for including in group
 
     if(typeof incomingIds[0] !== "undefined")
     {
         for (var i = 0; i < incomingIds.length; i++) {
-            let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': incomingIds[i] }, [ ], req, res);
+            let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': incomingIds[i] }, [ 'group' ], req, res);
             incoming.push(checkedUserEntry);
             checkedUserEntry.group = foundGroup;
             dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
