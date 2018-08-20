@@ -17,18 +17,51 @@ let User = require("../models/user"),
 let router = express.Router({ mergeParams: true });
 
 // Add/remove users to a Task
-router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
-    let checkedUserIds = taskServices.getCheckedUsers(req, res),
+router.put('/:taskId/users', authServices.confirmUserCredentials, async function(req, res) {
+    let [incomingIds, outgoingIds] = taskServices.getCheckedUsers(req, res),
         foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'users' ], req, res);
 
-    for (var i = 0; i < checkedUserIds.length; i++) {
-        let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ 'tasks' ], req, res);
-        foundTask.users.push(checkedUserEntry);
-        // notifServices.assignNotification(req.user.username, foundGroup.name, 'group-add', checkedUserEntry.username, req, res);
+    console.log(incomingIds, outgoingIds);
+
+    if(typeof incomingIds[0] !== "undefined")
+    {
+        console.log('NOOOO');
+        for (var i = 0; i < incomingIds.length; i++) {
+            let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': incomingIds[i] }, [ ], req, res);
+            checkedUserEntry.tasks.push(foundTask);
+            dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
+            foundTask.users.push(checkedUserEntry);
+            // notifServices.assignNotification(req.user.username, foundGroup.name, 'group-add', checkedUserEntry.username, req, res);
+            dbopsServices.savePopulatedEntry(foundTask, req, res);
+        }
     }
-    dbopsServices.savePopulatedEntry(foundTask, req, res);
+
+    if(typeof outgoingIds[0] !== "undefined")
+    {
+        // for (var i = 0; i < outgoingIds.length; i++) {
+        //     let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { '_id': outgoingIds[i] }, [ ], req, res),
+        //         userNewTasks = foundUser.tasks.map((task) => {
+        //             if (outgoingIds[i] !== String(task._id)){
+        //                 return  task
+        //             } else {
+        //                 return;
+        //             }
+        //         }),
+        //         console.log(userNewTasks);
+        //         userNewTasks = foundUser.tasks
+        //
+        //     await dbopsServices.updateEntryAndSave(User, { '_id': outgoingIds[i] }, { $unset: {"group": null}});
+        //     notifServices.assignNotification(req.user.username, foundGroup.name, 'group-remove', req.params.username, req, res);
+        //     foundGroup.users.pull(foundUser);
+        //     dbopsServices.savePopulatedEntry(foundGroup, req, res);
+        // }
+    }
+
+
     res.redirect('back');
 });
+
+
 
 // edit content of a task
 router.put('/:taskId/content', authServices.isAdmin, async function(req, res) {
@@ -105,47 +138,7 @@ router.post('/', authServices.isAdmin, async function(req, res) {
         // Saving etc properly up to here :)
 
     res.redirect('/tasks');
-    // foundUser = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ ], req, res),
-    // newTaskData = new Task({ title: fileData.fileName, author: foundUser.username, submission: newSubmission });
-//         newComment = await dbopsServices.createEntryAndSave(Comment, newCommentData, req, res);
-
-// res.render('tasks', {
-//         loggedIn: true,
-//         user: req.user
-//     });
 
 });
-
-// // Create New Submission
-// router.post('/', authServices.confirmUserCredentials, async function(req, res) { //IMPORTANT: normally you would use a post request to an index page but I already have one POST req going there for Users
-//     ,
-//
-
-//     newSubmission.user = foundUser;
-//     newSubmission.messages.push(newComment);
-//     newSubmission.adds.push(newAdd);
-//     console.log("just checking");
-//     dbopsServices.savePopulatedEntry(newSubmission, req, res);
-//     console.log("saved once");
-//     foundUser.submissions.push(newSubmission);
-//     dbopsServices.savePopulatedEntry(foundUser, req, res);
-//     console.log("saved twice");
-//     notifServices.assignNotification(req.user.username, newSubData.title, 'add', req.params.username, req, res);
-//     res.redirect('/index/' + req.params.username);
-// });
-
-// // Show Submission
-// router.get('/:id', authServices.confirmUserCredentials, async function(req, res) {
-//     let foundSub = await dbopsServices.findOneEntryAndPopulate(Submission, { '_id': req.params.id }, [ 'user', 'messages', 'adds' ], req, res);
-
-//     console.log(foundSub)
-
-//     res.render('viewFile', {
-//         sub: foundSub,
-//         user: req.user,
-//         client: foundSub.user,
-//         loggedIn: true
-//     });
-// });
 
 module.exports = router;

@@ -77,22 +77,33 @@ dbopsServices.updateEntryAndSave = async function updateEntryAndSave(model, entr
     }
 }
 
-dbopsServices.savePopulatedEntry = function savePopulatedEntry(populatedEntry, req, res) {
-  populatedEntry.save(function(error, savedEntry){
-    if (error) {
-      req.flash('error', error);
-      console.log('the full', error);
+dbopsServices.savePopulatedEntry = async function savePopulatedEntry(populatedEntry, req, res) {
 
-      // This allowed us to find that things were not saving since we redirected here THEN again at external level
-      // Which was bad but the double redirects gave an error that had to be slowly retraced to here
-      // Which shows these hidden spots, if properly announce they are malfunctioning, are helpful
-      // We need a form of logging from those hidden parts.
 
-      // THIS:
-      // res.redirect('back');
+
+    try {
+          await populatedEntry.save();
+      } catch (err) {
+          req.flash('error', err);
+          console.log('the full', err);
+          return;
+      }
     }
-  });
-}
+
+//   populatedEntry.save(function(error, savedEntry){
+//     if (error) {
+//
+//
+//       // This allowed us to find that things were not saving since we redirected here THEN again at external level
+//       // Which was bad but the double redirects gave an error that had to be slowly retraced to here
+//       // Which shows these hidden spots, if properly announce they are malfunctioning, are helpful
+//       // We need a form of logging from those hidden parts.
+//
+//       // THIS:
+//       // res.redirect('back');
+//     }
+//   });
+// }
 
 function promiseTofindEntryByIdAndRemove(model, id, req, res){
   return new Promise(function (resolve, reject) {

@@ -33,14 +33,20 @@ taskServices.getTaskData = async function getTaskData(req, res) {
 }
 
 taskServices.getCheckedUsers = function getCheckedUsers(req, res) {
-  if (req.body.chk == null){
-      req.flash('error', "You did not choose any user to add to that task!");
+  if (req.body.incoming == null && req.body.outgoing == null){
+      req.flash('error', "Error, group not created! You did not choose any user to add to or remove from that group!");
       return res.redirect('back');
   }
-  var checkedUsers;
-  if (!Array.isArray(req.body.chk)) { checkedUsers = [req.body.chk] }
-  else { checkedUsers = req.body.chk }
-  return checkedUsers;
+
+  var checkedIncoming;
+  if (!Array.isArray(req.body.incoming)) { checkedIncoming = [req.body.incoming] }
+  else { checkedIncoming = req.body.incoming }
+
+  var checkedOutgoing;
+  if (!Array.isArray(req.body.outgoing)) { checkedOutgoing = [req.body.outgoing] }
+  else { checkedOutgoing = req.body.outgoing }
+
+  return [checkedIncoming, checkedOutgoing];
 }
 
 module.exports = taskServices;

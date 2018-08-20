@@ -2,10 +2,6 @@
 
 
 <div align='center'>
-<% tasks.reverse().forEach(function(task){ %>
-    <% include ./modals/modalTaskUsers %>
-<% });%>
-
 <% include ./modals/modalNewTask %>
 </div>
 
@@ -66,7 +62,7 @@
                                                             <% include ./modals/modalEditTask %>
 
                                                             <a href='#task-users<%=task._id%>' data-toggle="modal" data-target="#task-users<%=task._id%>" class=' btn btn-sm btn-success glyphicon glyphicon-user'></span></a>
-                                                            <% include ./modals/modalTaskUsers %>
+                                                            <% include ./modals/modalManageUsersTask %>
 
                                                             <a href='#task-delete<%=task['_id']%>' data-toggle="modal" data-target="#task-delete<%=task['_id']%>" class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span></a>
                                                             <% include ./modals/modalDeleteTask %>
