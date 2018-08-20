@@ -25,15 +25,14 @@ router.get('/', authServices.confirmUserCredentials, async function(req, res) {
         freeUsers: freeUsers,
         users: users,
         groups: groups,
-        loggedIn: true,
-        context: req.query.context
+        loggedIn: true
     });
 });
 
 
 // New Group
 router.post('/', authServices.confirmUserCredentials, async function(req, res) {
-    let checkedUserIds = groupServices.getCheckedUsers(req, res),
+    let checkedUserIds = groupServices.getCheckedUsers(req, res)[0],
         groupName = req.body.name,
         newGroupData = new Group({ name: groupName }),
         groupEntry = await dbopsServices.createEntryAndSave(Group, newGroupData, req, res, false);

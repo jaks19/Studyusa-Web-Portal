@@ -84,7 +84,7 @@ router.get('/', authServices.isAdmin, async function(req, res) {
     let tasks = await dbopsServices.findAllEntriesAndPopulate(Task, { }, ['files', 'comments', 'users'], req, res),
         users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res);
 
-    res.render('tasks', {
+    res.render('tasksX', {
         user: req.user,
         users: users,
         tasks: tasks,
