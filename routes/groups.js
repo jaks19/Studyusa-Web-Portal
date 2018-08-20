@@ -26,7 +26,7 @@ router.get('/', authServices.confirmUserCredentials, async function(req, res) {
         users: users,
         groups: groups,
         loggedIn: true,
-        client: req.user
+        context: req.query.context
     });
 });
 
@@ -50,19 +50,37 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
 
 // Add to Group
 router.put('/:groupId/add', authServices.confirmUserCredentials, async function(req, res) {
-    let checkedUserIds = groupServices.getCheckedUsers(req, res),
+    let [incomingIds, outgoingIds] = groupServices.getCheckedUsers(req, res),
         foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users' ], req, res);
 
-    for (var i = 0; i < checkedUserIds.length; i++) {
-        let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ ], req, res);
-        checkedUserEntry.group = foundGroup;
-        foundGroup.users.push(checkedUserEntry);
-        dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
-        notifServices.assignNotification(req.user.username, foundGroup.name, 'group-add', checkedUserEntry.username, req, res);
+    console.log(incomingIds, outgoingIds);
+
+    if(typeof incomingIds[0] !== "undefined")
+    {
+        console.log('NOOOO')
+        for (var i = 0; i < incomingIds.length; i++) {
+            let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': incomingIds[i] }, [ ], req, res);
+            checkedUserEntry.group = foundGroup;
+            dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
+            foundGroup.users.push(checkedUserEntry);
+            notifServices.assignNotification(req.user.username, foundGroup.name, 'group-add', checkedUserEntry.username, req, res);
+            dbopsServices.savePopulatedEntry(foundGroup, req, res);
+        }
     }
 
-    dbopsServices.savePopulatedEntry(foundGroup, req, res);
+    if(typeof outgoingIds[0] !== "undefined")
+    {
+        for (var i = 0; i < outgoingIds.length; i++) {
+            let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { '_id': outgoingIds[i] }, [ ], req, res);
+            await dbopsServices.updateEntryAndSave(User, { '_id': outgoingIds[i] }, { $unset: {"group": null}});
+            notifServices.assignNotification(req.user.username, foundGroup.name, 'group-remove', req.params.username, req, res);
+            foundGroup.users.pull(foundUser);
+            dbopsServices.savePopulatedEntry(foundGroup, req, res);
+        }
+    }
+
     res.redirect('back');
+
 });
 
 // See group messages
@@ -80,7 +98,6 @@ router.post('/:groupId/messages', authServices.confirmUserCredentials, async fun
         foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { '_id': req.params.groupId }, [ 'users' ], req, res),
         newM = new Message({ username: sender.username, content: req.body.textareacontent }),
         newMessage = await dbopsServices.createEntryAndSave(Message, newM, req, res);
-        console.log(foundGroup);
         foundGroup.messages.push(newMessage);
         dbopsServices.savePopulatedEntry(foundGroup, req, res);
         foundGroup.users.forEach(function(receiver) {
@@ -89,19 +106,9 @@ router.post('/:groupId/messages', authServices.confirmUserCredentials, async fun
         res.redirect('back');
 });
 
-// Remove someone from his/her group
-// need to make it a PUT request by making the thing happen through a form instead of href
-router.get('/:groupId/remove', authServices.confirmUserCredentials, async function(req, res){
-    let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ 'group' ], req, res),
-        foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { 'name': foundUser.group.name }, [ ], req, res);
 
-    await dbopsServices.updateEntryAndSave(User, { 'username': req.params.username }, { $unset: {"group": null}});
-    notifServices.assignNotification(req.user.username, foundGroup.name, 'group-remove', req.params.username, req, res);
-    if (foundGroup.users.length == 1) { await dbopsServices.findEntryByIdAndRemove(Group, foundGroup._id, req, res) }
-    else { foundGroup.users.pull(foundUser) }
-    dbopsServices.savePopulatedEntry(foundGroup, req, res);
-    res.redirect('back');
-});
+
+
 
 // See a specific Group's members
 router.get('/:groupId', authServices.confirmUserCredentials, async function(req, res) {

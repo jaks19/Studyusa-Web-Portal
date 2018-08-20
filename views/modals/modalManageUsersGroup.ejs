@@ -11,27 +11,23 @@
             <div class="modal-body">
 
 
-
+                <form id='<%=group._id%>' action='/index/<%=user.username%>/groups/<%=group._id%>/add?_method=PUT&context=<%=group._id%>' method='POST'>
                 <div class='row'>
 
+                    <div class='col-xs-6' style='overflow:auto; max-height: 80%; margin-bottom: 5%;'>
 
-                    <div class='col-xs-6'  style='overflow:auto; max-height: 80%; margin-bottom: 5%;'>
 
-                        <form action='/index/<%=user.username%>/groups/<%=group._id%>/add?_method=PUT' method='POST'>
-                            <label>Available users</label>
+
+                            <label>Already in Group</label>
 
                             <table id="myTable" class="table user-list" >
-
                                 <tbody style='overflow:auto;'>
-
 
                                     <div class='row'>
                                         <div class='col-xs-12'>
 
-
-                                            <% freeUsers.forEach(function(thisUser){ %>
+                                            <% group.users.forEach(function(thisUser){ %>
                                                 <% d = new Date(thisUser.lastLoggedIn) %>
-
                                                     <tr>
                                                         <!-- Make ids be values to be used for search operation in search bar -->
                                                         <td style='padding-left: 20px;' id='<%=thisUser.name%>'>
@@ -43,15 +39,15 @@
                                                         </td>
 
                                                         <td id='<%=thisUser.name%>'>
-
-                                                            <div class="container">
-                                                              <div class="round">
-                                                                <input type="checkbox" id="checkbox" />
-                                                                <label for="checkbox"></label>
-                                                              </div>
+                                                            <div>
+                                                            <!-- <input type="checkbox" name="choice1" checked /> -->
+                                                            <!-- <input type="checkbox" name="choice2" class="error" /> -->
+                                                            <input type="checkbox" value='<%=thisUser._id%>' name="outgoing" class="intoout" />
                                                             </div>
-
-
+                                                            <!--
+                                                            class "error" is used to change gray color to red
+                                                            two different style, which is your favorite?
+                                                            -->
                                                         </td>
                                                     </tr>
 
@@ -63,22 +59,60 @@
                             </table>
 
 
-                        </form>
-
                     </div>
 
-                    <div class='col-xs-6'>
+
+
+
+
+                    <div class='col-xs-6'  style='overflow:auto; max-height: 80%; margin-bottom: 5%;'>
+
+                            <label>Available (Ungrouped) Users</label>
+
+                            <table id="myTable" class="table user-list" >
+                                <tbody style='overflow:auto;'>
+
+                                    <div class='row'>
+                                        <div class='col-xs-12'>
+
+                                            <% freeUsers.forEach(function(thisUser){ %>
+                                                <% d = new Date(thisUser.lastLoggedIn) %>
+                                                    <tr>
+                                                        <!-- Make ids be values to be used for search operation in search bar -->
+                                                        <td style='padding-left: 20px;' id='<%=thisUser.name%>'>
+                                                            <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
+                                                            <a href="#" class="user-link" style="font-size:20px;">
+                                                                <%=thisUser.name.slice(0,1).toUpperCase() + thisUser.name.slice(1)%>
+                                                            </a>
+                                                            <span class="user-subhead"><% if (thisUser.admin){ %>admin<% }else{ %>user <% } %> </span>
+                                                        </td>
+
+                                                        <td id='<%=thisUser.name%>'>
+                                                            <div>
+                                                            <!-- <input type="checkbox" name="choice1" checked /> -->
+                                                            <!-- <input type="checkbox" name="choice2" class="error" /> -->
+                                                            <input type="checkbox" name="incoming" value='<%=thisUser._id%>' class="neutral" />
+                                                            </div>
+                                                            <!--
+                                                            class "error" is used to change gray color to red
+                                                            two different style, which is your favorite?
+                                                            -->
+                                                        </td>
+                                                    </tr>
+
+                                                    <% });%>
+                                        </div>
+                                    </div>
+
+                                </tbody>
+                            </table>
+
+
                     </div>
 
                 </div>
-
-                <div class = 'row'>
-                    <div class='col-xs-12'>
-                        <div class='btn-submit'>
-                            <button type='submit' class="btn btn-success" style='border:0'> Confirm <span class="glyphicon glyphicon-plus-sign"></span></button>
-                        </div>
-                    </div>
-                    </div>
+                <button id='<%=group._id%>' type='submit' class="btn btn-final btn-success" style='border:0'> Confirm</button>
+                </form>
                 </div>
 
 
@@ -88,54 +122,130 @@
     </div>
 </div>
 
+<script>
+// Procedure: Pick up the checked (remove) and (add) lists
+// Hide them in the form being sent as soon as button is clicked, just before it submits
+
+// $('.btn-final').click(function(e){
+//
+//     var checkedNew = $('input.neutral');
+//     console.log(checkedNew);
+//     e.preventDefault();
+//     // var checkedOut = $('input.intoout');
+//     // ids_in = []
+//     // ids_out = []
+//     // for (var i = 0; i < checkedNew.length; i++) {
+//     //     if (checkedNew[i].checked){
+//     //         var new_input = $("<input>")
+//     //                        .attr("type", "checkbox")
+//     //                        .attr("checked", "true")
+//     //                        .attr("name", "incoming").val(checkedNew[i].id);
+//     //
+//     //         console.log(new_input);
+//     //         $('form#'+ $(e.target)[0].id).append(new_input)
+//     //     }
+//     // }
+//     // for (var i = 0; i < checkedOut.length; i++) {
+//     //     if (checkedOut[i].checked){
+//     //         var removed_input = $("<input>")
+//     //                        .attr("type", "checkbox")
+//     //                        .attr("checked", "true")
+//     //                        .attr("name", "outgoing").val(checkedOut[i].id);
+//     //
+//     //         console.log(removed_input);
+//     //         $('form#'+ $(e.target)[0].id).append(removed_input)
+//     //     }
+//     // }
+//     //
+//     // $('form#'+ $(e.target)[0].id).submit();
+//
+//     // We have the id_s and now we hide them in a html form
+//
+//     // button id is grp id:
+//     // console.log($(e.target)[0].id);
+//     // Form with that groupId:
+//     // console.log($('form#'+ $(e.target)[0].id))
+//     // Add list to the form action
+//
+//     // $('form#'+ $(e.target)[0].id).append(new_input)
+//
+//
+// });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
 <style>
-.round {
-  position: relative;
+
+input[type='checkbox'] {
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    -webkit-appearance: button;
+    border: none;
+    background: url(http://www.pixelslip.be/img/check.png) no-repeat 0 0 transparent;
+    background-color: #ccc;
+    width: 48px;
+    height: 20px;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,.2);
+    cursor: pointer;
+    position: relative;
+    transition: background-color 1s;
+}
+input[type='checkbox'].intoout{
+   background-color: #f3baac;
 }
 
-.round label {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  cursor: pointer;
-  height: 28px;
-  left: 0;
+input[type='checkbox'].neutral{
+   background-color: #98e098;
+}
+
+input[type='checkbox']:after{
+  content: "";
+  display: block;
   position: absolute;
   top: 0;
-  width: 28px;
+  left: 0;
+  width: 45%;
+  height: 80%;
+  background-color: #fdfdfd;
+  margin: 4%;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+
+  background: rgb(255,255,255);
+background: -moz-linear-gradient(top,  rgba(255,255,255,1) 0%, rgba(216,216,216,1) 100%);
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(216,216,216,1)));
+background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(216,216,216,1) 100%);
+background: -o-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(216,216,216,1) 100%);
+background: -ms-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(216,216,216,1) 100%);
+background: linear-gradient(to bottom,  rgba(255,255,255,1) 0%,rgba(216,216,216,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f3f3f3',GradientType=0 );
+ transition: .5s all;
 }
 
-.round label:after {
-  border: 2px solid #fff;
-  border-top: none;
-  border-right: none;
-  content: "";
-  height: 6px;
-  left: 7px;
-  opacity: 0;
-  position: absolute;
-  top: 8px;
-  transform: rotate(-45deg);
-  width: 12px;
+input[type='checkbox']:checked{
+  background-color: #2fbf2f;
 }
 
-.round input[type="checkbox"] {
-  visibility: hidden;
+input[type='checkbox'].intoout:checked{
+  background-color: #ec3824;
 }
 
-.round input[type="checkbox"]:checked + label {
-  background-color: #66bb6a;
-  border-color: #66bb6a;
+input[type='checkbox']:checked:after {
+  left: 45%;
 }
-
-.round input[type="checkbox"]:checked + label:after {
-  opacity: 1;
-}
-
-.container {
-  margin: 0 auto;
-}
-
 </style>
 
 

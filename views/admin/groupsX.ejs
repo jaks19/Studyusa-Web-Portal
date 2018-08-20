@@ -1,5 +1,6 @@
 <% include ../partials/headerUser %>
 
+
 <div class='new' align='center'>
     <input class="search" id="myInput" placeholder="Search for a Group" autofocus>
     <button class="sort-choosable"><a class='blend' href ="/index/<%=user.username%>">By name</a></button>
@@ -22,7 +23,7 @@
                                 <table id="myTable" class="table group-list">
                                     <thead >
                                         <tr>
-                                        <th style='padding-left: 20px;'><span>Groups</span></th>
+                                        <th style='padding-left: 20px;'><span>Groups </span>(<a href="/index/<%=user.username%>/groups" class="user-link">Create New</a>)</th>
                                         <th><span>Last Meeting</span></th>
                                         <th><span>Next Meeting</span></th>
                                         <th class="text-center"><span>Status (etc)</span></th>
@@ -63,8 +64,6 @@
                                                         <td id='<%=group.name%>' style="width: 20%;" class='main-td'>
 
                                                             <a href='/index/<%=user.username%>/groups/<%=group._id%>/messages' class=' btn btn-sm btn-primary glyphicon glyphicon-comment'></span></a>
-                                                            <a href="#add-<%=group._id%>" data-toggle="modal" data-target='#add-<%=group._id%>' class=' btn btn-sm btn-success glyphicon glyphicon-plus'></span></a>
-                                                            <% include ../modals/modalAddUsersToGroup %>
                                                             <a href="#users-<%=group._id%>" data-toggle="modal" data-target='#users-<%=group._id%>' class=' btn btn-sm btn-success glyphicon glyphicon-user'></span></a>
 
                                                             <a href='#delete-<%=group._id%>' data-toggle="modal" data-target="#delete-<%=group._id%>" class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span></a>
@@ -93,14 +92,12 @@
 <script>
 // Contexts for notifications etc at login
     $(document).ready(function(){
-        var context = $('#whistlerContext').val();
-        if (context == 'justLoggedIn') { $('#greet').modal('show') }
-        else if (context == 'invitation') { $('#invitationModal').modal('show') }
-
         // Trigger search on loading of page
         // $('#myInput').attr('value','groupA');
         // var e = jQuery.Event("keyup");
         // $("#myInput").trigger(e);
+
+
     });
 </script>
 
