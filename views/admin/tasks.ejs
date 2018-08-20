@@ -2,17 +2,11 @@
 
 
 <div align='center'>
-<% groups.forEach(function(group){ %>
-    <% include ../modals/modalManageUsersGroup %>
-<% });%>
-
-<% include ../modals/modalNewGroup %>
+<% include ../modals/modalNewTask %>
 </div>
 
 <div class='new' align='center'>
-    <input class="search" id="myInput" placeholder="Search for a Group" autofocus>
-    <button class="sort-choosable"><a class='blend' href ="/index/<%=user.username%>">By name</a></button>
-    <button class="sort-chosen">By Group</button>
+    <input class="search" id="myInput" placeholder="Search for a Task" autofocus>
 </div>
 
 <div class='row' style='padding: 2%;'>
@@ -28,12 +22,10 @@
                                 <table id="myTable" class="table group-list">
                                     <thead >
                                         <tr>
-                                        <th style='padding-left: 20px;'><span>Groups </span>(<a href="#new-group" class="user-link" data-toggle="modal" data-target='#new-group'>Create New</a>)</th>
-
-                                        <th><span>Last Meeting</span></th>
-                                        <th><span>Next Meeting</span></th>
+                                        <th style='padding-left: 20px;'><span>Tasks </span>(<a href="#new-task" class="user-link" data-toggle="modal" data-target='#new-task'>Create New</a>)</th>
+                                        <th><span>Created</span></th>
+                                        <th><span>Last Edited</span></th>
                                         <th class="text-center"><span>Status (etc)</span></th>
-                                        <th><span>Email</span></th>
                                         <th>&nbsp;</th>
                                         </tr>
                                     </thead>
@@ -42,40 +34,41 @@
                                         <div class='row'>
                                             <div class='col-xs-12'>
 
-                                                <% d = new Date(Date.now()) %>
-                                                <% groups.forEach(function(group){ %>
-                                                    <tr id='<%=group.name%>' class='groups-table'>
-                                                        <td id='<%=group.name%>' class='main-td' style='padding-left: 20px;'>
-                                                            <span class="group-subhead"><%= group.name %></span>
-                                                            <a href="/index/<%=user.username%>/groups/<%=group._id%>" id='<%=group.name%>' class="group-link">Expand (<%= group.users.length %>) member records</a>
+                                                <% tasks.reverse().forEach(function(task){ %>
+                                                    <% var d = new Date(task['dateCreated']); %>
+                                                    <% var d_edit = new Date(task['dateEdited']); %>
+                                                    <tr id='<%=task._id%>' class='groups-table main-td'>
+                                                        <td id='<%=task.title%>+<%=task.prompt%>' class='main-td' style='padding-left: 20px;'>
+                                                            <span class="group-subhead"><%= task.title %></span>
+                                                            <span class="group-link" style='font-size:14px; color: black; height:80px; overflow: auto;'><%= task.prompt.slice(0, 200); %>...</a>
                                                         </td>
-                                                        <td id='<%=group.name%>' class='main-td'>
+                                                        <td id='<%=task._id%>'>
                                                             <div class='comment'>
                                                             <span class='timestring text-muted '><%= d.toISOString() %></span>
                                                             </div>
                                                         </td>
-                                                        <td id='<%=group.name%>' class='main-td'>
+                                                        <td id='<%=task._id%>'>
                                                             <div class='comment'>
-                                                            <span class='timestring text-muted '><%= d.toISOString() %></span>
+                                                            <span class='timestring text-muted '><%= d_edit.toISOString() %></span>
                                                             </div>
                                                         </td>
-                                                        <td id='<%=group.name%>' class="text-center" class='main-td'>
+                                                        <td id='<%=task._id%>' class="text-center">
                                                             <span class="label label-default">pending</span>
                                                             <!--  TODO:Can use label-success for green, label-danger etc etc -->
                                                             <!--  Perhaps cool to use with the deadline/pace tracking system -->
                                                         </td>
-                                                        <td id='<%=group.name%>' class='main-td'>
-                                                            <a href="#">marlon@brando.com</a>
+
+                                                        <td id='<%=task._id%>' style="width: 20%;">
+                                                            <a href='#task-content<%=task['_id']%>' data-toggle="modal" data-target="#task-content<%=task['_id']%>" class=' btn btn-sm btn-primary glyphicon glyphicon-edit'></span></a>
+                                                            <% include ../modals/modalEditTask %>
+
+                                                            <a href='#task-users<%=task._id%>' data-toggle="modal" data-target="#task-users<%=task._id%>" class=' btn btn-sm btn-success glyphicon glyphicon-user'></span></a>
+                                                            <% include ../modals/modalManageUsersTask %>
+
+                                                            <a href='#task-delete<%=task['_id']%>' data-toggle="modal" data-target="#task-delete<%=task['_id']%>" class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span></a>
+                                                            <% include ../modals/modalDeleteTask %>
+
                                                         </td>
-                                                        <td id='<%=group.name%>' style="width: 20%;" class='main-td'>
-
-                                                            <a href='/index/<%=user.username%>/groups/<%=group._id%>/messages' class=' btn btn-sm btn-primary glyphicon glyphicon-comment'></span></a>
-                                                            <a href="#users-<%=group._id%>" data-toggle="modal" data-target='#users-<%=group._id%>' class=' btn btn-sm btn-success glyphicon glyphicon-user'></span></a>
-
-                                                            <a href='#delete-<%=group._id%>' data-toggle="modal" data-target="#delete-<%=group._id%>" class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span></a>
-                                                            <% include ../modals/modalDeleteGroup %>
-                                                        </td>
-
                                                     </tr>
 
                                                 <% });%>
@@ -93,25 +86,6 @@
 
     </div>
 </div>
-
-
-<script>
-// Contexts for notifications etc at login
-    $(document).ready(function(){
-        // Trigger search on loading of page
-        // $('#myInput').attr('value','groupA');
-        // var e = jQuery.Event("keyup");
-        // $("#myInput").trigger(e);
-
-
-    });
-</script>
-
-<script>
-// Some primitive css
-      $('#dashboard').css("background-color", "#FFFFFF");
-      $('#dashboardtxt').css("color", "#0084b4");
-</script>
 
 <script>
 
@@ -131,18 +105,15 @@ $('#myInput').keyup(function () {
 
   for (i = 0; i < trs.length; i++) {
     tds = trs[i].getElementsByTagName("td");
-    if (tds.length > 0){
-        // Only pick the tds with values to be compared to search term
-        if (tds[0].className === "main-td"){
-            if (tds[0].id.toUpperCase().indexOf(filter) > -1) {
-                // The whole tr with that td is deleted if not relevant
-                trs[i].style.display = "";
-            }
-            else {
-                trs[i].style.display = "none";
+    for (j = 0; j < tds.length; j++) {
+        console.log(tds[j].id)
+        // Loop all tds as will use name, group name etc all of them to search
+      if (tds[j].id.toUpperCase().indexOf(filter) > -1) {
+          trs[i].style.display = "";
+          break;
+      }
 
-            }
-        }
+      else { trs[i].style.display = "none"; }
     }
   }
 });

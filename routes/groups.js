@@ -20,7 +20,7 @@ router.get('/', authServices.confirmUserCredentials, async function(req, res) {
         freeUsers = await dbopsServices.findAllEntriesAndPopulate(User, { 'group': null }, [ ], req, res),
         users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res);
 
-    res.render('./admin/groupsX', {
+    res.render('./admin/groups', {
         user: req.user,
         freeUsers: freeUsers,
         users: users,

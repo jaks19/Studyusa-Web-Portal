@@ -65,7 +65,7 @@ app.use('/index/:username/groups', groupRoutes),
 app.use('/index/:username/notifs', notifRoutes);
 app.use('/index/:username/invitations', invitationRoutes);
 
-app.use('/tasks', taskRoutes);
+app.use('/index/:username/tasks', taskRoutes);
 
 // Wandering Routes
 app.get('/*', function(req, res){

@@ -4,14 +4,14 @@
 
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"></button>
-                <h4 class="modal-title">Assigning the Task '<%=task.name%>' to Users</h4>
+                <h4 class="modal-title">Assigning the Task '<%=task.title%>' to Users</h4>
             </div>
 
 
             <div class="modal-body">
 
 
-                <form id='<%=task._id%>' action='/tasks/<%=task._id%>/users?_method=PUT' method='POST'>
+                <form id='<%=task._id%>' action='/index/<%=user.username%>/tasks/<%=task._id%>/users?_method=PUT' method='POST' align='center'>
                 <div class='row'>
 
                     <div class='col-xs-6' style='overflow:auto; height: 80%; margin-bottom: 5%;'>

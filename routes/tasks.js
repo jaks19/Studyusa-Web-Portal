@@ -1,5 +1,8 @@
 // For routing to /tasks/ pages which are admin-only
 
+// Ref: a task stores everything, users, files, comments
+// When loading a task for a user, look at files in task and filter
+
 // Packages
 let express = require("express"),
     authServices = require('../services/auth-services'),
@@ -16,8 +19,8 @@ let User = require("../models/user"),
 
 let router = express.Router({ mergeParams: true });
 
-// Add/remove users to a Task
-router.put('/:taskId/users', authServices.confirmUserCredentials, async function(req, res) {
+// Add/remove users to a Task OK
+router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
     let [incomingIds, outgoingIds] = taskServices.getCheckedUsers(req, res),
         foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'users' ], req, res),
         incoming = []; // Keep an array of incoming User objects too for including in group
@@ -53,21 +56,17 @@ router.put('/:taskId/users', authServices.confirmUserCredentials, async function
     res.redirect('back');
 });
 
-
-
-
-// edit content of a task
+// edit content of a task OK
 router.put('/:taskId/content', authServices.isAdmin, async function(req, res) {
     let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'users' ], req, res),
         data = await taskServices.getTaskData(req, res);
 
     foundTask.title = data.title;
     foundTask.prompt = data.prompt;
+    foundTask.dateEdited = Date.now();
     dbopsServices.savePopulatedEntry(foundTask, req, res);
     res.redirect('back');
 });
-
-
 
 // See a task
 router.get('/:taskId/:userId', authServices.confirmUserIdentity, async function(req, res) {
@@ -97,29 +96,39 @@ router.get('/:taskId/:userId', authServices.confirmUserIdentity, async function(
 
 });
 
-// Delete
+// Delete OK
 router.delete('/:taskId', authServices.isAdmin, async function(req, res) {
     await dbopsServices.findEntryByIdAndRemove(Task, req.params.taskId, req, res);
     res.redirect('back');
 });
 
-// All Tasks View
-router.get('/', authServices.isAdmin, async function(req, res) {
+// All Tasks View OK
+router.get('/', authServices.confirmUserIdentity, async function(req, res) {
 
     // Fetch tasks
     let tasks = await dbopsServices.findAllEntriesAndPopulate(Task, { }, ['files', 'comments', 'users'], req, res),
-        users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res);
+        users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res),
+        user = req.user;
 
-    res.render('tasksX', {
-        user: req.user,
-        users: users,
-        tasks: tasks,
-        loggedIn: true
-    });
+    if (user.admin){
+        res.render('./admin/tasks', {
+            user: user,
+            users: users,
+            tasks: tasks,
+            loggedIn: true
+        });
+    } else {
+        res.render('tasks', {
+            user: user,
+            users: users,
+            tasks: tasks,
+            loggedIn: true
+        });
+    }
 });
 
 
-// All Tasks View
+// New Task Creation OK
 router.post('/', authServices.isAdmin, async function(req, res) {
     let data = await taskServices.getTaskData(req, res),
         newTaskEntryData = new Task({
@@ -128,9 +137,7 @@ router.post('/', authServices.isAdmin, async function(req, res) {
         }),
         newTask = await dbopsServices.createEntryAndSave(Task, newTaskEntryData, req, res, true);
 
-        // Saving etc properly up to here :)
-
-    res.redirect('/tasks');
+    res.redirect('back');
 
 });
 

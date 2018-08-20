@@ -32,7 +32,7 @@
                                         <div class='row'>
                                             <div class='col-xs-12'>
 
-                                                <% users.forEach(function(thisUser){ %>
+                                                <% users.reverse().forEach(function(thisUser){ %>
                                                 <% d = new Date(thisUser.lastLoggedIn) %>
 
                                                     <tr>

@@ -8,7 +8,7 @@
             </div>
 
             <div class="modal-body">
-                <form action='/tasks/' method='POST' enctype='multipart/form-data'>
+                <form action='/index/<%=user.username%>/tasks/' method='POST' enctype='multipart/form-data'>
                     <h4 style='text-align:left;' class="modal-title">Title</label>
                     <input type="text" class="form-control" placeholder="Task Title" name='title' required style='margin-bottom:5%;'>
                     <h4 style='text-align:left;' class="modal-title">Prompt</label>

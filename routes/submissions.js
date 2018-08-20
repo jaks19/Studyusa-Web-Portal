@@ -44,7 +44,7 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
     res.redirect('/index/' + req.params.username);
 });
 
-// Show Submission
+// Show Submission DEPRECATED TO SHOW A TASK
 router.get('/:id', authServices.confirmUserCredentials, async function(req, res) {
     let foundSub = await dbopsServices.findOneEntryAndPopulate(Submission, { '_id': req.params.id }, [ 'user', 'messages', 'adds' ], req, res);
 

@@ -5,7 +5,6 @@ var fileSchema = new mongoose.Schema({
     author: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
     recipient: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
     date: {type: Date, default: Date.now},
-    task: {type: mongoose.Schema.Types.ObjectId, ref: "Task"}
 }, {
     usePushEach: true
 });
