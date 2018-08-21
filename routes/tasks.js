@@ -69,9 +69,9 @@ router.put('/:taskId/content', authServices.isAdmin, async function(req, res) {
 });
 
 // See a task
-router.get('/:taskId/:userId', authServices.confirmUserIdentity, async function(req, res) {
+router.get('/:taskId', authServices.confirmUserCredentials, async function(req, res) {
     let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'users', 'files', 'comments'], req, res),
-        user = req.user,
+        user = await dbopsServices.findOneEntryAndPopulate(User, {'_id': req.user._id}, [ 'tasks' ], req, res),
         users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res),
         client = await dbopsServices.findOneEntryAndPopulate(User, { _id: req.params.taskId }, [], req, res);
 
@@ -86,8 +86,7 @@ router.get('/:taskId/:userId', authServices.confirmUserIdentity, async function(
         });
     } else {
         res.render('viewTaskUser', {
-            user: req.user,
-            client: req.user,
+            user: user,
             task: foundTask,
             loggedIn: true
         });
@@ -98,17 +97,26 @@ router.get('/:taskId/:userId', authServices.confirmUserIdentity, async function(
 
 // Delete OK
 router.delete('/:taskId', authServices.isAdmin, async function(req, res) {
+    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { '_id': req.params.taskId }, [ 'users' ], req, res),
+    foundUsers = foundTask.users;
+    for (var i = 0; i < foundTask.users.length; i++) {
+        let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { '_id': foundTask.users[i]._id }, [ 'tasks' ], req, res);
+        foundUser.tasks = foundUser.tasks.filter( task => !(task._id === foundTask._id) );
+        await dbopsServices.savePopulatedEntry(foundUser, req, res);
+        // notifServices.assignNotification(req.user.username, foundGroup.name, 'group-remove', req.params.username, req, res);
+    }
+
     await dbopsServices.findEntryByIdAndRemove(Task, req.params.taskId, req, res);
     res.redirect('back');
 });
 
 // All Tasks View OK
-router.get('/', authServices.confirmUserIdentity, async function(req, res) {
+router.get('/', authServices.confirmUserCredentials, async function(req, res) {
 
     // Fetch tasks
     let tasks = await dbopsServices.findAllEntriesAndPopulate(Task, { }, ['files', 'comments', 'users'], req, res),
         users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res),
-        user = req.user;
+        user = await dbopsServices.findOneEntryAndPopulate(User, {'_id': req.user._id}, [ 'tasks' ], req, res);
 
     if (user.admin){
         res.render('./admin/tasks', {
@@ -120,8 +128,6 @@ router.get('/', authServices.confirmUserIdentity, async function(req, res) {
     } else {
         res.render('tasks', {
             user: user,
-            users: users,
-            tasks: tasks,
             loggedIn: true
         });
     }

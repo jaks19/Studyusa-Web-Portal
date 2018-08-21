@@ -1,10 +1,5 @@
 <% include ./partials/headerUser %>
 
-
-<div align='center'>
-<% include ./modals/modalNewTask %>
-</div>
-
 <div class='new' align='center'>
     <input class="search" id="myInput" placeholder="Search for a Task" autofocus>
 </div>
@@ -22,10 +17,10 @@
                                 <table id="myTable" class="table group-list">
                                     <thead >
                                         <tr>
-                                        <th style='padding-left: 20px;'><span>Tasks </span>(<a href="#new-task" class="user-link" data-toggle="modal" data-target='#new-task'>Create New</a>)</th>
+                                        <th style='padding-left: 20px;'><span>Tasks </span></th>
                                         <th><span>Created</span></th>
-                                        <th><span>Last Edited</span></th>
-                                        <th class="text-center"><span>Status (etc)</span></th>
+                                        <th><span>Next detail</span></th>
+                                        <th class="text-center"><span>Next Detail (etc)</span></th>
                                         <th>&nbsp;</th>
                                         </tr>
                                     </thead>
@@ -34,13 +29,14 @@
                                         <div class='row'>
                                             <div class='col-xs-12'>
 
-                                                <% tasks.reverse().forEach(function(task){ %>
+                                                <% user.tasks.reverse().forEach(function(task){ %>
                                                     <% var d = new Date(task['dateCreated']); %>
                                                     <% var d_edit = new Date(task['dateEdited']); %>
+
                                                     <tr id='<%=task._id%>' class='groups-table main-td'>
-                                                        <td id='<%=task.title%>+<%=task.prompt%>' class='main-td' style='padding-left: 20px;'>
+                                                        <td id='<%=task.title%>' + ' ' + '<%=task.prompt%>' style='padding-left: 20px;'>
                                                             <span class="group-subhead"><%= task.title %></span>
-                                                            <span class="group-link" style='font-size:14px; color: black; height:80px; overflow: auto;'><%= task.prompt.slice(0, 200); %>...</a>
+                                                            <span class="group-link" style='font-size:14px; color: black; height:80px; overflow: auto;'><%= task.prompt.slice(0, 200); %>...</span>
                                                         </td>
                                                         <td id='<%=task._id%>'>
                                                             <div class='comment'>
@@ -59,15 +55,7 @@
                                                         </td>
 
                                                         <td id='<%=task._id%>' style="width: 20%;">
-                                                            <a href='#task-content<%=task['_id']%>' data-toggle="modal" data-target="#task-content<%=task['_id']%>" class=' btn btn-sm btn-primary glyphicon glyphicon-edit'></span></a>
-                                                            <% include ./modals/modalEditTask %>
-
-                                                            <a href='#task-users<%=task._id%>' data-toggle="modal" data-target="#task-users<%=task._id%>" class=' btn btn-sm btn-success glyphicon glyphicon-user'></span></a>
-                                                            <% include ./modals/modalManageUsersTask %>
-
-                                                            <a href='#task-delete<%=task['_id']%>' data-toggle="modal" data-target="#task-delete<%=task['_id']%>" class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span></a>
-                                                            <% include ./modals/modalDeleteTask %>
-
+                                                            <a href='/index/<%=user.username%>/tasks/<%=task._id%>' class="group-link"> See my work </a>
                                                         </td>
                                                     </tr>
 
@@ -106,7 +94,6 @@ $('#myInput').keyup(function () {
   for (i = 0; i < trs.length; i++) {
     tds = trs[i].getElementsByTagName("td");
     for (j = 0; j < tds.length; j++) {
-        console.log(tds[j].id)
         // Loop all tds as will use name, group name etc all of them to search
       if (tds[j].id.toUpperCase().indexOf(filter) > -1) {
           trs[i].style.display = "";

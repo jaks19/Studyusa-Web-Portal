@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+let User = require("./user");
 
 var taskSchema = new mongoose.Schema({
     title: {type: String, required: true},
@@ -19,3 +20,6 @@ var taskSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("Task", taskSchema);
+
+//  Questions fr finalizing mongo:
+// Populating when item nested in an object?

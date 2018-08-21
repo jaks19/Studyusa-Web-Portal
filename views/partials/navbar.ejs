@@ -19,9 +19,9 @@
                   <li><a href='/index/new' style='color: #FFFFFF;'>Sign Up</a></li>
                 <% } else { %>
                   <% if (!user.admin){ %>
-                    <li id='dashboard' ><a href='/index/<%=client.username%>' id='dashboardtxt' style='color: #FFFFFF;'>Dashboard</a></li>
-                    <li id='notifs'><a href='/index/<%=client.username%>/notifs' id='notifstxt' style='color: #FFFFFF;'>Notifications</a></li>
-                    <li id='pay'><a href='/index/<%=client.username%>/pay' id='paytxt' style='color: #FFFFFF;'>Payment</a></li>
+                    <li id='dashboard' ><a href='/index/<%=user.username%>' id='dashboardtxt' style='color: #FFFFFF;'>Dashboard</a></li>
+                    <li id='notifs'><a href='/index/<%=user.username%>/notifs' id='notifstxt' style='color: #FFFFFF;'>Notifications</a></li>
+                    <li id='pay'><a href='/index/<%=user.username%>/pay' id='paytxt' style='color: #FFFFFF;'>Payment</a></li>
                     <li id='tasks'><a href='/index/<%=user.username%>/tasks' style='color: #FFFFFF;'>Tasks</a></li>
                     <li id='messages' class="dropdown">
                       <a href="#" id='messagestxt' class="dropdown-toggle" style='color: #FFFFFF;' data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -29,10 +29,10 @@
                         <span class="caret"></span>
                       </a>
                       <ul class="dropdown-menu" style='padding:0px;'>
-                        <li id='personal' style='background: #0084b4;'><a href='/index/<%=client.username%>/messages/personal' align='center'  style='color: #FFFFFF;' id='personaltxt'>Personal</a></li>
+                        <li id='personal' style='background: #0084b4;'><a href='/index/<%=user.username%>/messages/personal' align='center'  style='color: #FFFFFF;' id='personaltxt'>Personal</a></li>
                         <% if(typeof user.group != 'undefined'){ %>
                             <%console.log(user.group)%>
-                          <li id='group' style='background: #0084b4;'><a href='/index/<%=client.username%>/groups/<%=user.group._id%>/messages' align='center' style='color: #FFFFFF;' id='grouptxt'>Group</a></li>
+                          <li id='group' style='background: #0084b4;'><a href='/index/<%=user.username%>/groups/<%=user.group._id%>/messages' align='center' style='color: #FFFFFF;' id='grouptxt'>Group</a></li>
                         <% } %>
                       </ul>
                     </li>

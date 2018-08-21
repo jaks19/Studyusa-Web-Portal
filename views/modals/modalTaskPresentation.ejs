@@ -1,0 +1,44 @@
+<div class="modal fade bs-example-modal-lg" id="presentation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <div class='row' align='center' style='margin-bottom:2%;'>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                    <h1 class="modal-title"><%=task.title%></h1>
+                </div>
+
+                <div align='left' class="twt-wrapper" style='width:100%;'>
+                    <div class="panel panel-info" style=' height: 60%; overflow: auto;'>
+                        <div class="panel-body" style='border: 0.5px #aee3ee;'>
+                            <p> <%= task.prompt %> </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+h1 {
+	color: #323B3C;
+	font-family: 'PT Sans Narrow';
+	font-size: 30px;
+	font-weight: 400;
+	line-height: 60px;
+	letter-spacing: 5px;
+	margin-bottom: 48px;
+	text-transform: uppercase;
+}
+
+p {
+	color: #516163;
+	font-family: 'PT Sans';
+	font-size: 16px;
+	font-weight: 300;
+	line-height: 36px;
+	margin-bottom: 36px;
+}
+</style>

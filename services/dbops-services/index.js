@@ -4,6 +4,12 @@ require("babel-polyfill")
 
 var dbopsServices = {};
 
+// A mongoose CRUD operation occurs immediately then provides a callback when done
+// Instead, can also wrap the run in a promise that is returned once the run is completed
+// So we can run the wrapper and await the promise, only continuing when promise returned
+
+// This lib makes it easy to just change or mongoose versions in the back
+
 dbopsServices.findOneEntryAndPopulate = async function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req, res) {
   let entry = model.findOne(entryRequirement);
   if (fieldsArray.length > 0) {
@@ -77,13 +83,19 @@ dbopsServices.updateEntryAndSave = async function updateEntryAndSave(model, entr
     }
 }
 
+function promiseToSaveEntry(newEntry){
+  return new Promise(function (resolve, reject) {
+    newEntry.save( function(error, data){
+        if (error) { reject(error) }
+        else { resolve(data) }
+    });
+  });
+}
+
+
 dbopsServices.savePopulatedEntry = async function savePopulatedEntry(populatedEntry, req, res) {
-
-
-
-    try {
-          await populatedEntry.save();
-      } catch (err) {
+    try { await promiseToSaveEntry(populatedEntry) }
+    catch (err) {
           req.flash('error', err);
           console.log('the full', err);
           return;
@@ -118,8 +130,7 @@ dbopsServices.findEntryByIdAndRemove = async function findEntryByIdAndRemove(mod
   try {
     await promiseTofindEntryByIdAndRemove(model, id, req, res);
     req.flash('success', 'Deletion Successful');
-  }
-  catch (error) {
+  } catch (error) {
       req.flash('error', 'Could not remove entry from the database')
   }
   return;

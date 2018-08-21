@@ -31,6 +31,7 @@ app.use(passport.session());    // Session tracking (Passport sees if user still
 passport.use(new LocalStrategy(User.authenticate())); //Strategy on how to authenticate. Provided in library passport-local-mongoose
 passport.serializeUser(User.serializeUser()); // Provide Hash/unhash method (already written in passport-local-mongoose)
 passport.deserializeUser(User.deserializeUser()); // Method for reverse of above (same lib: passport-local-mongoose)
+// Right now req.user has a user with nothing populated, if wanted could change deserialize to populate when doing so (left for now, see tasks routes for viewng tasks as a user for e.g.)
 
 app.use(function(req, res, next){
     res.locals.error = req.flash('error');
@@ -42,7 +43,7 @@ app.use(function(req, res, next){
 var
     authRoutes          = require('./routes/auth'),
     userRoutes          = require('./routes/users'),
-    commentsRoutes      = require('./routes/comments'),
+    taskCommentsRoutes  = require('./routes/task-comments'),
     addsRoutes          = require('./routes/adds'),
     submissionRoutes    = require('./routes/submissions'),
     paymentRoutes       = require('./routes/payments'),
@@ -55,11 +56,11 @@ var
 
 app.use(authRoutes),
 app.use('/index', userRoutes);
-app.use('/index/:username/submit/:id/comments', commentsRoutes);
-app.use('/index/:username/submit/:id/adds', addsRoutes);
-app.use('/index/:username/submit/:id/s3/:subTitle', amazons3Routes);
-app.use('/index/:username/submit', submissionRoutes);
-app.use('/index/:username/pay', paymentRoutes),
+app.use('/index/:username/tasks/:id/comments', taskCommentsRoutes);
+// app.use('/index/:username/submit/:id/adds', addsRoutes);
+// app.use('/index/:username/submit/:id/s3/:subTitle', amazons3Routes);
+// app.use('/index/:username/submit', submissionRoutes);
+// app.use('/index/:username/pay', paymentRoutes),
 app.use('/index/:username/messages', messageRoutes),
 app.use('/index/:username/groups', groupRoutes),
 app.use('/index/:username/notifs', notifRoutes);

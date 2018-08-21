@@ -1,16 +1,25 @@
 <% include ./partials/headerUser %>
 
+<% include ./modals/modalTaskPresentation %>
+
+<div class='row' align='center'>
+    <h1 style='display: inline;'>Commmon App Essay</h1>
+    <a href='#presentation' data-toggle="modal" data-target='#presentation'>
+        <h5 style='display: inline;' class='user-link'>  (View Prompt and Instructions)</h5>
+    </a>
+</div>
+
 <div class='row'>
 
 
 
-    <div class='col-md-3 col-md-offset-1 col-xs-12' align='center' style='max-width:100%; margin-bottom:10%;'>
+    <div class='col-sm-4 col-sm-offset-1 col-xs-12' align='center' style='max-width:100%; padding: 3%;'>
         <% include ./partials/taskFileListOfAUser %>
     </div>
 
 
 
-    <div class="col-md-3 col-md-offset-1 col-xs-12" style='max-width:100%; margin-bottom:10%;'>
+    <div class="col-sm-6 col-xs-12" style='max-width:100%; padding: 3%;'>
         <% include ./partials/taskComments %>
     </div>
 
