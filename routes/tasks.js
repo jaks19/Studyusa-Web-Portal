@@ -14,7 +14,6 @@ let express = require("express"),
 // Models
 let User = require("../models/user"),
     Task = require("../models/task"),
-    Feedback = require("../models/feedback"),
     File = require("../models/file");
 
 let router = express.Router({ mergeParams: true });
@@ -31,7 +30,7 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
             let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': incomingIds[i] }, [ 'tasks' ], req, res);
             incoming.push(checkedUserEntry);
             checkedUserEntry.tasks = checkedUserEntry.tasks.concat([foundTask]);
-            dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
+            await dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
             // notifServices.assignNotification(req.user.username, foundGroup.name, 'group-add', checkedUserEntry.username, req, res);
         }
     }
@@ -41,7 +40,7 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
         for (var i = 0; i < outgoingIds.length; i++) {
             let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { '_id': outgoingIds[i] }, [ 'tasks' ], req, res);
             foundUser.tasks = foundUser.tasks.filter( task => !(task._id === String(foundTask._id)) );
-            dbopsServices.savePopulatedEntry(foundUser, req, res);
+            await dbopsServices.savePopulatedEntry(foundUser, req, res);
             // notifServices.assignNotification(req.user.username, foundGroup.name, 'group-remove', req.params.username, req, res);
         }
     }
@@ -64,7 +63,7 @@ router.put('/:taskId/content', authServices.isAdmin, async function(req, res) {
     foundTask.title = data.title;
     foundTask.prompt = data.prompt;
     foundTask.dateEdited = Date.now();
-    dbopsServices.savePopulatedEntry(foundTask, req, res);
+    await dbopsServices.savePopulatedEntry(foundTask, req, res);
     res.redirect('back');
 });
 
@@ -75,7 +74,7 @@ router.get('/:taskId', authServices.confirmUserCredentials, async function(req, 
         users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res),
         client = await dbopsServices.findOneEntryAndPopulate(User, { _id: req.params.taskId }, [], req, res);
 
-    console.log('HIT');
+    console.log(user);
     if (user.admin){
         res.render('viewTaskAdmin', {
             user: req.user,
@@ -85,6 +84,7 @@ router.get('/:taskId', authServices.confirmUserCredentials, async function(req, 
             loggedIn: true
         });
     } else {
+        console.log(foundTask);
         res.render('viewTaskUser', {
             user: user,
             task: foundTask,

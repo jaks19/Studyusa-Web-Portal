@@ -1,8 +1,0 @@
-<div class="media-body" style='float: left; max-width:80%;'>
-    <strong style='margin-left:5%;' class="text-success"> <%=comment['username']%> </strong>
-    <div class = 'comment' style='margin-left: 5%;'>
-        <p> <%= comment['content'] %> </p>
-        <% var d = new Date(comment['date']) %>
-        <span class='timestring text-muted '><%= d.toISOString() %></span>
-    </div>
-</div>  

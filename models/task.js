@@ -1,5 +1,4 @@
 var mongoose = require("mongoose");
-let User = require("./user");
 
 var taskSchema = new mongoose.Schema({
     title: {type: String, required: true},
@@ -10,7 +9,7 @@ var taskSchema = new mongoose.Schema({
         {type: mongoose.Schema.Types.ObjectId, ref: "File"}
             ],
     comments: [
-                {type: mongoose.Schema.Types.ObjectId, ref: "Comment"}
+        {type: mongoose.Schema.Types.ObjectId, ref: "Commentary"}
             ],
     users: [
                 {type: mongoose.Schema.Types.ObjectId, ref: "User"}
@@ -22,4 +21,4 @@ var taskSchema = new mongoose.Schema({
 module.exports = mongoose.model("Task", taskSchema);
 
 //  Questions fr finalizing mongo:
-// Populating when item nested in an object?
+// 1  Populating when item nested in an object?

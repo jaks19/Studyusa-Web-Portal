@@ -12,4 +12,18 @@ var commentarySchema = new mongoose.Schema({
     usePushEach: true
 });
 
-module.exports = mongoose.model("Comment", commentarySchema);
+
+// Too deep to populate users' tasks then task comments then comment Author, so use a pre for now until update mongoose
+
+var autoPopulateLead = function(next) {
+  this.populate('author');
+  next();
+};
+
+commentarySchema.
+  pre('findOne', autoPopulateLead).
+  pre('find', autoPopulateLead);
+
+
+
+module.exports = mongoose.model("Commentary", commentarySchema);

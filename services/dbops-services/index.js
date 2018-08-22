@@ -51,7 +51,10 @@ function promiseToCreateEntry(model, modelObjectWithData){
 
 dbopsServices.createEntryAndSave = async function createEntryAndSave(model, modelObjectWithData, req, res, save = true) {
     var newEntry;
-    try { newEntry = await promiseToCreateEntry(model, modelObjectWithData) }
+    try {
+        newEntry = await promiseToCreateEntry(model, modelObjectWithData);
+        return newEntry;
+    }
     catch(error) {
       req.flash('error', 'error creating entry');
       res.redirect('back');
@@ -60,9 +63,9 @@ dbopsServices.createEntryAndSave = async function createEntryAndSave(model, mode
     if (save) {
       newEntry.save(function(error, data){
         if (error){ req.flash('error', error) }
+        return data;
       });
     }
-    return newEntry;
 }
 
 function promiseToUpdateEntryAndSave(model, entryRequirement, changes){
@@ -94,11 +97,11 @@ function promiseToSaveEntry(newEntry){
 
 
 dbopsServices.savePopulatedEntry = async function savePopulatedEntry(populatedEntry, req, res) {
-    try { await promiseToSaveEntry(populatedEntry) }
+    let entry;
+    try { entry = await promiseToSaveEntry(populatedEntry); }
     catch (err) {
           req.flash('error', err);
           console.log('the full', err);
-          return;
       }
     }
 

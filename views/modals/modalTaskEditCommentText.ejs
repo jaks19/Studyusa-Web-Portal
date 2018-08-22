@@ -1,4 +1,4 @@
-<div class="modal fade bs-example-modal-lg" id="edit<%=comment['_id']%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade bs-example-modal-lg" id="edit-<%=comment._id%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg" align='center' role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -6,9 +6,9 @@
                 <h5 style='color:#2563ab;' class="modal-title" id="myModalLabel">Edit Comment</h5>
             </div>
             <div class="modal-body">
-                <form  method='POST' action='/index/<%=client.username%>/submit/<%=sub['_id']%>/comments/<%=comment['_id']%>?_method=PUT'>
+                <form  method='POST' action='/index/<%=user.username%>/tasks/<%=task._id%>/comments/<%=comment._id%>?_method=PUT'>
                     <textarea class="form-control" name='newText' rows="3" style='resize:none'><%=comment['content']%></textarea> <br>
-                    <button type="submit" class='btn btn-xs btn-success'>OK <span class='glyphicon glyphicon-ok'></span></button>
+                    <button type="submit" class='btn btn-sm btn-success'>OK <span class='glyphicon glyphicon-ok'></span></button>
                 </form>
             </div>
         </div>
