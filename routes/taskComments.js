@@ -6,7 +6,8 @@ var express = require("express"),
 
 // Models
 var Task = require("../models/task"),
-    Commentary = require("../models/commentary");
+    Commentary = require("../models/commentary"),
+    User = require("../models/user");
 
 let router = express.Router({ mergeParams: true });
 
@@ -52,19 +53,22 @@ router.delete('/:commentId', authServices.confirmUserCredentials, async function
 // New Comment
 router.post('/', authServices.confirmUserCredentials, async function(req, res) {
     let content = req.body.textareacontent,
-        foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { '_id': req.params.taskId }, [ 'users' ], req, res);
+        foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { '_id': req.params.taskId }, [ 'users' ], req, res),
+        newCommentObject,
+        recipient;
 
-    // Admin needs recipient, else no recipient, since admin sends to everyone in a task
-    let newC;
-    if (!req.user.admin) { newC = new Commentary({ author: req.user, content: content }); }
-    else { newC = new Commentary({ author: req.user, recipient: req.params.username, content: content }); }
-    await dbopsServices.createEntryAndSave(Commentary, newC, req, res, true); // does not retun the object
+    if (req.user.admin){
+        recipient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ ], req, res);
+        newCommentObject = new Commentary({ author: req.user, recipient: recipient, content: content })
+    } else {
+        newCommentObject = new Commentary({ author: req.user, content: content })
+    }
 
-    let newComment = await dbopsServices.findOneEntryAndPopulate(Commentary, { '_id': newC._id }, [ 'author' ], req, res);
+    let newComment = await dbopsServices.createEntryAndSave(Commentary, newCommentObject, req, res, true); // does not retun the object
     foundTask.comments = foundTask.comments.concat([newComment]);
     await dbopsServices.savePopulatedEntry(foundTask, req, res);
     // notifServices.assignNotification(req.user.username, foundSub.title, 'comment', req.params.username, req, res);
-    res.redirect('/index/' + req.user.username + '/tasks/' + foundTask._id);
+    res.redirect('back');
 });
 
 module.exports = router;

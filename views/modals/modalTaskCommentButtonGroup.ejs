@@ -1,24 +1,23 @@
-<% if(user['username'] == comment['author'] && user.admin){ %>
-    <div class="dropdown pull-right" style='float: left; margin-right:2%;' >
-        <button class="btn btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-           &#9662;
-        </button>
-        <ul class="dropdown-menu" style='position: absolute;'>
-            <li><a href='#edit-<%=comment._id%>' data-toggle="modal" data-target="#edit-<%=comment._id%>">Edit</a></li>
-            <li><a href="#delete-<%=comment._id%>" data-toggle="modal" data-target="#delete-<%=comment._id%>">Delete</a></li>
-        </ul>
-    </div>
-    <% include ../modals/modalTaskDeleteComment %>
-<% } else if (new Date(comment['date']) > (Date.now() - (5*60*1000))) { %>
+<% let show_edit_box = false; %>
 
-    <div class="dropdown pull-right" style='float: left; margin-right:2%;' >
+<% if(String(viewer._id) === String(comment.author._id)){ %>
+    <% if (viewer.admin) { show_edit_box = true } %>
+    <% if (new Date(comment['date']) > (Date.now() - (5*60*1000))) { show_edit_box = true } %>
+
+<% } %>
+
+<% if (show_edit_box) { %>
+
+    <div class="dropdown pull-right">
         <button class="btn btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
            &#9662;
         </button>
-        <ul class="dropdown-menu" style='position: absolute;'>
+        <ul class="dropdown-menu">
             <li><a href='#edit-<%=comment._id%>' data-toggle="modal" data-target="#edit-<%=comment._id%>">Edit</a></li>
             <li><a href="#delete-<%=comment._id%>" data-toggle="modal" data-target="#delete-<%=comment._id%>">Delete</a></li>
         </ul>
     </div>
     <% include ../modals/modalTaskDeleteComment %>
+    <% include ../modals/modalTaskEditCommentText %>
+
 <% } %>

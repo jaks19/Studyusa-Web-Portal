@@ -70,29 +70,14 @@ router.put('/:taskId/content', authServices.isAdmin, async function(req, res) {
 // See a task
 router.get('/:taskId', authServices.confirmUserCredentials, async function(req, res) {
     let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'users', 'files', 'comments'], req, res),
-        user = await dbopsServices.findOneEntryAndPopulate(User, {'_id': req.user._id}, [ 'tasks' ], req, res),
-        users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res),
-        client = await dbopsServices.findOneEntryAndPopulate(User, { _id: req.params.taskId }, [], req, res);
+        user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.params.username}, [ 'tasks' ], req, res);
 
-    console.log(user);
-    if (user.admin){
-        res.render('viewTaskAdmin', {
-            user: req.user,
-            client: req.user,
-            users: users,
-            task: foundTask,
-            loggedIn: true
-        });
-    } else {
-        console.log(foundTask);
-        res.render('viewTaskUser', {
+        res.render('viewTask', {
             user: user,
             task: foundTask,
-            loggedIn: true
+            loggedIn: true,
+            viewer: req.user
         });
-    }
-
-
 });
 
 // Delete OK

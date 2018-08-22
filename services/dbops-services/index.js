@@ -50,22 +50,20 @@ function promiseToCreateEntry(model, modelObjectWithData){
 }
 
 dbopsServices.createEntryAndSave = async function createEntryAndSave(model, modelObjectWithData, req, res, save = true) {
-    var newEntry;
-    try {
-        newEntry = await promiseToCreateEntry(model, modelObjectWithData);
-        return newEntry;
-    }
+    let newEntry;
+    try { newEntry = await promiseToCreateEntry(model, modelObjectWithData) }
     catch(error) {
       req.flash('error', 'error creating entry');
       res.redirect('back');
       return;
     }
     if (save) {
-      newEntry.save(function(error, data){
+      newEntry.save(function(error, entry){
         if (error){ req.flash('error', error) }
-        return data;
+        newEntry = entry;
       });
     }
+    return newEntry;
 }
 
 function promiseToUpdateEntryAndSave(model, entryRequirement, changes){
