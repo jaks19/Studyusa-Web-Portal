@@ -5,28 +5,41 @@
 <div class='row' align='center'>
 
     <h1 style='display: inline;'><%= task.title %></h1>
-    <a href='#presentation' data-toggle="modal" data-target='#presentation'>
-        <h5 style='display: inline;' class='user-link'>  (View Prompt and Instructions)</h5>
-    </a>
+    <h5 style='margin-top: -0.25%;'>
+        <a href='#presentation' data-toggle="modal" data-target='#presentation' class='user-link'>
+        See Prompt and Instructions
+        </a>
+    </h5>
 
 </div>
 
 
 <div class='row'>
 
-    <div class='col-sm-4 col-sm-offset-1 col-xs-12' align='center' style='max-width:100%; padding: 3%;'>
+    <% if (viewer.admin) { %>
+    <div id='quick-browse' align='center'>
+        <% include ./partials/taskQuickViewUsers %>
+    </div>
+    <% } %>
+
+    <div class='col-sm-1 hidden-xs'></div>
+
+    <div class='col-sm-4 col-xs-12' align='center' style='padding: 3%;'>
         <% include ./partials/taskFileListOfAUser %>
     </div>
 
-    <div class="col-sm-4 col-sm-offset-1 col-xs-12" style='max-width:100%; padding: 3%;'>
+    <div class='col-sm-2 hidden-xs'></div>
+
+    <div class="col-sm-4 col-xs-12" style='padding: 3%;'>
         <% include ./partials/taskComments %>
     </div>
+
+    <div class='col-sm-1 hidden-xs'></div>
 
 </div>
 
 <% include ../front-end/timestampToElapsed %>
 
 <script>
-        $('#dashboard').css("background-color", "#FFFFFF");
-        $('#dashboardtxt').css("color", "#0084b4");
+        $('#quick-browse').draggable();
 </script>

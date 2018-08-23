@@ -45,29 +45,29 @@
                                                 <% d = new Date(Date.now()) %>
                                                 <% groups.reverse().forEach(function(group){ %>
                                                     <tr id='<%=group.name%>' class='groups-table'>
-                                                        <td id='<%=group.name%>' class='main-td' style='padding-left: 20px;'>
+                                                        <td id='<%=group.name%>'  style='padding-left: 20px;'>
                                                             <span class="group-subhead"><%= group.name %></span>
                                                             <a href="/index/<%=user.username%>/groups/<%=group._id%>" id='<%=group.name%>' class="group-link">Expand (<%= group.users.length %>) member records</a>
                                                         </td>
-                                                        <td id='<%=group.name%>' class='main-td'>
+                                                        <td >
                                                             <div class='comment'>
                                                             <span class='timestring text-muted '><%= d.toISOString() %></span>
                                                             </div>
                                                         </td>
-                                                        <td id='<%=group.name%>' class='main-td'>
+                                                        <td >
                                                             <div class='comment'>
                                                             <span class='timestring text-muted '><%= d.toISOString() %></span>
                                                             </div>
                                                         </td>
-                                                        <td id='<%=group.name%>' class="text-center" class='main-td'>
+                                                        <td class="text-center" >
                                                             <span class="label label-default">pending</span>
                                                             <!--  TODO:Can use label-success for green, label-danger etc etc -->
                                                             <!--  Perhaps cool to use with the deadline/pace tracking system -->
                                                         </td>
-                                                        <td id='<%=group.name%>' class='main-td'>
+                                                        <td  >
                                                             <a href="#">marlon@brando.com</a>
                                                         </td>
-                                                        <td id='<%=group.name%>' style="width: 20%;" class='main-td'>
+                                                        <td style="width: 20%;">
 
                                                             <a href='/index/<%=user.username%>/groups/<%=group._id%>/messages' class=' btn btn-sm btn-primary glyphicon glyphicon-comment'></span></a>
                                                             <a href="#users-<%=group._id%>" data-toggle="modal" data-target='#users-<%=group._id%>' class=' btn btn-sm btn-success glyphicon glyphicon-user'></span></a>
@@ -260,25 +260,7 @@ a {
     outline: none!important;
 }
 
-tr.users-table {
-    display: none;
-}
-
-tr.users-table > td > img {
-    position: relative;
-    max-width: 50px;
-    max-height: 50px;
-    float: left;
-    margin-right: 15px;
-}
-
 tr.groups-table > th {
-    text-transform: uppercase;
-    font-size: 0.875em;
-    border-bottom: 2px solid #e7ebee;
-}
-
-tr.users-table > th {
     text-transform: uppercase;
     font-size: 0.875em;
     border-bottom: 2px solid #e7ebee;
@@ -304,25 +286,6 @@ tr.groups-table > td {
     font-size: 0.875em;
     padding: 12px 8px;
     background-color: #ffffff;
-}
-
-
-/*  People */
-
-tr.users-table > td:nth-child(1) {
-    font-size: 1.125em;
-    font-weight: 300;
-    width: 35%;
-}
-
-/*  Last Online */
-tr.users-table > td:nth-child(2) {
-    width: 15%;
-}
-
-tr.users-table > td {
-    font-size: 0.875em;
-    padding: 12px 8px;
 }
  </style>
 

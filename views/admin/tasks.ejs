@@ -22,11 +22,11 @@
                                 <table id="myTable" class="table group-list">
                                     <thead >
                                         <tr>
-                                        <th style='padding-left: 20px;'><span>Tasks </span>(<a href="#new-task" class="user-link" data-toggle="modal" data-target='#new-task'>Create New</a>)</th>
+                                        <th style='text-align: left; padding-left: 20px;'><span>Tasks </span>(<a href="#new-task" data-toggle="modal" data-target='#new-task'>Create New</a>)</th>
                                         <th><span>Created</span></th>
                                         <th><span>Last Edited</span></th>
-                                        <th class="text-center"><span>Status (etc)</span></th>
-                                        <th>&nbsp;</th>
+                                        <th>Users</th>
+                                        <th>Buttons</th>
                                         </tr>
                                     </thead>
 
@@ -37,38 +37,38 @@
                                                 <% tasks.reverse().forEach(function(task){ %>
                                                     <% var d = new Date(task['dateCreated']); %>
                                                     <% var d_edit = new Date(task['dateEdited']); %>
-                                                    <tr id='<%=task._id%>' class='groups-table main-td'>
-                                                        <td id='<%=task.title%>+<%=task.prompt%>' class='main-td' style='padding-left: 20px;'>
-                                                            <span class="group-subhead"><%= task.title %></span>
-                                                            <span class="group-link" style='font-size:14px; color: black; height:80px; overflow: auto;'><%= task.prompt.slice(0, 200); %>...</a>
+
+                                                    <tr id='<%=task._id%>'>
+                                                        <td id='<%=task.title%>' value='<%=task._id%>' style='padding-left: 20px; padding-right: 20px;'>
+                                                            <a href='#' class='expandable' id='<%=task._id%>'><%= task.title.slice(0,45) %></a>
                                                         </td>
-                                                        <td id='<%=task._id%>'>
+
+                                                        <td>
                                                             <div class='comment'>
                                                             <span class='timestring text-muted '><%= d.toISOString() %></span>
                                                             </div>
                                                         </td>
-                                                        <td id='<%=task._id%>'>
+
+                                                        <td>
                                                             <div class='comment'>
                                                             <span class='timestring text-muted '><%= d_edit.toISOString() %></span>
                                                             </div>
                                                         </td>
-                                                        <td id='<%=task._id%>' class="text-center">
-                                                            <span class="label label-default">pending</span>
-                                                            <!--  TODO:Can use label-success for green, label-danger etc etc -->
-                                                            <!--  Perhaps cool to use with the deadline/pace tracking system -->
+
+                                                        <td class="text-center">
+                                                            <button class="label label-info" style='background-color:#0a6884'><%=task.users.length%> users</button>
                                                         </td>
 
-                                                        <td id='<%=task._id%>' style="width: 20%;">
-                                                            <a href='#task-content<%=task['_id']%>' data-toggle="modal" data-target="#task-content<%=task['_id']%>" class=' btn btn-sm btn-primary glyphicon glyphicon-edit'></span></a>
-                                                            
+                                                        <td class='buttons' style="width: 20%;">
+                                                            <a href='#task-content<%=task['_id']%>' data-toggle="modal" data-target="#task-content<%=task['_id']%>" class='btn btn-sm glyphicon glyphicon-edit'></a>
 
-                                                            <a href='#task-users<%=task._id%>' data-toggle="modal" data-target="#task-users<%=task._id%>" class=' btn btn-sm btn-success glyphicon glyphicon-user'></span></a>
+                                                            <a href='#task-users<%=task._id%>' data-toggle="modal" data-target="#task-users<%=task._id%>" class='btn btn-sm glyphicon glyphicon-user'></a>
                                                             <% include ../modals/modalManageUsersTask %>
 
-                                                            <a href='#task-delete<%=task['_id']%>' data-toggle="modal" data-target="#task-delete<%=task['_id']%>" class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span></a>
+                                                            <a href='#task-delete<%=task['_id']%>' data-toggle="modal" data-target="#task-delete<%=task['_id']%>" class='btn btn-sm glyphicon glyphicon-trash'></a>
                                                             <% include ../modals/modalDeleteTask %>
-
                                                         </td>
+
                                                     </tr>
 
                                                 <% });%>
@@ -90,10 +90,7 @@
 <script>
 
 // For search bar
-
 // (Each one needs a slightly different script due to how the table is formatted)
-// But like in this document, tables of same format can just be plugged in and are good to go
-// Assuming all tables use same field rank to search on
 $('#myInput').keyup(function () {
   var input, filter, table, tr, td, i, keep;
   input = $("#myInput")[0];
@@ -116,6 +113,15 @@ $('#myInput').keyup(function () {
       else { trs[i].style.display = "none"; }
     }
   }
+});
+</script>
+
+
+<script>
+
+// For Expanding a task's user list to choose whose work to look at
+$('a.expandable').click(function (e) {
+    console.log($('#expansion-'+e.target.id)[0].style);
 });
 </script>
 
@@ -145,23 +151,12 @@ input:focus, textarea, button:focus {
     margin: 2px 0;
 }
 
-.sort-chosen{
-    color: #eeeeee;
-    background-color: #afc2d4;
-    cursor: default;
-}
-
-.sort-choosable {
-    color: #eeeeee;
-    background-color: rgb(46, 111, 168);
-}
-
-a.blend:link,
-a.blend:visited,
-a.blend:hover,
-a.blend:active
+a:link,
+a:visited,
+a:hover,
+a:active
 {
-   color: white;
+   color: #3498db;
    text-decoration: none;
 }
 
@@ -183,8 +178,9 @@ a.blend:active
 
 <style>
 /*  The Table CSS */
-table#myTable > tbody > tr > td {
+tbody > tr > td {
     vertical-align: middle;
+    text-align: center;
 }
 
 body{
@@ -198,62 +194,15 @@ body{
     height: 80%;
     overflow:auto;
 }
-.table a.table-link.danger {
-    color: #e74c3c;
-}
+
 .label {
     border-radius: 3px;
     font-size: 0.875em;
     font-weight: 600;
 }
 
-.user-list tbody td .user-subhead {
-    font-size: 0.875em;
-    font-style: italic;
-}
-
-.group-list tbody td .group-subhead {
-    font-size: 29px;
-}
-
-.user-list tbody td .user-link {
-    display: block;
-    font-size: 1.25em;
-    padding-top: 3px;
-    margin-left: 60px;
-}
-
-.group-list tbody td .group-link {
-    display: block;
-    font-size: 17px;
-    padding-top: 3px;
-    font-weight: 340;
-}
-
-a {
-    color: #3498db;
-    outline: none!important;
-}
-
-tr.users-table {
-    display: none;
-}
-
-tr.users-table > td > img {
-    position: relative;
-    max-width: 50px;
-    max-height: 50px;
-    float: left;
-    margin-right: 15px;
-}
-
-tr.groups-table > th {
-    text-transform: uppercase;
-    font-size: 0.875em;
-    border-bottom: 2px solid #e7ebee;
-}
-
-tr.users-table > th {
+tr > th {
+    text-align: center;
     text-transform: uppercase;
     font-size: 0.875em;
     border-bottom: 2px solid #e7ebee;
@@ -261,43 +210,23 @@ tr.users-table > th {
 
 /* Widths of columns */
 
-tr.groups-table > td:first-child {
-    font-size: 1.125em;
-    font-weight: 300;
-    width: 35%;
+tr > td:first-child {
+    width: 15%;
+    text-align: left;
 }
 
-tr.groups-table > td:nth-child(2) {
+tr > td:nth-child(2) {
     width: 15%;
 }
 
-tr.groups-table > td:nth-child(3) {
+tr > td:nth-child(3) {
     width: 15%;
 }
 
-tr.groups-table > td {
+tr > td {
     font-size: 0.875em;
     padding: 12px 8px;
     background-color: #ffffff;
-}
-
-
-/*  People */
-
-tr.users-table > td:nth-child(1) {
-    font-size: 1.125em;
-    font-weight: 300;
-    width: 35%;
-}
-
-/*  Last Online */
-tr.users-table > td:nth-child(2) {
-    width: 15%;
-}
-
-tr.users-table > td {
-    font-size: 0.875em;
-    padding: 12px 8px;
 }
  </style>
 
