@@ -1,33 +1,32 @@
 <div class="twt-wrapper" style='width:100%;'>
     <div class="panel panel-info">
-        <div class="panel-body" style='border: 0.5px #aee3ee;'>
-                <h5> Files Uploaded </h5>
-                <span class="text-muted">
-                    <small class="text-muted">Newest</small><br /><br />
-                </span>
 
-
-
-
-
-
-
-                <div style='max-height:100%; height:30%; overflow:auto; margin-top: 9%; margin-bottom: 9%;'>
-                    <% var files = task['files'].reverse(); %>
-                    <% files.forEach(function(file){ %>
-                        <div class='container file' style='background:#FFFFFF; width: 100%; float:left;'>
-                            <a href='#' data-toggle="modal" data-target="#<%=file['_id']%>" style="text-decoration:none;"><%=file['filename']%></a>
-                            <br />(Author: <%= file['author'] %>)<hr />
-                            <% include ../modals/modalAddDownloadOrDeleteFile %>
-                        </div>
-                    <% }); %>
-                </div>
-                <span class="text-muted">
-                    <small class="text-muted">Oldest<br /><br />Scroll to see More</small>
-                </span>
-            </div>
+        <div class="list-group-item" align='center'>
+            <strong>Files Uploaded</strong>
         </div>
+
+        <div class="panel-body" style='border: 0.5px #aee3ee;'>
+            <span class="text-muted">
+                <small class="text-muted">Newest</small><br /><br />
+            </span>
+
+            <div style='max-height:100%; height:30%; overflow:auto; margin-top: 9%; margin-bottom: 9%;'>
+                <% var files = task['files'].reverse(); %>
+                <% files.forEach(function(file){ %>
+                    <div class='container file' style='background:#FFFFFF; width: 100%; float:left;'>
+                        <a href='#' data-toggle="modal" data-target="#<%=file['_id']%>" style="text-decoration:none;"><%=file['filename']%></a>
+                        <br />(Author: <%= file['author'] %>)<hr />
+                        <% include ../modals/modalAddDownloadOrDeleteFile %>
+                    </div>
+                <% }); %>
+            </div>
+            <span class="text-muted">
+                <small class="text-muted">Oldest</small>
+            </span>
+        </div>
+
     </div>
+</div>
 
 
 
@@ -40,5 +39,3 @@
 
 
 <% include ../modals/modalPleaseWait %>
-
-<script type="text/javascript" src="/front-end/frontEndS3Download.js"></script>

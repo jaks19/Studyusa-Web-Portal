@@ -1,6 +1,7 @@
 var taskServices = {};
 
 let mkdirp = require('mkdirp'),
+    _ =  require('lodash'),
     path = require('path'),
     fs = require("fs"), // To read-from/write-to files
     multiparty = require("multiparty"); // To get file object upon selection from pc for upload
@@ -22,8 +23,8 @@ taskServices.getTaskData = async function getTaskData(req, res) {
 
     try {
         let [ fields, files ] = await getPromiseToParseForm(req);
-        taskData.title = fields['title'][0];
-        taskData.prompt = fields['prompt'][0];
+        if (fields.title != null) { taskData.title = fields['title'][0] }
+        if (fields.prompt != null) { taskData.prompt = fields['prompt'][0] }
         return taskData;
     }
     catch (error) {

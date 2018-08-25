@@ -1,11 +1,51 @@
-<div class="twt-wrapper" style='width:100%;'>
-    <div class="panel panel-info">
-        <div class="panel-body" style='border: 0.5px #aee3ee;'>
+<div style='height: 56%; overflow:auto;'>
+    <table id='quick-view' class="table user-list" style='overflow:auto;' >
+        <tbody style='overflow:auto;'>
 
-                <span class="text-muted">
-                    <small class="text-muted">Quick<br />Browse</small>
-                </span>
 
-        </div>
-    </div>
+                    <% task.users.forEach(function(thisUser){ %>
+                        <% d = new Date(thisUser.lastLoggedIn) %>
+                            <tr align='center'>
+                                <td id='<%=thisUser.name%>'>
+                                    <div>
+                                        <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
+                                    </div>
+                                    <div>
+                                    <a href="/index/<%=thisUser.username%>/tasks/<%=task._id%>/dashboard" class="user-link" style="font-size:12px;">
+                                        <%=thisUser.name.slice(0,1).toUpperCase() + thisUser.name.slice(1)%>
+                                    </a>
+                                    </div>
+                                </td>
+                            </tr>
+                    <% });%>
+
+        </tbody>
+    </table>
 </div>
+
+<style>
+    /* Stuff other thn checkboxes */
+    #quick-view {
+        overflow: auto;
+    }
+
+    a {
+        color: #3498db;
+        outline: none !important;
+    }
+
+    img {
+        max-width: 50px;
+        max-height: 50px;
+    }
+
+    tbody tr td {
+        font-size: 1.125em;
+        font-weight: 300;
+        width: 5%;
+        background-color: #ffffff;
+    }
+
+
+
+</style>

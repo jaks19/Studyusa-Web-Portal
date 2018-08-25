@@ -1,7 +1,7 @@
 <% include ../partials/headerUser %>
 
 <div class='new' align='center'>
-    <input class="search" id="myInput" placeholder="Search for a Student">
+    <input class="search" id="myInput" placeholder="Search for a Student" style='text-align: center;'>
     <button class="sort-chosen">By name</button>
     <button class="sort-choosable"><a class='blend' href ="/index/<%=user.username%>/groups">By Group</a></button>
 </div>
@@ -39,8 +39,8 @@
                                                         <!-- Make ids be values to be used for search operation in search bar -->
                                                         <td style='padding-left: 20px;' id='<%=thisUser.name%>'>
                                                             <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
-                                                            <a href="#" class="user-link" style="font-size:20px;"><%=thisUser.name.slice(0,1).toUpperCase() + thisUser.name.slice(1)%></a>
-                                                            <span class="user-subhead"><% if (thisUser.admin){ %>admin<% }else{ %>user <% } %> </span>
+                                                            <div style="font-size:20px;"><%=thisUser.name.slice(0,1).toUpperCase() + thisUser.name.slice(1)%></div>
+                                                            <span style='color: #9ca1a5' class="user-subhead"><% if (thisUser.admin){ %>admin<% }else{ %>user <% } %> </span>
                                                         </td>
                                                         <td>
                                                             <div class='comment'>

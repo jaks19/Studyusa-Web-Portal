@@ -1,0 +1,18 @@
+<div class="modal fade bs-example-modal-sm" id="task-title<%=task['_id']%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" align='center' role="document">
+        <div class="modal-content" style='max-height: 15%;'>
+
+
+            <!-- Automatically submitted when save is pressed in word processor (save plugin) or on the webpage (this btn provided) -->
+            <div class="modal-body">
+                <form action='/index/<%=user.username%>/tasks/<%=task._id%>/content?_method=PUT' method='POST' enctype='multipart/form-data'>
+                    <h4 style='text-align:left;' class="modal-title">Edit Title:</h4>
+                    <input type="text" class="form-control" value="<%=task.title %>" name='title' required style='margin-bottom:5%;' />
+                    <button type="submit" class="btn btn-success glyphicon glyphicon-floppy-disk"></button>
+                    <button type="button" class="btn btn-danger glyphicon glyphicon-remove"></button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

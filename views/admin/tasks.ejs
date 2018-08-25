@@ -1,12 +1,7 @@
 <% include ../partials/headerUser %>
 
-
-<div align='center'>
-<% include ../modals/modalNewTask %>
-</div>
-
 <div class='new' align='center'>
-    <input class="search" id="myInput" placeholder="Search for a Task" autofocus>
+    <input class="search" id="myInput" placeholder="Search for a Task">
 </div>
 
 <div class='row' style='padding: 2%;'>
@@ -22,11 +17,11 @@
                                 <table id="myTable" class="table group-list">
                                     <thead >
                                         <tr>
-                                        <th style='text-align: left; padding-left: 20px;'><span>Tasks </span>(<a href="#new-task" data-toggle="modal" data-target='#new-task'>Create New</a>)</th>
+                                        <th style='text-align: left; padding-left: 20px;'><span>Tasks </span>(<a href="/index/<%=user.username%>/tasks/new">Create New</a>)</th>
                                         <th><span>Created</span></th>
                                         <th><span>Last Edited</span></th>
                                         <th>Users</th>
-                                        <th>Buttons</th>
+                                        <th>Options</th>
                                         </tr>
                                     </thead>
 
@@ -40,7 +35,7 @@
 
                                                     <tr id='<%=task._id%>'>
                                                         <td id='<%=task.title%>' value='<%=task._id%>' style='padding-left: 20px; padding-right: 20px;'>
-                                                            <a href='#' class='expandable' id='<%=task._id%>'><%= task.title.slice(0,45) %></a>
+                                                            <span style='font-size: 20px;'><%= task.title.slice(0,40) %></a>
                                                         </td>
 
                                                         <td>
@@ -56,16 +51,19 @@
                                                         </td>
 
                                                         <td class="text-center">
-                                                            <button class="label label-info" style='background-color:#0a6884'><%=task.users.length%> users</button>
+                                                            <a href='#task-users<%=task._id%>' title="Assign Users" data-toggle="modal" data-target='#task-users<%=task._id%>' class="label label-info" style='background-color:#0a6884; color: white;'><%=task.users.length%> users</a>
+                                                            <% include ../modals/modalViewUsersTask %>
                                                         </td>
 
                                                         <td class='buttons' style="width: 20%;">
-                                                            <a href='#task-content<%=task['_id']%>' data-toggle="modal" data-target="#task-content<%=task['_id']%>" class='btn btn-sm glyphicon glyphicon-edit'></a>
+                                                            <a href='/index/<%=user.username%>/tasks/<%=task._id%>/preview' title="See Prompt" class='btn btn-sm glyphicon glyphicon-eye-open'></a>
 
-                                                            <a href='#task-users<%=task._id%>' data-toggle="modal" data-target="#task-users<%=task._id%>" class='btn btn-sm glyphicon glyphicon-user'></a>
+                                                            <a href='/index/<%=user.username%>/tasks/<%=task._id%>/dashboard' title="See user-submitted work" class='btn btn-sm glyphicon glyphicon-pencil'></a>
+
+                                                            <a href='#task-users-dashboard<%=task._id%>' title="Assign Users" data-toggle="modal" data-target="#task-users-dashboard<%=task._id%>" class='btn btn-sm glyphicon glyphicon-user'></a>
                                                             <% include ../modals/modalManageUsersTask %>
 
-                                                            <a href='#task-delete<%=task['_id']%>' data-toggle="modal" data-target="#task-delete<%=task['_id']%>" class='btn btn-sm glyphicon glyphicon-trash'></a>
+                                                            <a href='#task-delete<%=task._id%>' title="Delete" data-toggle="modal" data-target="#task-delete<%=task['_id']%>" class='btn btn-sm glyphicon glyphicon-trash'></a>
                                                             <% include ../modals/modalDeleteTask %>
                                                         </td>
 
@@ -117,15 +115,6 @@ $('#myInput').keyup(function () {
 </script>
 
 
-<script>
-
-// For Expanding a task's user list to choose whose work to look at
-$('a.expandable').click(function (e) {
-    console.log($('#expansion-'+e.target.id)[0].style);
-});
-</script>
-
-
 <style>
 /* Search bar and buttons CSS */
 .new input {
@@ -137,6 +126,7 @@ $('a.expandable').click(function (e) {
     box-sizing: border-box;
     color: #3e9ddc;
     margin-bottom: 5px;
+    text-align: center;
 }
 
 input:focus, textarea, button:focus {
@@ -162,15 +152,19 @@ a:active
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
   color: #777777b8;
+
 }
 ::-moz-placeholder { /* Firefox 19+ */
   color: #777777b8;
+
 }
 :-ms-input-placeholder { /* IE 10+ */
   color: #777777b8;
+
 }
 :-moz-placeholder { /* Firefox 18- */
   color: #777777b8;
+
 }
 
 </style>
@@ -211,6 +205,7 @@ tr > th {
 /* Widths of columns */
 
 tr > td:first-child {
+    font-weight: 300;
     width: 15%;
     text-align: left;
 }

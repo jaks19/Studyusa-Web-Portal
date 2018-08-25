@@ -17,6 +17,7 @@ var commentarySchema = new mongoose.Schema({
 
 var autoPopulateLead = function(next) {
   this.populate('author');
+  this.populate('recipient');
   next();
 };
 

@@ -1,0 +1,65 @@
+<div class="modal fade bs-example-modal-sm" id="task-users<%=task._id%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body" style='height: 59%;'>
+
+                <div style='height: 100%; overflow:auto;' align='center'>
+                    <table id='quick-view' class="table user-list" style='overflow:auto;' >
+                        <tbody style='overflow:auto;'>
+
+                                    <% if (task.users.length > 0) { %>
+                                        <% task.users.forEach(function(thisUser){ %>
+                                            <% d = new Date(thisUser.lastLoggedIn) %>
+                                                <tr>
+                                                    <td id='<%=thisUser.name%>'>
+                                                        <div align='center'>
+                                                            <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
+                                                        </div>
+                                                        <div align='center'>
+                                                        <a href="/index/<%=thisUser.username%>/tasks/<%=task._id%>/dashboard" class="user-link" style="font-size:12px; margin: 0px;">
+                                                            <%=thisUser.name.slice(0,1).toUpperCase() + thisUser.name.slice(1)%>
+                                                        </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                        <% });%>
+                                    <% } else { %>
+                                        NO USER ASSIGNED YET
+                                    <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Stuff other thn checkboxes */
+    #quick-view {
+        overflow: auto;
+    }
+
+    a {
+        color: #3498db;
+        outline: none !important;
+    }
+
+    img {
+        max-width: 50px;
+        max-height: 50px;
+    }
+
+    tbody tr td {
+        font-size: 1.125em;
+        font-weight: 300;
+        width: 5%;
+        background-color: #ffffff;
+    }
+
+
+
+</style>

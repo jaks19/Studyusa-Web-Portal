@@ -10,7 +10,7 @@
 </div>
 
 <div class='new' align='center'>
-    <input class="search" id="myInput" placeholder="Search for a Group" autofocus>
+    <input class="search" id="myInput" placeholder="Search for a Group" style='text-align: center;'>
     <button class="sort-choosable"><a class='blend' href ="/index/<%=user.username%>">By name</a></button>
     <button class="sort-chosen">By Group</button>
 </div>
@@ -28,7 +28,7 @@
                                 <table id="myyyTable" class="table group-list">
                                     <thead >
                                         <tr>
-                                        <th style='padding-left: 20px;'><span>Groups </span>(<a href="#new-group" class="user-link" data-toggle="modal" data-target='#new-group'>Create New</a>)</th>
+                                        <th style='padding-left: 20px; text-align: left;'><span>Groups </span>(<a href="#new-group" class="user-link" data-toggle="modal" data-target='#new-group'>Create New</a>)</th>
 
                                         <th><span>Last Meeting</span></th>
                                         <th><span>Next Meeting</span></th>
@@ -45,8 +45,8 @@
                                                 <% d = new Date(Date.now()) %>
                                                 <% groups.reverse().forEach(function(group){ %>
                                                     <tr id='<%=group.name%>' class='groups-table'>
-                                                        <td id='<%=group.name%>'  style='padding-left: 20px;'>
-                                                            <span class="group-subhead"><%= group.name %></span>
+                                                        <td id='<%=group.name%>'  style='padding-left: 20px; padding-right: 20px;'>
+                                                            <span style='font-size: 20px;'><%= group.name %></span>
                                                             <a href="/index/<%=user.username%>/groups/<%=group._id%>" id='<%=group.name%>' class="group-link">Expand (<%= group.users.length %>) member records</a>
                                                         </td>
                                                         <td >
@@ -230,15 +230,6 @@ body{
     border-radius: 3px;
     font-size: 0.875em;
     font-weight: 600;
-}
-
-.user-list tbody td .user-subhead {
-    font-size: 0.875em;
-    font-style: italic;
-}
-
-.group-list tbody td .group-subhead {
-    font-size: 29px;
 }
 
 .user-list tbody td .user-link {

@@ -1,0 +1,78 @@
+<% include ./partials/headerUser %>
+
+<div class='row new' align='center'>
+    <div class='col-xs-12' style='padding-bottom: 1%;'>
+        <h1 style='font-family: "Open Sans Condensed", sans-serif; font-size: 48px; color: #333;'><%= task.title %></h1>
+        <button class="sort-chosen">Instructions</a></button>
+        <button class="sort-choosable"><a class='blend' href ="/index/<%=user.username%>/tasks/<%=task._id%>/dashboard">Workbench</a></button>
+    </div>
+</div>
+
+<div class='row'>
+    <div class='col-md-8 col-md-offset-2 col-xs-10 col-xs-offset-1'>
+        <div align='left' class="twt-wrapper" style='width:100%;'>
+            <div class="panel panel-info" style=' height: 60%; overflow: auto;'>
+                <div id='displayer' class="panel-body" style='border: 0.5px #aee3ee;'>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+body {
+    background: #eee;
+}
+
+
+.sort-chosen{
+    color: #eeeeee;
+    background-color: #afc2d4;
+    cursor: default;
+}
+
+.sort-choosable {
+    color: #eeeeee;
+    background-color: rgb(46, 111, 168);
+}
+
+/* Search bar and buttons CSS */
+input:focus, textarea, button:focus {
+    outline: none !important;
+}
+
+.new button {
+    font-size: 100%`;
+    padding: 5px 15px;
+    border-radius: 25px;
+    border: none;
+    text-decoration: none;
+    margin: 2px 0;
+}
+
+a.blend:link,
+a.blend:visited,
+a.blend:hover,
+a.blend:active
+{
+   color: white;
+   text-decoration: none;
+}
+
+</style>
+
+
+<% include ./whistlers/whistlerPrompt %>
+
+<script>
+
+let prompt;
+
+$(document).ready(function(){
+    prompt = $('#whistlerPrompt').val();
+    promptHTML = $.parseHTML(prompt);
+    $('#displayer').append(promptHTML);
+});
+
+</script>

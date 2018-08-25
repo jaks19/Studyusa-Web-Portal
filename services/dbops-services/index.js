@@ -10,8 +10,8 @@ var dbopsServices = {};
 
 // This lib makes it easy to just change or mongoose versions in the back
 
-dbopsServices.findOneEntryAndPopulate = async function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req, res) {
-  let entry = model.findOne(entryRequirement);
+dbopsServices.findOneEntryAndPopulate = async function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req, res, exclude={}) {
+  let entry = model.findOne(entryRequirement, exclude);
   if (fieldsArray.length > 0) {
     let fieldsString = fieldsArray.join(' ');
     try {
