@@ -17,7 +17,10 @@ invitationServices.garbageCollectInvitations = async function garbageCollectInvi
         let thisValidDate = new Date(thisInvitation.validUntil),
             today = new Date(Date.now()),
             tooOldBar = (new Date()).setDate(today.getDate() - garbageCollectDays);
-        if (thisValidDate < tooOldBar){ dbopsServices.findEntryByIdAndRemove(Invitation, thisInvitation._id, req, res) }
+        if (thisValidDate < tooOldBar){
+            try { dbopsServices.findEntryByIdAndRemove(Invitation, thisInvitation._id, req, res) }
+            catch(error) { req.flash('error', 'nah!') }
+        }
     });
     return;
 }
@@ -26,7 +29,7 @@ invitationServices.getSortedInvitations = async function getSortedInvitations(re
     let invitations = await dbopsServices.findAllEntriesAndPopulate(Invitation, { }, [ ], req, res),
         active = [],
         expired = [];
-        
+
     for (var i = 0; i < invitations.length; i++) {
         let thisInvitation = invitations[i],
             thisValidDate = new Date(thisInvitation.validUntil),
@@ -49,9 +52,12 @@ invitationServices.isValid = async function isValid(req, res, garbageCollect=tru
     let thisDate = new Date(invitation.validUntil),
         today = new Date(Date.now());
     if (thisDate < today){ return false }
-    
-    if(garbageCollect) { dbopsServices.findEntryByIdAndRemove(Invitation, invitation._id, req, res) }
+
+    if(garbageCollect) {
+        try { dbopsServices.findEntryByIdAndRemove(Invitation, invitation._id, req, res) }
+        catch(err){ req.flash('error', 'nope!!') }
+    }
     return true;
 }
-    
+
 module.exports = invitationServices;

@@ -10,33 +10,42 @@ var dbopsServices = {};
 
 // This lib makes it easy to just change or mongoose versions in the back
 
+function promiseToPopulate(queryObject, fieldsString){
+  return new Promise(function (resolve, reject) {
+    queryObject.populate(fieldsString).exec(function(error, newEntry){
+        if (error) { reject(error) }
+        else { resolve(newEntry) }
+    });
+  });
+}
+
 dbopsServices.findOneEntryAndPopulate = async function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req, res, exclude={}) {
-  let entry = model.findOne(entryRequirement, exclude);
-  if (fieldsArray.length > 0) {
-    let fieldsString = fieldsArray.join(' ');
-    try {
-          entry = await entry.populate(fieldsString).exec();
-      } catch (err) {
+    let query = model.findOne(entryRequirement, exclude),
+        fieldsString = fieldsArray.join(' '),
+        entry;
+
+    try { entry = await promiseToPopulate(query, fieldsString) }
+    catch (err) {
           req.flash('error', err);
           res.redirect('back');
           return;
       }
-  }
+
   return entry;
 }
 
 dbopsServices.findAllEntriesAndPopulate = async function findAllEntriesAndPopulate(model, entryRequirement, fieldsArray, req, res) {
-  let entries = model.find(entryRequirement);
-  if (fieldsArray.length > 0) {
-    let fieldsString = fieldsArray.join(' ');
-    try {
-          entries = await entries.populate(fieldsString).exec();
-      } catch (err) {
+    let query = model.find(entryRequirement),
+        fieldsString = fieldsArray.join(' '),
+        entries;
+
+    try { entries = await promiseToPopulate(query, fieldsString) }
+    catch (err) {
           req.flash('error', err);
           res.redirect('back');
           return;
       }
-  }
+
   return entries;
 }
 
@@ -51,12 +60,14 @@ function promiseToCreateEntry(model, modelObjectWithData){
 
 dbopsServices.createEntryAndSave = async function createEntryAndSave(model, modelObjectWithData, req, res, save = true) {
     let newEntry;
+
     try { newEntry = await promiseToCreateEntry(model, modelObjectWithData) }
     catch(error) {
       req.flash('error', 'error creating entry');
       res.redirect('back');
       return;
     }
+
     if (save) {
       newEntry.save(function(error, entry){
         if (error){ req.flash('error', error) }
@@ -101,6 +112,7 @@ dbopsServices.savePopulatedEntry = async function savePopulatedEntry(populatedEn
           req.flash('error', err);
           console.log('the full', err);
       }
+      return;
     }
 
 //   populatedEntry.save(function(error, savedEntry){

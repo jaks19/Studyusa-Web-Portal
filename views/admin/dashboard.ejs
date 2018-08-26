@@ -86,13 +86,14 @@
 <script>
 // Contexts for notifications etc at login
     $(document).ready(function(){
-        var context = $('#whistlerContext').val();
+        var context = '<%=context%>';
         if (context == 'justLoggedIn') { $('#greet').modal('show') }
         else if (context == 'invitation') { $('#invitationModal').modal('show') }
 
-        //  This dashboard serves as all users page or a group's page with all users pre-loaded in the all-users page
-        // I have a groupId when it is used as that group's page with its users pre-loaded
-        var groupId = $('#whistlerGroup').val();
+        // This dashboard serves as all users page or a group's page with all users pre-loaded in the all-users page
+        // We have a groupId when it is used as that group's page with its users pre-loaded
+        var groupId = '<%=groupId%>';
+        console.log(groupId);
 
         // I now pre-load this group's entries in the Page
         table = $("#myTable");
@@ -100,7 +101,7 @@
         trs = tbody[0].getElementsByTagName("tr");
 
         // If coming to view a group's members, start with them on screen
-        if (groupId != -1 && $('#whistlerGroup')[0]){
+        if (groupId != -1 && groupId !== "undefined"){
             console.log(groupId)
             for (i = 0; i < trs.length; i++) {
               tds = trs[i].getElementsByTagName("td");
@@ -158,10 +159,6 @@ $('#myInput').keyup(function () {
 
 });
 
-
-$('tr').click(function(e){
-    console.log(e.target.id);
-});
 </script>
 
 
@@ -296,9 +293,13 @@ a:link, a:visited, a:hover, a:active {
 }
  </style>
 
- <% include ../../front-end/timestampToElapsed %>
 
+<% if (context=='justLoggedIn'){ %>
+    <% include ../modals/modalNotifsWelcome %>
+<% } %>
 
-<% if (groupId != -1){ %>
-     <% include ../whistlers/whistlerGroupAdminDashboard %>
-<% }%>
+<script>
+    $(document).ready(function(){
+        $('#greet').modal('show');
+    });
+</script>

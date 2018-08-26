@@ -10,7 +10,7 @@
 </div>
 
 <div class='row'>
-    
+
     <div class='col-md-5 col-md-offset-1 col-xs-12 square' style='margin-top: 3%; margin-right:1%;' align='center'>
         <h4>Active Notifications<hr /></h4>
         <% if (unseenNotifs.length == 0){ %>
@@ -24,7 +24,7 @@
             </div>
         <% } %>
     </div>
-    
+
     <div class='col-md-5 col-md-offset-1 col-xs-12 square' style='margin-left: 1%; margin-top: 3%;' align='center'>
         <h4>Old Notifications<hr /></h4>
         <% if (seenNotifs.length == 0){ %>
@@ -41,12 +41,10 @@
 
 </div>
 
-<% include ../front-end/timestampToElapsed %>
-
 <script>
     $(document).ready(function(){
         $('#greet').modal('show');
-        
+
         $(".notifbox").mouseover(function(){$(this).css("overflow-y","auto");});
         $(".notifbox").mouseout(function(){$(this).css("overflow-y","hidden");});
     });
@@ -54,5 +52,5 @@
 
 <script>
         $('#notifs').css("background-color", "#FFFFFF");
-        $('#notifstxt').css("color", "#0084b4"); 
+        $('#notifstxt').css("color", "#0084b4");
 </script>

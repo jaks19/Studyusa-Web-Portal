@@ -4,25 +4,22 @@
 
 <div class='row'>
     <div class = 'col-md-4 col-md-offset-4 col-xs-8 col-xs-offset-2' align='center'>
-        <input type='text' id='whistlerClient' value='<%=client.username%>'  style='visibility: hidden;'>
-        <input type='text' id='whistlerSubId' value='tobecreated'  style='visibility: hidden;'>
-        
         <form id="submitAdd" action='/index/<%=client.username%>/submit' method='POST' enctype='multipart/form-data'>
             <label for="title">Submission Title</label>
-            <input id="whistlerSubTitle" type="text" class="form-control" placeholder="Submission Title" name='title' required style='margin-bottom:5%;'>
+            <input id='<%=sub.title%>' type="text" class="form-control" placeholder="Submission Title" name='title' required style='margin-bottom:5%;'>
             <label for="file">Upload your Document</label>
             <input type="file" class="form-control" name='doc' id='doc' required style='margin-bottom:5%;'>
             <label for="title">Message</label>
             <textarea class="form-control" rows="5" id="comment" placeholder="Leave a comment for the person reading this document..." name='message' required style='margin-bottom:5%;'></textarea>
-            <button id="sendAdd" type="submit" class="btn btn-primary" style='background:#6666F1;'>Submit</button><br> 
+            <button id="sendAdd" type="submit" class="btn btn-primary" style='background:#6666F1;'>Submit</button><br>
         </form>
     </div>
 </div>
 
 <% include ./modals/modalPleaseWait %>
 
-<script type="text/javascript" src="/front-end/frontEndS3Upload.js"></script>
+<script type="text/javascript" src="/scripts/amazonS3/upload.js"></script>
 <script>
         $('#dashboard').css("background-color", "#FFFFFF");
-        $('#dashboardtxt').css("color", "#0084b4"); 
+        $('#dashboardtxt').css("color", "#0084b4");
 </script>

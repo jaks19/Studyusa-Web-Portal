@@ -18,33 +18,22 @@ let User = require("../models/user"),
 
 let router = express.Router({ mergeParams: true });
 
-// New task page
-router.get('/new', authServices.isAdmin, async function(req, res) {
-    let user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.params.username}, [ ], req, res);
+// Create new task (title only at this pt)
+router.post('/new', authServices.isAdmin, async function(req, res) {
+    let data = await taskServices.getTaskData(req, res),
+        title = data.title,
+        newTaskEntryData = new Task({ title: data.title }),
+        taskCreated = await dbopsServices.createEntryAndSave(Task, newTaskEntryData, req, res, true),
+        user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.params.username}, [ ], req, res);
 
-    res.render('./admin/newTask', {
+    res.render('viewTaskPreview', {
+        user: user,
+        task: taskCreated,
         loggedIn: true,
-        user: user
+        viewer: req.user
     });
 });
 
-// Post new task
-router.post('/new', authServices.isAdmin, async function(req, res) {
-    let data = await taskServices.getTaskData(req, res);
-
-    console.log(data.title);
-    console.log(data.prompt);
-
-    res.send('Saved work on new task!');
-
-        // newTaskEntryData = new Task({
-        //   title: data.title,
-        //   prompt: data.prompt,
-        // }),
-        // newTask = await dbopsServices.createEntryAndSave(Task, newTaskEntryData, req, res, true);
-
-        // res.redirect('back');
-});
 
 // Add/remove users to a Task
 router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
@@ -52,8 +41,7 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
         foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'users' ], req, res),
         incoming = []; // Keep an array of incoming User objects too for including in group
 
-    if(typeof incomingIds[0] !== "undefined")
-    {
+    if(typeof incomingIds[0] !== "undefined") {
         for (var i = 0; i < incomingIds.length; i++) {
             let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': incomingIds[i] }, [ 'tasks' ], req, res);
             incoming.push(checkedUserEntry);
@@ -63,8 +51,7 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
         }
     }
 
-    if(typeof outgoingIds[0] !== "undefined")
-    {
+    if(typeof outgoingIds[0] !== "undefined") {
         for (var i = 0; i < outgoingIds.length; i++) {
             let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { '_id': outgoingIds[i] }, [ 'tasks' ], req, res);
             foundUser.tasks = foundUser.tasks.filter( task => !(task._id === String(foundTask._id)) );
@@ -83,31 +70,7 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
     res.redirect('back');
 });
 
-// edit title of a task
-router.put('/:taskId/content', authServices.isAdmin, async function(req, res) {
-    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ ], req, res),
-        data = await taskServices.getTaskData(req, res);
 
-    if (data.title != null) { foundTask.title = data.title }
-    if (data.prompt != null) { foundTask.prompt = data.prompt }
-    foundTask.dateEdited = Date.now();
-
-    await dbopsServices.savePopulatedEntry(foundTask, req, res);
-    res.redirect('back');
-});
-
-// See a task's prompt and title
-router.get('/:taskId/preview', authServices.confirmUserCredentials, async function(req, res) {
-    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ ], req, res, { users: 0, comments: 0, files: 0}),
-        user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.params.username}, [ ], req, res);
-
-        res.render('viewTaskPreview', {
-            user: user,
-            task: foundTask,
-            loggedIn: true,
-            viewer: req.user
-        });
-});
 
 // See a task's Dashboard where one can upload responses and comments
 router.get('/:taskId/dashboard', authServices.confirmUserCredentials, async function(req, res) {
@@ -140,11 +103,9 @@ router.get('/:taskId/dashboard', authServices.confirmUserCredentials, async func
         });
 });
 
-
-
-
 // Delete
 router.delete('/:taskId', authServices.isAdmin, async function(req, res) {
+    console.log('lol');
     let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { '_id': req.params.taskId }, [ 'users' ], req, res),
     foundUsers = foundTask.users;
     for (var i = 0; i < foundTask.users.length; i++) {
@@ -180,19 +141,5 @@ router.get('/', authServices.confirmUserCredentials, async function(req, res) {
         });
     }
 });
-
-
-// // New Task Creation
-// router.post('/', authServices.isAdmin, async function(req, res) {
-//     let data = await taskServices.getTaskData(req, res),
-//         newTaskEntryData = new Task({
-//           title: data.title,
-//           prompt: data.prompt,
-//         }),
-//         newTask = await dbopsServices.createEntryAndSave(Task, newTaskEntryData, req, res, true);
-//
-//     res.redirect('back');
-//
-// });
 
 module.exports = router;

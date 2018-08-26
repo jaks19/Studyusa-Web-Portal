@@ -9,13 +9,13 @@
   "scripts": {
     "clean": "rm -rf build && mkdir build",
     "build-server": "babel --ignore .c9,git,data,docs,heroku,node_modules,uploads,views,.babelrc,.gitignore,mongod,package.json,.env -d ./build . -s",
-    "copy-unbuilt": "cp -R ./views ./images ./notifJson ./package.json ./.env ./build/",
+    "copy-unbuilt": "cp -R ./views ./images ./notifJson ./package.json ./package-lock.json ./.env ./build/",
     "build": "npm run clean && npm run build-server && npm run copy-unbuilt",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./build/app.js",
-    "build-and-start": "npm run build && heroku local",
-    "refresh-front-and-start": "rm -rf ./build/views ./build/frontend && cp -R ./views ./front-end ./build/ && heroku local",
-    "refresh-front": "rm -rf ./build/views ./build/frontend && cp -R ./views ./front-end ./build/"
+    "start": "node app.js",
+    "build-and-start": "npm run build && cp -R ./node_modules ./build/ && heroku local",
+    "refresh-front-and-start": "npm run refresh-front && heroku local",
+    "refresh-front": "rm -rf ./build/views ./build/scripts ./build/images && cp -R ./views ./scripts ./images ./build/"
   },
   "repository": {
     "type": "git",
@@ -54,13 +54,14 @@
     "mongoose": "^4.6.8",
     "multer": "^1.2.0",
     "multiparty": "^4.1.2",
-    "nodemailer": "^2.7.0",
+    "nodemailer": "^4.6.8",
     "npm-collect": "^1.0.5",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^4.0.0",
     "request": "^2.79.0",
     "stripe": "^4.13.0",
+    "tingle.js": "^0.13.2",
     "util": "^0.10.3",
     "walker": "^1.0.7"
   }

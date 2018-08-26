@@ -21,13 +21,6 @@ tinymce.init({
     removed_menuitems: 'newdocument',
     content_css: content_css,
     font_formats: font_formats,
-
-    //   setup: function(editor) {
-    //     editor.on('init', function(e) {
-    //       editor.execCommand('mcePreview');
-    //     });
-    // },
-    // save_onsavecallback: function () { console.log('Saved'); },
 });
 
 
@@ -49,31 +42,20 @@ let submit = function(tinymce_object, textareaId, formId, ajaxSubmitOptions){
 
 
 // Ajax post request for saving takes options object
-// Note- Available options are :
-    // target:          '#output2',     // target element(s) to be updated with server response
-    // url:             url,            // override for form's 'action' attribute
-    // type:            type,           // 'get' or 'post', override for form's 'method' attribute
-    // dataType:        null,           // 'xml', 'script', or 'json' (expected server response type)
-    // clearForm:       false,          // clear all form fields after successful submit
-    // resetForm:       true            // reset the form after successful submit
-    // Check signatures of those in their comments:
-    // beforeSubmit:    fn              // feed fn to run before submit (return false if somehow decide not to submit): function preSubmit(formData, jqForm, options) {}
-    // afterSubmit:     fn              // feed a fn to run after submitting: function postSubmit(responseText, statusText, xhr, $form) {}
-
 let optionsExit     = {async: false},
     optionsRegular  = {async: true};
-
 
 // Auto-Save
 // 1. Submit the form when page is exited (refreshed or closed or link clicked or quit browser)
 // Better than tinymce listener for mouseleave which is a subset
 window.onbeforeunload = function (e) {
-    submit(tinymce, 'area', 'form-submit', optionsExit)
+    submit(tinymce, 'area', 'form-submit', optionsExit);
+    return undefined; // To actually exit page
 };
 
 // 2. Submit the form each time interval to avoid text sitting for a long time
 // Start once the dom + all resources are loaded
 window.onload = function (e) {
-    let timeIntervalMinutes = 0.1;
+    let timeIntervalMinutes = 10;
     setInterval(function(){submit(tinymce, 'area', 'form-submit', optionsRegular)}, timeIntervalMinutes*60*1000);
 }

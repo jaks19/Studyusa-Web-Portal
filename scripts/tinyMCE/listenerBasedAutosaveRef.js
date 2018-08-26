@@ -109,14 +109,16 @@ $(document).on('focusin', function(e) {
 
 
 // Ajax post request for saving can take an options object
-// We use a pre and post submit function
-// Note : other available options are :-
-    // target:    '#output2',    // target element(s) to be updated with server response
-    // url:        url,          // override for form's 'action' attribute
-    // type:       type,         // 'get' or 'post', override for form's 'method' attribute
-    // dataType:   null,         // 'xml', 'script', or 'json' (expected server response type)
-    // clearForm: false,        // clear all form fields after successful submit
-    // resetForm:  true          // reset the form after successful submit
+// Note- Available options are :
+    // target:          '#output2',     // target element(s) to be updated with server response
+    // url:             url,            // override for form's 'action' attribute
+    // type:            type,           // 'get' or 'post', override for form's 'method' attribute
+    // dataType:        null,           // 'xml', 'script', or 'json' (expected server response type)
+    // clearForm:       false,          // clear all form fields after successful submit
+    // resetForm:       true            // reset the form after successful submit
+    // Check signatures of those in their comments:
+    // beforeSubmit:    fn              // feed fn to run before submit (return false if somehow decide not to submit): function preSubmit(formData, jqForm, options) {}
+    // afterSubmit:     fn              // feed a fn to run after submitting: function postSubmit(responseText, statusText, xhr, $form) {}
 
 let options = {
     // beforeSubmit: preSubmit,

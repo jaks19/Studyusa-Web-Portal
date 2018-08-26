@@ -1,0 +1,136 @@
+// Post new task (Set title only as task is saved already when title entered)
+router.post('/new', authServices.isAdmin, async function(req, res) {
+    let data = await taskServices.getTaskData(req, res),
+        // Pushed true if needed to publish, else undefined
+        publish = !!req.query.publish,
+        newTaskEntryData = new Task({ title: data.title, prompt: data.prompt, published: publish}),
+        taskCreated = await dbopsServices.createEntryAndSave(Task, newTaskEntryData, req, res, true),
+        user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.params.username}, [ ], req, res);
+
+    if (publish) {
+        res.render('viewTaskPreview', {
+            user: user,
+            task: taskCreated,
+            loggedIn: true,
+            viewer: req.user
+        });
+    } else {
+        // Prevent locking screen if autosaved
+        res.send('Autosaved')
+    }
+});
+
+
+// New task page (not needed because just have a modal for title on tasks page
+// and then we create the task already from there)
+// router.get('/new', authServices.isAdmin, async function(req, res) {
+//     let user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.params.username}, [ ], req, res);
+//
+//     res.render('./admin/newTask', {
+//         loggedIn: true,
+//         user: user
+//     });
+// });
+
+
+// edit title of a task
+router.put('/:taskId/content', authServices.isAdmin, async function(req, res) {
+    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ ], req, res),
+        data = await taskServices.getTaskData(req, res);
+
+    if (data.title != null) { foundTask.title = data.title }
+    if (data.prompt != null) { foundTask.prompt = data.prompt }
+    foundTask.dateEdited = Date.now();
+
+    await dbopsServices.savePopulatedEntry(foundTask, req, res);
+    res.redirect('back');
+});
+
+
+// See a task's prompt and title
+router.get('/:taskId/preview', authServices.confirmUserCredentials, async function(req, res) {
+    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ ], req, res, { users: 0, comments: 0, files: 0}),
+        user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.params.username}, [ ], req, res);
+
+        res.render('viewTaskPreview', {
+            user: user,
+            task: foundTask,
+            loggedIn: true,
+            viewer: req.user
+        });
+});
+
+
+
+
+
+
+db.tasks.insertMany([
+   { title: "hello1", prompt: "woohoo"},
+   { title: "hello2", prompt: "woohoo"},
+   { title: "hello3", prompt: "woohoo"},
+   { title: "hello4", prompt: "woohoo"},
+   { title: "hello5", prompt: "woohoo"},
+   { title: "hello6", prompt: "woohoo"},
+   { title: "hello7", prompt: "woohoo"},
+   { title: "hello8", prompt: "woohoo"},
+   { title: "hello9", prompt: "woohoo"},
+   { title: "hello10", prompt: "woohoo"},
+   { title: "hello11", prompt: "woohoo"},
+   { title: "hello12", prompt: "woohoo"},
+   { title: "hello13", prompt: "woohoo"},
+   { title: "hello14", prompt: "woohoo"},
+   { title: "hello15", prompt: "woohoo"},
+   { title: "hello16", prompt: "woohoo"},
+   { title: "hello17", prompt: "woohoo"},
+   { title: "hello18", prompt: "woohoo"},
+   { title: "hello19", prompt: "woohoo"},
+   { title: "hello20", prompt: "woohoo"}
+])
+
+
+
+
+
+<textarea id='ssprompt'>qwerewrq</textarea>
+
+<script>
+$(window).on("load", function() {
+    // weave your magic here.
+
+    console.log(tinyMCE.get('ssprompt').setContent('lol finally'));
+});
+</script>
+
+
+
+
+
+
+
+modalEditTaskPrompt:
+
+<div class="modal fade bs-example-modal-lg" id="task-prompt<%=task['_id']%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" align='center' role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Editing Task: '<%=task.title %>'</h4>
+            </div>
+
+
+            <!-- Automatically submitted when save is pressed in word processor (save plugin) or on the webpage (this btn provided) -->
+            <div class="modal-body">
+                <form action='/index/<%=user.username%>/tasks/<%=task._id%>/content?_method=PUT' method='POST' enctype='multipart/form-data'>
+                    <h4 style='text-align:left;' class="modal-title">Edit Title:</h4>
+                    <!-- <input type="text" class="form-control" value="<%=task.title %>" name='title' required style='margin-bottom:5%;' /> -->
+                    <textarea name='title' required><%=task.title%></textarea>
+                    <h4 style='text-align:left;' class="modal-title">Edit Prompt:</h4>
+                    <textarea name='prompt'><%=task.prompt%></textarea>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

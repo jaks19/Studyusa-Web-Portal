@@ -15,9 +15,9 @@ function userPageContext(req) {
 
 userServices.getUserData = async function getUserData(username, req, res) {
     var userData = {};
-    userData.populatedUser = await dbOpsServices.findOneEntryAndPopulate(User, {'username': username}, ['submissions', 'notifs', 'tasks', 'group'], req, res),
-    userData.allNotifs = userData.populatedUser.notifs.reverse(),
-    userData.unseenNotifs = notifServices.getBothSeenAndUnseenNotifs(userData.populatedUser.notifs)[1],
+    userData.populatedUser = await dbOpsServices.findOneEntryAndPopulate(User, {'username': username}, ['submissions', 'notifs', 'tasks', 'group'], req, res);
+    userData.allNotifs = userData.populatedUser.notifs.reverse();
+    userData.unseenNotifs = notifServices.getBothSeenAndUnseenNotifs(userData.populatedUser.notifs)[1];
     userData.context = userPageContext(req);
     if (userData.populatedUser.admin){
         userData.users = await dbOpsServices.findAllEntriesAndPopulate(User, { }, ['payments', 'group'], req, res);

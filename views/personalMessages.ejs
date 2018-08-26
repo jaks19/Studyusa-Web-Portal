@@ -8,14 +8,14 @@
             <div class="panel panel-info">
                 <div class="list-group-item" align='center'><strong>Messages between <%=client.username.slice(0,1).toUpperCase() + client.username.slice(1)%> and Anjanita</strong></div>
                 <div class="panel-body">
-                    
+
                     <form action='/index/<%=client.username%>/messages/personal/' id='commentForm' method='POST'>
                         <textarea class="form-control" placeholder="Enter Message here..." rows="3" name ='textareacontent' style='margin-bottom:1%;'></textarea>
                         <button type='submit' class="btn btn-primary btn-sm pull-right" name = 'butt' style='background:#6666F1;'>Send</button>
                         <div class="clearfix"></div>
                     </form>
                     <hr>
-                    
+
                     <ul class="media-list" style='max-height:70%; overflow:auto;'>
                         <% if (messages.length == 0){ %>
                             <% include ./repeats/noMessageBlock %>
@@ -31,13 +31,12 @@
     </div>
 </div>
 
-<% include ../front-end/timestampToElapsed %>
 
 <script>
      // Navbar Init
     $('#messages').css("background-color", "#FFFFFF");
-    $('#messagestxt').css("color", "#0084b4");    
-    
+    $('#messagestxt').css("color", "#0084b4");
+
     $('#personal').css("background-color", "#FFFFFF");
-    $('#personaltxt').css("color", "#0084b4");   
+    $('#personaltxt').css("color", "#0084b4");
 </script>

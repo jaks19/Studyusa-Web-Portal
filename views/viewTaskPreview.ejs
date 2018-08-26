@@ -63,14 +63,12 @@ a.blend:active
 </style>
 
 
-<% include ./whistlers/whistlerPrompt %>
-
 <script>
 
 let prompt;
 
 $(document).ready(function(){
-    prompt = $('#whistlerPrompt').val();
+    prompt = '<%=task.prompt%>';
     promptHTML = $.parseHTML(prompt);
     $('#displayer').append(promptHTML);
 });

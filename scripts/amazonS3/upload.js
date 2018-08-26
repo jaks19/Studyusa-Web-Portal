@@ -1,9 +1,9 @@
  $('#sendAdd').click(function(e){
     e.preventDefault();
     $('#pleaseWaitModal').modal('show');
-    let username = $('#whistlerClient').val(),
-      subId = $('#whistlerSubId').val(),
-      subTitle = $('#whistlerSubTitle').val(),
+    let username = '<%=client.username%>',
+      subId = '<%=sub._id%>',
+      subTitle = '<%=sub.title%>',
       file = document.getElementById('doc').files[0];
     getSignedRequestAndSend(file, username, subId, subTitle);
     $('#submitAdd').submit();

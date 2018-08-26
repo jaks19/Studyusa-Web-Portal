@@ -2,12 +2,12 @@
    if (!e.target.value || !(e.target.id == 'downloadAdd')){ return } // Because these buttons are created dynamically
    e.preventDefault();
    $('#pleaseWaitModal').modal('show');
-   let username = $('#whistlerClient').val(),
-       subId = $('#whistlerSubId').val(),
-       subTitle = $('#whistlerSubTitle').val(),
+   let username ='<%=client.username%>',
+       subId = '<%=sub._id%>',
+       subTitle = '<%=sub.title%>',
        fileName = e.target.value;
    getSignedRequestAndDownload(fileName, username, subId, subTitle);
-   
+
    $('.modal').modal('hide');
  });
 
@@ -27,4 +27,4 @@ function downloadFile(signedUrl, fileName){
     let toBeRemoved = document.getElementById("link");
     toBeRemoved.click();
     toBeRemoved.parentNode.removeChild(toBeRemoved);
-}    
+}

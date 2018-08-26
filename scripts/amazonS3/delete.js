@@ -1,8 +1,8 @@
  $('button').click(function(e){
     e.preventDefault();
     if (!e.target.value || !(e.target.id == 'deleteAdd')){ return } // Because these buttons are created dynamically
-    let username = $('#whistlerClient').val(),
-        subTitle = $('#whistlerSubTitle').val(),
+    let username = '<%=client.username%>',
+        subTitle = '<%=sub.title%>',
         fileName = e.target.value,
         request = new XMLHttpRequest();
     request.open('GET', '/index/' + username + '/submit/' + subTitle + '/s3/delete/' + `?file-name=${fileName}`, false);

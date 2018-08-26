@@ -8,13 +8,29 @@ var
     LocalStrategy  = require("passport-local"),
     User           = require("./models/user"),
     flash          = require('connect-flash'),
-    methodOverride = require("method-override");
+    methodOverride = require("method-override"),
+    path           = require('path');
+    // path.join('/foo', 'bar', 'baz/asdf', 'quux', '..');
+    // Returns: '/foo/bar/baz/asdf'
 
 // App Config
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended : true})); // To parse the body of a request
 app.use(methodOverride('_method'));
-app.use(express.static(__dirname));
+
+// TODO: Need to reduce this scope as can access anything in the project from front-end
+// e.g. make a public folder in the project root dir and use app.use(express.static('public'))
+// To use multiple static assets directories, call the express.static middleware function multiple times:
+// Express looks up the files in the order in which you set the static directories with the express.static middleware function.
+// app.use(express.static(__dirname));
+
+// These allow referring to files in front-end
+// app.use('/tingle', express.static(path.join(__dirname, '/node_modules/tingle.js/dist/')));
+// For example allows front-end code to just say /tingle/filename and it actually finds filename in '/node_modules/tingle.js/dist/'
+app.use('/tingle', express.static(__dirname + '/node_modules/tingle.js/dist/'));
+app.use('/scripts', express.static(__dirname + '/scripts/'));
+app.use('/images', express.static(__dirname + '/images/'));
+
 mongoose.connect(process.env.dbUrl);
 
 // Passport Config (For Authentication)

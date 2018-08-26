@@ -1,6 +1,6 @@
 <% include ../partials/headerUser %>
 
-<form id='form-submit' action='/index/<%=user.username%>/tasks/new' method='POST' enctype='multipart/form-data'>
+<form id='form-submit' action='/index/<%=user.username%>/tasks/new?publish=true' method='POST' enctype='multipart/form-data'>
 
     <div class='row'>
         <div class='col-xs-12 col-md-12' align='center'>
@@ -18,68 +18,8 @@
 
 </form>
 
-<script src="/front-end/tinyMCEScript.js" type="text/javascript"></script>
-
-<script>
-
-// pre-submit callback
-function preSubmit(formData, jqForm, options) {
-
-    // formData is an array; here we use $.param to convert it to a string to display it
-    // but the form plugin does this for you automatically when it submits the data
-    var queryString = $.param(formData);
-
-    // jqForm is a jQuery object encapsulating the form element.  To access the
-    // DOM element for the form do this:
-    // var formElement = jqForm[0];
-
-    alert('About to submit: \n\n' + queryString);
-
-    // here we could return false to prevent the form from being submitted;
-    // returning anything other than false will allow the form submit to continue
-    return true;
-}
-
-// post-submit callback
-function postSubmit(responseText, statusText, xhr, $form)  {
-    // if the ajaxSubmit method was passed an Options Object with the dataType
-    // property set to 'xml' or json etc then server response: 'responseText'
-    // is in that format
-
-    alert('status: ' + statusText + '\n\nresponseText: \n' + responseText +
-        '\n\nThe output div should have already been updated with the responseText.');
-
-    tinymce.get('area').setMode('readonly');
-
-    return true;
-}
-
-
-
-// $(document).ready(function() {
-//     var options = {
-//         beforeSubmit: preSubmit,
-//         success: postSubmit
-//     };
-//
-//     // other available options:1
-//     // target:    '#output2',   // target element(s) to be updated with server response
-//     //url:        url,          // override for form's 'action' attribute
-//     //type:       type,         // 'get' or 'post', override for form's 'method' attribute
-//     //dataType:   null,         // 'xml', 'script', or 'json' (expected server response type)
-//     // clearForm: false,        // clear all form fields after successful submit
-//     //resetForm:  true          // reset the form after successful submit
-//
-//     // $.ajax options can be used here too, for example:
-//     //timeout:   3000
-//
-//
-//     // Bind the form and when press save, an ajax post request is sent in the background
-//     $("#form-submit").ajaxForm(options);
-// });
-
-</script>
-
+<% include ../modals/modalEnterTaskTitle %> $('#'+formId).ajaxSubmit(ajaxSubmitOptions)
+<script src="/scripts/tinyMCE/editorWithAutosave.js" type="text/javascript"></script>
 
 
 <style>
