@@ -48,7 +48,7 @@ router.get('/:username', authServices.confirmUserCredentials, async function(req
 
     if (userData.populatedUser.admin){
         res.render('./admin/dashboard', {
-            user: userData.populatedUser,
+            user: req.user,
             users: userData.users,
             client: userData.populatedUser,
             notifs: userData.allNotifs,

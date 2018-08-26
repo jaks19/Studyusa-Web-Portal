@@ -1,0 +1,4 @@
+git add -u to add all changes and deletes (not new untracked files)
+git add -p (need to say yes or no to changes)
+
+git push origin goes to github repo

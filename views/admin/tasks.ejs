@@ -1,7 +1,6 @@
 <% include ../partials/headerUser %>
-    <button id='lol' class='delete' value='ddddd'></button>
     <div class='new' align='center'>
-        <input class="search" id="myInput" placeholder="Search for a Task">
+        <input class="search" id="search-bar" placeholder="Search for a Task">
     </div>
 
     <div class='row' style='padding: 2%;'>
@@ -14,7 +13,7 @@
                                 <div class="table-responsive">
 
                                     <!-- Insert any table of this format -->
-                                    <table id="myTable" class="table group-list">
+                                    <table id="searchable-table" class="table group-list">
                                         <thead>
                                             <tr>
                                                 <th style='text-align: left; padding-left: 20px;'><span>Tasks </span>(<a href="/index/<%=user.username%>/tasks/new">Create New</a>)</th>
@@ -85,155 +84,130 @@
     </div>
     </div>
 
-    <script>
-        // For search bar
-        // (Each one needs a slightly different script due to how the table is formatted)
-        $('#myInput').keyup(function() {
-            var input, filter, table, tr, td, i, keep;
-            input = $("#myInput")[0];
-            filter = input.value.toUpperCase();
-            table = $("#myTable");
-            tbody = table[0].getElementsByTagName("tbody");
-            trs = tbody[0].getElementsByTagName("tr");
+
+<script src='/scripts/search-bar.js'></script>
+
+<script src='/scripts/tingle/deleteConfirmationReusable.js'></script>
 
 
-            for (i = 0; i < trs.length; i++) {
-                tds = trs[i].getElementsByTagName("td");
-                for (j = 0; j < tds.length; j++) {
-                    // Loop all tds as will use name, group name etc all of them to search
-                    if (tds[j].id.toUpperCase().indexOf(filter) > -1) {
-                        trs[i].style.display = "";
-                        break;
-                    } else {
-                        trs[i].style.display = "none";
-                    }
-                }
-            }
-        });
+<style>
+    /* Search bar and buttons CSS */
 
-    </script>
+    .new input {
+        border-radius: 25px;
+        padding: 0.8% 1.2%;
+        background-color: white;
+        border: solid 1px rgba(0, 0, 0, 0.2);
+        width: 35%;
+        box-sizing: border-box;
+        color: #3e9ddc;
+        margin-bottom: 5px;
+        text-align: center;
+    }
 
+    input:focus,
+    textarea,
+    button:focus {
+        outline: none !important;
+    }
 
-    <style>
-        /* Search bar and buttons CSS */
+    .new button {
+        font-size: 100%;
+        padding: 5px 15px;
+        border-radius: 25px;
+        border: none;
+        text-decoration: none;
+        margin: 2px 0;
+    }
 
-        .new input {
-            border-radius: 25px;
-            padding: 0.8% 1.2%;
-            background-color: white;
-            border: solid 1px rgba(0, 0, 0, 0.2);
-            width: 35%;
-            box-sizing: border-box;
-            color: #3e9ddc;
-            margin-bottom: 5px;
-            text-align: center;
-        }
+    a:link,
+    a:visited,
+    a:hover,
+    a:active {
+        color: #3498db;
+        text-decoration: none;
+    }
 
-        input:focus,
-        textarea,
-        button:focus {
-            outline: none !important;
-        }
+    ::-webkit-input-placeholder {
+        /* Chrome/Opera/Safari */
+        color: #777777b8;
 
-        .new button {
-            font-size: 100%;
-            padding: 5px 15px;
-            border-radius: 25px;
-            border: none;
-            text-decoration: none;
-            margin: 2px 0;
-        }
+    }
 
-        a:link,
-        a:visited,
-        a:hover,
-        a:active {
-            color: #3498db;
-            text-decoration: none;
-        }
+    ::-moz-placeholder {
+        /* Firefox 19+ */
+        color: #777777b8;
 
-        ::-webkit-input-placeholder {
-            /* Chrome/Opera/Safari */
-            color: #777777b8;
+    }
 
-        }
+    :-ms-input-placeholder {
+        /* IE 10+ */
+        color: #777777b8;
 
-        ::-moz-placeholder {
-            /* Firefox 19+ */
-            color: #777777b8;
+    }
 
-        }
+    :-moz-placeholder {
+        /* Firefox 18- */
+        color: #777777b8;
 
-        :-ms-input-placeholder {
-            /* IE 10+ */
-            color: #777777b8;
-
-        }
-
-        :-moz-placeholder {
-            /* Firefox 18- */
-            color: #777777b8;
-
-        }
-    </style>
+    }
+</style>
 
 
-    <style>
-        /*  The Table CSS */
+<style>
+    /*  The Table CSS */
 
-        tbody>tr>td {
-            vertical-align: middle;
-            text-align: center;
-        }
+    tbody>tr>td {
+        vertical-align: middle;
+        text-align: center;
+    }
 
-        body {
-            background: #eee;
-        }
+    body {
+        background: #eee;
+    }
 
-        .main-box.no-header {
-            padding-top: 20px;
-        }
+    .main-box.no-header {
+        padding-top: 20px;
+    }
 
-        .main-box {
-            background: #eeeeee;
-            height: 80%;
-            overflow: auto;
-        }
+    .main-box {
+        background: #eeeeee;
+        height: 80%;
+        overflow: auto;
+    }
 
-        .label {
-            border-radius: 3px;
-            font-size: 0.875em;
-            font-weight: 600;
-        }
+    .label {
+        border-radius: 3px;
+        font-size: 0.875em;
+        font-weight: 600;
+    }
 
-        tr>th {
-            text-align: center;
-            text-transform: uppercase;
-            font-size: 0.875em;
-            border-bottom: 2px solid #e7ebee;
-        }
+    tr>th {
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 0.875em;
+        border-bottom: 2px solid #e7ebee;
+    }
 
-        /* Widths of columns */
+    /* Widths of columns */
 
-        tr>td:first-child {
-            font-weight: 300;
-            width: 10%;
-            text-align: left;
-        }
+    tr>td:first-child {
+        font-weight: 300;
+        width: 10%;
+        text-align: left;
+    }
 
-        tr>td:nth-child(2) {
-            width: 15%;
-        }
+    tr>td:nth-child(2) {
+        width: 15%;
+    }
 
-        tr>td:nth-child(3) {
-            width: 15%;
-        }
+    tr>td:nth-child(3) {
+        width: 15%;
+    }
 
-        tr>td {
-            font-size: 0.875em;
-            padding: 12px 8px;
-            background-color: #ffffff;
-        }
-    </style>
-
-    <script src='/scripts/tingle/deleteConfirmationReusable.js'></script>
+    tr>td {
+        font-size: 0.875em;
+        padding: 12px 8px;
+        background-color: #ffffff;
+    }
+</style>

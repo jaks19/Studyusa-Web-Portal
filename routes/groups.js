@@ -37,7 +37,7 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
         newGroupData = new Group({ name: groupName }),
         groupEntry = await dbopsServices.createEntryAndSave(Group, newGroupData, req, res, false);
 
-    if(typeof incomingIds[0] !== "undefined")
+    if(typeof checkedUserIds !== "undefined")
     {
         for (var i = 0; i < checkedUserIds.length; i++) {
             let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ ], req, res);
