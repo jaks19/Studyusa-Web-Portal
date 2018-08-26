@@ -36,16 +36,22 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
         groupName = req.body.name,
         newGroupData = new Group({ name: groupName }),
         groupEntry = await dbopsServices.createEntryAndSave(Group, newGroupData, req, res, false);
-    for (var i = 0; i < checkedUserIds.length; i++) {
-        let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ ], req, res);
-        checkedUserEntry.group = groupEntry;
-        groupEntry.users.push(checkedUserEntry);
-        notifServices.assignNotification(req.user.username, groupName, 'group-add', checkedUserEntry.username, req, res);
-        dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
+
+    if(typeof incomingIds[0] !== "undefined")
+    {
+        for (var i = 0; i < checkedUserIds.length; i++) {
+            let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ ], req, res);
+            checkedUserEntry.group = groupEntry;
+            groupEntry.users.push(checkedUserEntry);
+            notifServices.assignNotification(req.user.username, groupName, 'group-add', checkedUserEntry.username, req, res);
+            dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
+        }
     }
+
     dbopsServices.savePopulatedEntry(groupEntry, req, res);
     res.redirect('back');
 });
+
 
 // Add/remove to Group
 router.put('/:groupId/add', authServices.confirmUserCredentials, async function(req, res) {

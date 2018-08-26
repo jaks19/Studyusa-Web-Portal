@@ -2,7 +2,7 @@ var groupServices = {};
 
 groupServices.getCheckedUsers = function getCheckedUsers(req, res) {
   if (req.body.incoming == null && req.body.outgoing == null){
-      req.flash('error', "Error, group not created! You did not choose any user to add to or remove from that group!");
+      req.flash('error', "Error, group not created! You did not choose any user!");
       return res.redirect('back');
   }
 

@@ -29,6 +29,7 @@ app.use(methodOverride('_method'));
 // For example allows front-end code to just say /tingle/filename and it actually finds filename in '/node_modules/tingle.js/dist/'
 app.use('/tingle', express.static(__dirname + '/node_modules/tingle.js/dist/'));
 app.use('/scripts', express.static(__dirname + '/scripts/'));
+app.use('/styles', express.static(__dirname + '/styles/'));
 app.use('/images', express.static(__dirname + '/images/'));
 
 mongoose.connect(process.env.dbUrl);

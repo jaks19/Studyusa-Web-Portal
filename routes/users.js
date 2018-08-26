@@ -46,8 +46,6 @@ router.get('/:username', authServices.confirmUserCredentials, async function(req
     let username = req.params.username,
         userData = await userServices.getUserData(username, req, res);
 
-    console.log(userData);
-
     if (userData.populatedUser.admin){
         res.render('./admin/dashboard', {
             user: userData.populatedUser,

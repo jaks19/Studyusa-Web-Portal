@@ -60,8 +60,7 @@
 
                                                             <a href='/index/<%=thisUser.username%>/messages/personal' class=' btn btn-sm btn-primary glyphicon glyphicon-comment'></span></a>
                                                             <a href="/index/<%=thisUser.username%>" data-toggle="modal" data-target="#" class=' btn btn-sm btn-success glyphicon glyphicon-eye-open'></span></a>
-                                                            <a href='#user-delete<%=thisUser['_id']%>' data-toggle="modal" data-target="#user-delete<%=thisUser['_id']%>" class=' btn btn-sm btn-danger glyphicon glyphicon-trash'></span></a>
-                                                            <% include ../modals/modalDeleteUser %>
+                                                            <button type='button' class='deletion btn btn-sm glyphicon glyphicon-trash' value='/index/<%=thisUser.username%>' name='<%=thisUser.username%>'></button>
 
                                                         </td>
                                                     </tr>
@@ -102,7 +101,6 @@
 
         // If coming to view a group's members, start with them on screen
         if (groupId != -1 && groupId !== "undefined"){
-            console.log(groupId)
             for (i = 0; i < trs.length; i++) {
               tds = trs[i].getElementsByTagName("td");
               for (j = 0; j < tds.length; j++) {
@@ -303,3 +301,5 @@ a:link, a:visited, a:hover, a:active {
         $('#greet').modal('show');
     });
 </script>
+
+<script src='/scripts/tingle/deleteConfirmationReusable.js'></script>

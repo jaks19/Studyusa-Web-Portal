@@ -83,7 +83,6 @@ router.get('/:taskId/dashboard', authServices.confirmUserCredentials, async func
         if (String(comment.author._id) === String(user._id)){
             return true;
         } else if (comment.recipient != null){
-            console.log(comment.recipient)
             if (String(comment.recipient._id) === String(user._id)){
                 return true;
             }
@@ -105,7 +104,6 @@ router.get('/:taskId/dashboard', authServices.confirmUserCredentials, async func
 
 // Delete
 router.delete('/:taskId', authServices.isAdmin, async function(req, res) {
-    console.log('lol');
     let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { '_id': req.params.taskId }, [ 'users' ], req, res),
     foundUsers = foundTask.users;
     for (var i = 0; i < foundTask.users.length; i++) {

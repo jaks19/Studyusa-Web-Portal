@@ -1,5 +1,5 @@
 <% include ../partials/headerUser %>
-
+    <button id='lol' class='delete' value='ddddd'></button>
     <div class='new' align='center'>
         <input class="search" id="myInput" placeholder="Search for a Task">
     </div>
@@ -64,7 +64,7 @@
                                                     <button type='button' title="Assign Users" data-toggle="modal" data-target="#task-users-dashboard<%=task._id%>" class='btn btn-sm glyphicon glyphicon-user' data-backdrop="static" data-keyboard="false"></button>
                                                     <% include ../modals/modalManageUsersTask %>
 
-                                                    <button id='<%=task._id%>' type='button' value='delete' name='<%=task.title%>' class='btn btn-sm glyphicon glyphicon-trash'></button>
+                                                    <button type='button' value='/index/<%=user.username%>/tasks/<%=task._id%>/' name='<%=task.title%>' class='deletion btn btn-sm glyphicon glyphicon-trash'></button>
                                                 </td>
 
                                                 </tr>
@@ -100,7 +100,6 @@
             for (i = 0; i < trs.length; i++) {
                 tds = trs[i].getElementsByTagName("td");
                 for (j = 0; j < tds.length; j++) {
-                    console.log(tds[j].id)
                     // Loop all tds as will use name, group name etc all of them to search
                     if (tds[j].id.toUpperCase().indexOf(filter) > -1) {
                         trs[i].style.display = "";
@@ -112,8 +111,6 @@
             }
         });
 
-
-        console.log('<%=user.username%>');
     </script>
 
 
@@ -239,11 +236,4 @@
         }
     </style>
 
-    <style>
-
-    .modal-area .tingle-modal-box{
-        width: 30%;
-        text-align: center;
-    }
-
-    </style>
+    <script src='/scripts/tingle/deleteConfirmationReusable.js'></script>
