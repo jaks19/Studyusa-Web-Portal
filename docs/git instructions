@@ -2,3 +2,37 @@ git add -u to add all changes and deletes (not new untracked files)
 git add -p (need to say yes or no to changes)
 
 git push origin goes to github repo
+
+
+COMMITTING:
+- I can commit a bunch of times (c0,c1,c2,...)without pushing then either push at the end to push the latest commit (cn)
+- OR I can push any ci:
+    Command 'git log' (to see all commits, even those pushed already, you can push an old commit 2 months ago as well!)
+    you get a bunch of commits and ids and identify the needed commit
+    Command git push <remote name> <commit hash>:<remote branch name>
+    E.g. git push origin f61b48cb8b1877721e2596a6aa65648a68bb605e:master
+    E.g. our remote name is origin and the commit hash is 84ef6d98058249fe052f1faf88af7cd0effa2321 and branch name is master
+    Note how you can also push to any branch!
+
+BRANCHING:
+- If a new feature needs to be developped on a new branch it means you create a separate branch from origin, not the master branch
+- On your computer when you are on that branch, you see all commits you made when you were on that branch
+- $ git checkout -b iss53
+Switched to a new branch "iss53" (creates the branch AND moves to it)
+- Commits get to that branch and the master branch is unaware of those
+- You do not push to branch as it is a local copy
+$ git checkout master
+Switched to branch 'master'
+$ git merge iss53
+Merge made by the 'recursive' strategy.
+$ git branch -d hotfix
+This deletes the branch once no longer needed
+- This allows locally to go back to master branch and merge the local situation of iss53 to master
+- Merge conficts occur in your master branch locally if you changed same files in both branches locally
+- Use git status to see the conflicts etc and fix
+- Once merged, you can now push from master
+- Note how a branch is local and you do not push to it
+
+There is a difference between branch and remote. You checkout a branch locally to work on it on a path separate from the master branch
+Both the checked out branch and the master branch belong to the same remote (here called origin)
+You can create another remote, this just means ANOTHER REPO ENTIRELY
