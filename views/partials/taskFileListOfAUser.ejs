@@ -16,7 +16,6 @@
                     <div class='container file' style='background:#FFFFFF; width: 100%; float:left;'>
                         <a href='#' data-toggle="modal" data-target="#<%=file['_id']%>" style="text-decoration:none;"><%=file['filename']%></a>
                         <br />(Author: <%= file['author'] %>)<hr />
-                        <% include ../modals/modalAddDownloadOrDeleteFile %>
                     </div>
                 <% }); %>
             </div>
@@ -27,15 +26,3 @@
 
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-<% include ../modals/modalPleaseWait %>

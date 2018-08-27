@@ -1,6 +1,6 @@
 // tinyMCE init settings
-let plugins         = 'print emoticons searchreplace autolink directionality visualchars fullscreen image link media table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools mediaembed linkchecker contextmenu colorpicker textpattern help',
-    toolbar1        = 'formatselect | bold italic strikethrough forecolor backcolor | fontselect | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
+let plugins         = 'print emoticons code searchreplace autolink directionality visualchars fullscreen image link media table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools mediaembed linkchecker contextmenu colorpicker textpattern help',
+    toolbar1        = 'formatselect | bold italic strikethrough forecolor backcolor | fontselect | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | emoticons',
     mobile          = { theme: 'mobile', plugins: [ 'autosave', 'lists', 'autolink' ], toolbar: [ 'undo', 'bold', 'italic', 'styleselect' ] },
     content_css     = [ '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i', '//www.tinymce.com/css/codepen.min.css' ],
     font_formats    = "Andale Mono=andale mono,times;"+"Arial=arial,helvetica,sans-serif;"+"Arial Black=arial black,avant garde;"+"Book Antiqua=book antiqua,palatino;"+"Comic Sans MS=comic sans ms,sans-serif;"+"Courier New=courier new,courier;"+"Century Gothic=century_gothic;"+"Georgia=georgia,palatino;"+"Gill Sans MT=gill_sans_mt;"+"Gill Sans MT Bold=gill_sans_mt_bold;"+"Gill Sans MT BoldItalic=gill_sans_mt_bold_italic;"+
@@ -37,13 +37,14 @@ let submit = function(tinymce_object, textareaId, formId, ajaxSubmitOptions){
     // Need to manually set content of textarea, from the editor
     let editor = tinymce_object.get(textareaId);
     $('#'+textareaId).val(editor.getContent());
-    $('#'+formId).ajaxSubmit(ajaxSubmitOptions)
+    $('#'+formId).ajaxSubmit(ajaxSubmitOptions);
 }
 
 
 // Ajax post request for saving takes options object
 let optionsExit     = {async: false},
     optionsRegular  = {async: true};
+
 
 // Auto-Save
 // 1. Submit the form when page is exited (refreshed or closed or link clicked or quit browser)
@@ -53,9 +54,10 @@ window.onbeforeunload = function (e) {
     return undefined; // To actually exit page
 };
 
+
 // 2. Submit the form each time interval to avoid text sitting for a long time
 // Start once the dom + all resources are loaded
 window.onload = function (e) {
-    let timeIntervalMinutes = 10;
+    let timeIntervalMinutes = 5;
     setInterval(function(){submit(tinymce, 'area', 'form-submit', optionsRegular)}, timeIntervalMinutes*60*1000);
 }

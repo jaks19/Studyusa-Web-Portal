@@ -10,7 +10,7 @@ let buttonPressed;
 let modalDelete = new tingle.modal({
     footer: true,
     stickyFooter: false,
-    cssClass: ['modal-area'],
+    cssClass: ['modal-deletion'],
     closeMethods: [],
     onClose: function() {
         // Reset content
@@ -22,12 +22,14 @@ $('button').click(function(e){
     if ($(this).hasClass('deletion')) {
         buttonPressed = $(this);
         modalDelete.open();
-        modalDelete.setContent("Are you sure you want to delete <b>" + $(this).attr('name') + "</b>?");
+        modalDelete.setContent(
+            "<div>Are you sure you want to delete <b>" + $(this).attr('name') + "</b>?<div>"
+        );
     }
 });
 
 modalDelete.addFooterBtn('Yes', 'tingle-btn tingle-btn--primary', function() {
-    $('<form action="' + buttonPressed.val() + '?_method=Delete" method="POST"></form>').appendTo('body').submit();
+    $('<form action="' + buttonPressed.val() + '" method="POST"></form>').appendTo('body').submit();
 });
 
 modalDelete.addFooterBtn('No', 'tingle-btn tingle-btn--danger', function() {

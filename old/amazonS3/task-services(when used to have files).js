@@ -9,8 +9,10 @@ function getPromiseToParseForm(req) {
     // form.parse needs a callback so we make this wrapper to give back a promise instead
     return new Promise(function (resolve, reject) {
         let form = new multiparty.Form();
-
         form.parse(req, function(error, fields, files){
+            console.log(fields);
+            console.log(files);
+
             if (error) { reject(error) }
             else { resolve([ fields, files ]) }
         });

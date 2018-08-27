@@ -16,7 +16,10 @@
                                     <table id="searchable-table" class="table group-list">
                                         <thead>
                                             <tr>
-                                                <th style='text-align: left; padding-left: 20px;'><span>Tasks </span>(<a href="/index/<%=user.username%>/tasks/new">Create New</a>)</th>
+                                                <th style='text-align: left; padding-left: 20px;'>
+                                                    <span>Tasks </span>
+                                                    <button type='button' class='naming button-with-text' id='' name='new task' value='/index/<%=user.username%>/tasks/new'>(Create New)</button>
+                                                </th>
                                                 <th><span>Created</span></th>
                                                 <th><span>Last Edited</span></th>
                                                 <th>Users</th>
@@ -56,14 +59,14 @@
                                                 </td>
 
                                                 <td class='buttons' style="width: 20%;">
-                                                    <button type='button' title="See Prompt" class='btn btn-sm glyphicon glyphicon-eye-open' onclick="window.location.href='/index/<%=user.username%>/tasks/<%=task._id%>/preview'"></button>
+                                                    <button type='button' title="Edit Task" class='btn btn-sm glyphicon glyphicon-pencil' onclick="window.location.href='/index/<%=user.username%>/tasks/<%=task._id%>/edit'"></button>
 
-                                                    <button type='button' title="See user-submitted work" class='btn btn-sm glyphicon glyphicon-pencil' onclick="window.location.href='/index/<%=user.username%>/tasks/<%=task._id%>/dashboard'"></button>
+                                                    <button type='button' title="See user-submitted work" class='btn btn-sm glyphicon glyphicon-eye-open' onclick="window.location.href='/index/<%=user.username%>/tasks/<%=task._id%>/preview'"></button>
 
                                                     <button type='button' title="Assign Users" data-toggle="modal" data-target="#task-users-dashboard<%=task._id%>" class='btn btn-sm glyphicon glyphicon-user' data-backdrop="static" data-keyboard="false"></button>
                                                     <% include ../modals/modalManageUsersTask %>
 
-                                                    <button type='button' value='/index/<%=user.username%>/tasks/<%=task._id%>/' name='<%=task.title%>' class='deletion btn btn-sm glyphicon glyphicon-trash'></button>
+                                                        <button type='button' value='/index/<%=user.username%>/tasks/<%=task._id%>?_method=Delete' name='<%=task.title%>' class='deletion btn btn-sm glyphicon glyphicon-trash'></button>
                                                 </td>
 
                                                 </tr>
@@ -85,129 +88,196 @@
     </div>
 
 
-<script src='/scripts/search-bar.js'></script>
+    <script src='/scripts/search-bar.js'></script>
 
-<script src='/scripts/tingle/deleteConfirmationReusable.js'></script>
+    <script src='/scripts/tingle/deleteConfirmationReusable.js'></script>
 
 
-<style>
-    /* Search bar and buttons CSS */
+    <style>
+        /* Search bar and buttons CSS */
 
-    .new input {
-        border-radius: 25px;
-        padding: 0.8% 1.2%;
-        background-color: white;
-        border: solid 1px rgba(0, 0, 0, 0.2);
-        width: 35%;
-        box-sizing: border-box;
-        color: #3e9ddc;
-        margin-bottom: 5px;
-        text-align: center;
-    }
+        .new input {
+            border-radius: 25px;
+            padding: 0.8% 1.2%;
+            background-color: white;
+            border: solid 1px rgba(0, 0, 0, 0.2);
+            width: 35%;
+            box-sizing: border-box;
+            color: #3e9ddc;
+            margin-bottom: 5px;
+            text-align: center;
+        }
 
-    input:focus,
-    textarea,
-    button:focus {
-        outline: none !important;
-    }
+        input:focus,
+        textarea,
+        button:focus {
+            outline: none !important;
+        }
 
-    .new button {
-        font-size: 100%;
-        padding: 5px 15px;
-        border-radius: 25px;
+        .new button {
+            font-size: 100%;
+            padding: 5px 15px;
+            border-radius: 25px;
+            border: none;
+            text-decoration: none;
+            margin: 2px 0;
+        }
+
+        a:link,
+        a:visited,
+        a:hover,
+        a:active {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        ::-webkit-input-placeholder {
+            /* Chrome/Opera/Safari */
+            color: #777777b8;
+
+        }
+
+        ::-moz-placeholder {
+            /* Firefox 19+ */
+            color: #777777b8;
+
+        }
+
+        :-ms-input-placeholder {
+            /* IE 10+ */
+            color: #777777b8;
+
+        }
+
+        :-moz-placeholder {
+            /* Firefox 18- */
+            color: #777777b8;
+
+        }
+    </style>
+
+    <style>
+        /*  The Table CSS */
+
+        tbody>tr>td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        body {
+            background: #eee;
+        }
+
+        .main-box.no-header {
+            padding-top: 20px;
+        }
+
+        .main-box {
+            background: #eeeeee;
+            height: 80%;
+            overflow: auto;
+        }
+
+        .label {
+            border-radius: 3px;
+            font-size: 0.875em;
+            font-weight: 600;
+        }
+
+        tr>th {
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 0.875em;
+            border-bottom: 2px solid #e7ebee;
+        }
+
+        /* Widths of columns */
+
+        tr>td:first-child {
+            font-weight: 300;
+            width: 10%;
+            text-align: left;
+        }
+
+        tr>td:nth-child(2) {
+            width: 15%;
+        }
+
+        tr>td:nth-child(3) {
+            width: 15%;
+        }
+
+        tr>td {
+            font-size: 0.875em;
+            padding: 12px 8px;
+            background-color: #ffffff;
+        }
+    </style>
+
+    <style>
+
+    .button-with-text {
         border: none;
-        text-decoration: none;
-        margin: 2px 0;
+        background: none;
+        padding: 0;
+        color: #3498dc;
     }
 
-    a:link,
-    a:visited,
-    a:hover,
-    a:active {
-        color: #3498db;
-        text-decoration: none;
-    }
 
-    ::-webkit-input-placeholder {
-        /* Chrome/Opera/Safari */
-        color: #777777b8;
-
-    }
-
-    ::-moz-placeholder {
-        /* Firefox 19+ */
-        color: #777777b8;
-
-    }
-
-    :-ms-input-placeholder {
-        /* IE 10+ */
-        color: #777777b8;
-
-    }
-
-    :-moz-placeholder {
-        /* Firefox 18- */
-        color: #777777b8;
-
-    }
-</style>
+    </style>
 
 
-<style>
-    /*  The Table CSS */
+    <script>
 
-    tbody>tr>td {
-        vertical-align: middle;
-        text-align: center;
-    }
+    // Shows modals for inserting or editing the name of a new or existing object
+    // Interface:
+    // Buttons for this modal need:
+    //    class='naming' since other buttons are for post, get etc etc (may also have other classes tied in)
+    //    name='type of object being edited or created' e.g. 'group' or 'task' etc, to use in the prompt
+    //    value='url' where to post the form
+    //    id='existing name if editing, else empty'
 
-    body {
-        background: #eee;
-    }
+    let buttonChosen;
 
-    .main-box.no-header {
-        padding-top: 20px;
-    }
+    let modalNaming = new tingle.modal({
+        footer: true,
+        stickyFooter: false,
+        cssClass: ['modal-naming'],
+        closeMethods: [],
+        onClose: function() {
+            // Reset content
+            modalNaming.setContent('');
+            return;
+        }
+    });
 
-    .main-box {
-        background: #eeeeee;
-        height: 80%;
-        overflow: auto;
-    }
+    $('button').click(function(e){
+        if ($(this).hasClass('naming')) {
+            buttonChosen = $(this);
+            modalNaming.open();
+            modalNaming.setContent(
+                "<div> Enter a <b>name</b> for the " + $(this).attr('name') + ": </div>" +
+                "<div style='padding-top: 5%; margin-bottom: -5%;'>" +
+                    "<form action='" + buttonChosen.val() + "' method='POST'>" +
+                        "<input name='title' type='text' class='search' style='width:80%; color: black;' value='" + $(this).attr('id') + "' onfocus='this.setSelectionRange(0, this.value.length)' required />" +
+                        "<button id='naming-form-submit' type='submit' style='visibility:hidden;'></button>" +
+                    "</form>" +
+                 "</div>"
+            );
+            $('input[name=title]').focus();
+        }
+    });
 
-    .label {
-        border-radius: 3px;
-        font-size: 0.875em;
-        font-weight: 600;
-    }
+    modalNaming.addFooterBtn('Done', 'tingle-btn tingle-btn--primary', function() {
+        // Need to submit form through a classic submit button to make use of the 'required' property of input fields
+        // Otherwise form can be sent blank as well
+        $('#naming-form-submit').click();
+        return;
+    });
 
-    tr>th {
-        text-align: center;
-        text-transform: uppercase;
-        font-size: 0.875em;
-        border-bottom: 2px solid #e7ebee;
-    }
+    modalNaming.addFooterBtn('Dismiss', 'tingle-btn tingle-btn--danger', function() {
+        modalNaming.close();
+    });
 
-    /* Widths of columns */
 
-    tr>td:first-child {
-        font-weight: 300;
-        width: 10%;
-        text-align: left;
-    }
-
-    tr>td:nth-child(2) {
-        width: 15%;
-    }
-
-    tr>td:nth-child(3) {
-        width: 15%;
-    }
-
-    tr>td {
-        font-size: 0.875em;
-        padding: 12px 8px;
-        background-color: #ffffff;
-    }
-</style>
+    </script>

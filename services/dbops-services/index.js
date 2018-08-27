@@ -86,6 +86,8 @@ function promiseToUpdateEntryAndSave(model, entryRequirement, changes){
   });
 }
 
+// DOES NOT RETURN THE DOCUMENT (i.e. THE ENTRY)
+// If need the entry, see findByIdAndUpdate below
 dbopsServices.updateEntryAndSave = async function updateEntryAndSave(model, entryRequirement, changes, req, res){
     try { await promiseToUpdateEntryAndSave(model, entryRequirement, changes) }
     catch(error) {
@@ -93,6 +95,31 @@ dbopsServices.updateEntryAndSave = async function updateEntryAndSave(model, entr
       res.redirect('back');
       return;
     }
+}
+
+
+function promiseToFindByIdAndUpdate(model, _id, changes){
+  return new Promise(function (resolve, reject) {
+    // new: true allows the NEW entry to be returned, not the old one
+    model.findByIdAndUpdate( _id, changes, {new: true}, function(error, newEntry){
+        if (error) { reject(error) }
+        else { resolve(newEntry) }
+    });
+  });
+}
+
+// RETURNS THE DOCUMENT (i.e. THE ENTRY) (but only uses _id to search)
+dbopsServices.findByIdAndUpdate = async function findByIdAndUpdate(model, _id, changes, req, res){
+    let entry;
+
+    try { entry = await promiseToFindByIdAndUpdate(model, _id, changes) }
+    catch(error) {
+      req.flash('error', 'error updating');
+      res.redirect('back');
+      return;
+    }
+
+    return entry;
 }
 
 function promiseToSaveEntry(newEntry){
@@ -112,8 +139,8 @@ dbopsServices.savePopulatedEntry = async function savePopulatedEntry(populatedEn
           req.flash('error', err);
           console.log('the full', err);
       }
-      return;
-    }
+    return;
+}
 
 //   populatedEntry.save(function(error, savedEntry){
 //     if (error) {

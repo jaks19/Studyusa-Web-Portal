@@ -3,7 +3,7 @@ var mongoose = require("mongoose");
 var taskSchema = new mongoose.Schema({
     title: {type: String, required: true},
     prompt: {type: String, required: true},
-    published: {type: Boolean, required: true},
+    published: {type: Boolean, default: false},
     dateCreated: {type: Date, default: Date.now},
     dateEdited: {type: Date, default: Date.now},
     files: [

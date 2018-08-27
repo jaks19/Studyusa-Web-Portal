@@ -1,3 +1,5 @@
+require("babel-polyfill")
+
 // Require
 var
     bodyParser     = require("body-parser"),

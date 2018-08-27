@@ -18,19 +18,21 @@ let User = require("../models/user"),
 
 let router = express.Router({ mergeParams: true });
 
+let DEFAULT_PROMPT_PRE = '<h2 style="text-align: center;"><span style="background-color: #ffff99;">Hey ',
+    DEFAULT_PROMPT_POST = '!</span></h2>\r\n<h5 style="text-align: center;">My name\'s <span style="background-color: #00ffff;">Tiny the word processor</span> and I\'m your new best friend! Forget MS Word or Google Docs, because I am cooler than them.&nbsp;<img src="https://cloud.tinymce.com/stable/plugins/emoticons/img/smiley-cool.gif" alt="cool" /></h5>\r\n<h5 style="text-align: center;"><span style="color: #626262; background-color: #ffffff;"><span style="background-color: #ffcc99;">I promise to autosave your writing</span> so you can leave your work, even close this window etc and seamlessly resume when you are back!</span></h5>\r\n<h5 style="text-align: center;">Together we will <span style="background-color: #ccffcc;">write our way to the best universities in the world</span>!</h5>\r\n<h5 style="text-align: center;">You may <span style="background-color: #ff99cc;">begin your work by deleting all this text</span>.</h5>\r\n<p>&nbsp;</p>\r\n<p style="text-align: left;">&nbsp;</p>\r\n<h6 style="text-align: center;"><span style="font-family: century_gothic;"><strong><em>Quick tip:</em></strong></span></h6>\r\n<h5 style="text-align: center;"><span style="font-family: \'book antiqua\', palatino;">When you want to change font sizes, locate the menu bar where the \'File\', \'Edit\', \'View\', \'Insert\' options etc are found. </span></h5>\r\n<h5 style="text-align: center;"><span style="font-family: \'book antiqua\', palatino;">Click on the option BELOW the \'File\' option and choose from:</span></h5>\r\n<h1 style="text-align: center;"><span style="font-family: iskoola_pota;">Heading 1</span></h1>\r\n<h2 style="text-align: center;"><span style="font-family: iskoola_pota;">Heading 2</span></h2>\r\n<h3 style="text-align: center;"><span style="font-family: iskoola_pota;">Heading 3</span></h3>\r\n<h4 style="text-align: center;"><span style="font-family: iskoola_pota;">Heading 4</span></h4>\r\n<h5 style="text-align: center;"><span style="font-family: iskoola_pota;">Heading 5</span></h5>\r\n<h6 style="text-align: center;"><span style="font-family: iskoola_pota;">Heading 6</span></h6>\r\n<p style="text-align: center;"><span style="font-family: iskoola_pota;">Paragraph</span></p>';
+
 // Create new task (title only at this pt)
 router.post('/new', authServices.isAdmin, async function(req, res) {
-    let data = await taskServices.getTaskData(req, res),
-        title = data.title,
-        newTaskEntryData = new Task({ title: data.title }),
+    let title = req.body.title,
+        prompt = DEFAULT_PROMPT_PRE + String(req.user.username) + DEFAULT_PROMPT_POST,
+        newTaskEntryData = new Task({ title: title, prompt: prompt }),
         taskCreated = await dbopsServices.createEntryAndSave(Task, newTaskEntryData, req, res, true),
-        user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.params.username}, [ ], req, res);
+        user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.user.username}, [ ], req, res);
 
-    res.render('viewTaskPreview', {
+    res.render('./admin/editTaskPrompt', {
         user: user,
         task: taskCreated,
-        loggedIn: true,
-        viewer: req.user
+        loggedIn: true
     });
 });
 
@@ -101,6 +103,64 @@ router.get('/:taskId/dashboard', authServices.confirmUserCredentials, async func
             viewer: req.user
         });
 });
+
+
+// Edit Prompt (edits in place, so does not redirect)
+router.put('/:taskId/prompt', authServices.isAdmin, async function(req, res) {
+    let data = await taskServices.getTaskData(req, res);
+
+    if (data.prompt != null) {
+        await dbopsServices.updateEntryAndSave(Task, { _id: req.params.taskId }, { prompt: data.prompt, dateEdited: Date.now() }, req, res);
+    }
+
+    res.send('Task was autosaved!');
+});
+
+
+// Edit Title (Unlike editing prompt, this one redirects)
+router.put('/:taskId/title', authServices.isAdmin, async function(req, res) {
+    let title = req.body.title,
+        user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.user.username}, [ ], req, res),
+
+        foundTask = await dbopsServices.findByIdAndUpdate(Task, req.params.taskId, {
+        title: title,
+        dateEdited: Date.now()
+    }, req, res);
+
+    // Renders same page as if we just created task and editing the prompt
+    res.render('./admin/editTaskPrompt', {
+        user: user,
+        task: foundTask,
+        loggedIn: true
+    });
+});
+
+// For an already-created task, the page to Edit
+router.get('/:taskId/edit', authServices.isAdmin, async function(req, res) {
+    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ ], req, res),
+        user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.params.username}, [ ], req, res);
+
+    res.render('./admin/editTaskPrompt', {
+        user: user,
+        task: foundTask,
+        loggedIn: true
+    });
+});
+
+
+// See a task's prompt and title
+router.get('/:taskId/preview', authServices.confirmUserCredentials, async function(req, res) {
+    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ ], req, res, { users: 0, comments: 0, files: 0}),
+        user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.params.username}, [ ], req, res);
+
+        res.render('viewTaskPreview', {
+            user: user,
+            task: foundTask,
+            loggedIn: true,
+            viewer: req.user
+        });
+});
+
 
 // Delete
 router.delete('/:taskId', authServices.isAdmin, async function(req, res) {

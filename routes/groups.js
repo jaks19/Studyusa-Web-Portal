@@ -147,7 +147,7 @@ router.delete('/:groupId', authServices.confirmUserCredentials, async function(r
     for (var i = 0; i < foundGroup.users.length; i++) {
         await dbopsServices.updateEntryAndSave(User, { 'username': foundGroup.users[i].username }, { $unset: {"group": null}})
         // Notif not created properly, throws a flash card (red)
-        notifServices.assignNotification(req.user.username, foundGroup.name, 'group-delete', foundGroup.users[i].username, req, res);
+        // await notifServices.assignNotification(req.user.username, foundGroup.name, 'group-delete', foundGroup.users[i].username, req, res);
     }
     await dbopsServices.findEntryByIdAndRemove(Group, foundGroup._id, req, res);
     res.redirect('back');

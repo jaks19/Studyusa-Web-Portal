@@ -47,18 +47,7 @@ router.put('/:taskId/content', authServices.isAdmin, async function(req, res) {
 });
 
 
-// See a task's prompt and title
-router.get('/:taskId/preview', authServices.confirmUserCredentials, async function(req, res) {
-    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ ], req, res, { users: 0, comments: 0, files: 0}),
-        user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.params.username}, [ ], req, res);
 
-        res.render('viewTaskPreview', {
-            user: user,
-            task: foundTask,
-            loggedIn: true,
-            viewer: req.user
-        });
-});
 
 
 

@@ -1,0 +1,60 @@
+"babel-preset-env": "^1.6.0"
+
+in package json allows babel to be in the project and transpile files not mentioned in
+
+"build-server": "babel --ignore .c9,.git,docs,heroku,node_modules,images,notifJson,old,styles,views,.babelrc,.gitignore,package.json,.env -d ./build . -s"
+
+Note that above, "build-server" is how I named that npm command and it can be anything (I run that within my build command)
+
+Now babel needs different plugins. It transpiles for the new-kind js ES2015 etc to work in browsers and nodejs that do not support these newer js ways of writing
+
+Usually have to explicitly say which plugins to use depending on who will use my app
+
+But if use "babel-preset-env" instead of other babel packages, this one figures out which plugins are needed by itself based on this inclusion in package.json:
+
+"babel": {
+ "presets": [
+   [
+     "env",
+     {
+       "targets": {
+         "node": "current",
+         "browsers": "> 0.25%, not dead"
+       }
+     }
+   ]
+ ]
+}
+
+This says transpile and use whatever plugins you need to do that and I want everything to work on the node version run on the server AND the browsers which constitute greater tha 0.25% of market value i.e. all latest and popular browsers
+(So all I need in package.json is babel-preset-env, not a whole array of plugins!)
+
+
+NOW, for some reason, the preset-env-itself needs somthing called a babel regenerator runtime. Either you include that too in package json or at top entry of the app, add 'require("babel-polyfill")' which forces preset-env to get these runtime regenerators by itself. It is just a  matter of whether your environment has those regenerators already or not.
+So just ad require("babel-polyfill") at top entry of file.
+
+Summary:
+Need:
+1) "babel-preset-env": "^1.6.0"
+2) "babel": {
+ "presets": [
+   [
+     "env",
+     {
+       "targets": {
+         "node": "current",
+         "browsers": "> 0.25%, not dead"
+       }
+     }
+   ]
+ ]
+}
+
+Note that 2) goes in another section of package json, not the dependencies
+
+3) ALSO NEED "babel-cli": "^6.26.0" which allows the command-line command 'babel' to run because recall that in package json we transpile through this line :
+"build-server": "babel --ignore .c9,.git,docs,heroku,node_modules,images,notifJson,old,styles,views,.babelrc,.gitignore,package.json,.env -d ./build . -s",
+
+4) I guess you could put the line above as #4 and that is the complete set of things for babel to work
+
+TODO: webpack with babel, still transpile js but then combine all front end code into a webpack.

@@ -1,7 +1,6 @@
 var filesystemServices = {};
 
-let mkdirp = require('mkdirp'),
-    path = require('path'),
+let path = require('path'),
     fs = require("fs"), // To read-from/write-to files
     multiparty = require("multiparty"); // To get file object upon selection from pc for upload
 
@@ -17,11 +16,11 @@ function getPromiseToParseForm(req) {
 }
 
 filesystemServices.getAddedFileName = async function getAddedFileName(req, res) {
-    try { 
+    try {
         let file = (await getPromiseToParseForm(req))[1]['doc'][0],
             fileName = file['originalFilename'];
         return fileName;
-    } 
+    }
     catch (error) { req.flash('error', error) }
 }
 
@@ -29,14 +28,14 @@ filesystemServices.getAddedFileName = async function getAddedFileName(req, res) 
 // to be deprecated after no longer use submissions like before
 filesystemServices.getNewFileMetadata = async function getNewFileMetadata(req, res) {
     let fileData = {};
-    try { 
+    try {
         let [ fields, files ] = await getPromiseToParseForm(req);
         fileData.message = fields['message'][0];
         fileData.title = fields['title'][0];
         fileData.fileName = files['doc'][0]['originalFilename'];
         return fileData;
-    } 
-    catch (error) { 
+    }
+    catch (error) {
         req.flash('error', 'Could not retrieve file metadata');
         res.redirect('back');
     }

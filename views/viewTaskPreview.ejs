@@ -20,6 +20,8 @@
     </div>
 </div>
 
+<input type='text' id='prompt-desanitizer' value='<%=task.prompt%>'  style='visibility: hidden;'>
+
 <style>
 body {
     background: #eee;
@@ -64,13 +66,11 @@ a.blend:active
 
 
 <script>
-
-let prompt;
-
 $(document).ready(function(){
-    prompt = '<%=task.prompt%>';
+    // Have to use the .val() method's desanitizer
+    // To convert the sanitized HTML string (done by DB and tinyMCE for security purposes)
+    prompt = $('#prompt-desanitizer').val();
     promptHTML = $.parseHTML(prompt);
     $('#displayer').append(promptHTML);
 });
-
 </script>
