@@ -1,14 +1,30 @@
-brew install mongodb
 
-sudo mkdir -p /data/db ------ makes folder for db records, in / directory in pc and has to be there based on how running the mongod daemon looks for things
+MongoDB locally
 
-sudo chown -R `id -un` /data/db ------ makes sure have write authorization again this / folder is well-surveilled
+    brew install mongodb
 
-mongod ------ starts local db, end with control-c to prevent problems
-(If problems when startint, run ps and kill all mongod processes: kill -9 PID)
+    sudo mkdir -p /data/db ------ makes folder for db records, in / directory in pc and has to be there based on how running the mongod daemon looks for things
+
+    sudo chown -R `id -un` /data/db ------ makes sure have write authorization again this / folder is well-surveilled
+
+    mongod ------ starts local db, end with control-c to prevent problems
+    (If problems when startint, run ps and kill all mongod processes: kill -9 PID)
 
 
-mongo ------ open mongo shell to handle records, exit with quit()
+    mongo ------ open mongo shell to handle records, exit with quit()
 
 
 
+npm install
+
+populate .env with local keys (need to add keys to prod too if a new instance)
+
+stripeSecret=...
+S3_BUCKET=...
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+dbUrl=...
+
+Run build script found in package.json by doing 'npm run name-of-script'
+
+Heroku local (starts the server using the .env config variables)

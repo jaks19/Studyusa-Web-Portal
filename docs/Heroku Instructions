@@ -1,0 +1,32 @@
+heroku local
+- starts on localhost port 5000
+
+config vars local are stord in .env
+
+In general, dealing with config vars in heroku CLI: https://devcenter.heroku.com/articles/config-vars#production-and-development-modes
+
+Same commands for prod and local but local config vars added to .env while in prod, when added with CLI, config vars will enter a prod .env created by heroku
+
+heroku config -a studyusa gives prod config vars while .env shows local ones
+
+.env should not be git'ed
+
+mongo
+> Delete database
+use [database];
+db.dropDatabase();
+
+group flexible?
+
+
+group gagne droit one user to more than one?
+
+
+redo sbmissions
+
+
+twitter feed instead of cnn
+
+
+
+month of legality of invite code bug! shows two months earlier, july insead of sept
