@@ -75,18 +75,18 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
 });
 
 
-// See a task's Dashboard where one can upload responses and comments TODO
+// See a task's Dashboard where one can upload responses and comments OK
 router.get('/:taskId/dashboard/:userId', authServices.confirmUserCredentials, async function(req, res) {
     let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], req, res, deep=true),
         user = await dbopsServices.findOneEntryAndPopulate(User, { _id: req.params.userId }, [ ], req, res),
         viewer = req.user,
         taskSubscriber;
 
-    // if not an admin viewing their own dashboard, need the taskSubscriber for their comments and files-> (TODO)
-
+    // if not an admin viewing their own dashboard, need the taskSubscriber for their comments and files
     if (!((String(viewer._id) == String(user._id)) && viewer.admin)){
         taskSubscriber = foundTask.taskSubscribers.filter(ts => String(ts.user._id) === String(user._id))[0];
     }
+
     // if not an admin, need to hide the taskSubscribers list from the task (only need title and prompt)
     if (!(viewer.admin)){
         foundTask.taskSubscribers = []
@@ -181,7 +181,8 @@ router.get('/', authServices.confirmUserCredentials, async function(req, res) {
     // Fetch tasks
     let tasks = await dbopsServices.findAllEntriesAndPopulate(Task, { }, [ 'taskSubscribers.user' ], req, res, deep=true),
         users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res),
-        user = await dbopsServices.findOneEntryAndPopulate(User, {'_id': req.user._id}, [ 'tasks' ], req, res);
+        user = await dbopsServices.findOneEntryAndPopulate(User, {'_id': req.user._id}, [ 'tasks' ], req, res),
+        taskSubscriberObjectsThisUser = await dbopsServices.findAllEntriesAndPopulate(TaskSubscriber, { 'user': user._id }, [ 'task', 'comments' ], req, res);
 
     if (user.admin){
         res.render('./admin/tasks', {
@@ -193,6 +194,7 @@ router.get('/', authServices.confirmUserCredentials, async function(req, res) {
     } else {
         res.render('tasks', {
             user: user,
+            taskSubscriberObjects: taskSubscriberObjectsThisUser,
             loggedIn: true
         });
     }

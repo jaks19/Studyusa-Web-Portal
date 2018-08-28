@@ -67,7 +67,6 @@ router.get('/:username', authServices.confirmUserCredentials, async function(req
             notifs: userData.allNotifs,
             unseenNotifs: userData.unseenNotifs,
             format: format,
-            subs: userData.subs,
             tasks: userData.tasks,
             articles: userData.articles,
             context: userData.context,

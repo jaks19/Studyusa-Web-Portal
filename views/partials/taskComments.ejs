@@ -6,7 +6,7 @@
         </div>
 
         <div class="panel-body">
-            <form action='/index/<%=user.username%>/tasks/<%=task._id%>/comments' id='commentForm' method='POST'>
+            <form action='/index/<%=viewer.username%>/tasks/<%=task._id%>/comments/<%=user._id%>' id='commentForm' method='POST'>
                 <textarea class="form-control" placeholder="Enter comment here..." rows="3" name='textareacontent' style='margin-bottom:1%;'></textarea>
                 <button type='submit' class="btn btn-info btn-xs pull-right" name='butt'>Post</button>
                 <div class="clearfix"></div>
@@ -17,8 +17,8 @@
                         <table class="table user-list">
                             <tbody>
 
-                                <% if (task.comments.length > 0) { %>
-                                    <% task.comments.reverse().forEach(function(comment){ %>
+                                <% if (taskSubscriber.comments.length > 0) { %>
+                                    <% taskSubscriber.comments.reverse().forEach(function(comment){ %>
                                         <% var d = new Date(comment['date']); %>
 
                                             <tr style='padding-right: 20%;'>

@@ -3,20 +3,20 @@
         <tbody style='overflow:auto;'>
 
 
-                    <% task.taskSubscribers.forEach(function(taskSubscriber){ %>
-                            <tr align='center'>
-                                <td id='<%=taskSubscriber.user.name%>'>
-                                    <div>
-                                        <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
-                                    </div>
-                                    <div>
-                                    <a href="/index/<%=viewer.username%>/tasks/<%=task._id%>/dashboard/<%=taskSubscriber.user._id%>" class="user-link" style="font-size:12px;">
-                                        <%=taskSubscriber.user.name.slice(0,1).toUpperCase() + taskSubscriber.user.name.slice(1)%>
-                                    </a>
-                                    </div>
-                                </td>
-                            </tr>
-                    <% });%>
+            <% task.taskSubscribers.forEach(function(taskSubscriber){ %>
+                    <tr align='center'>
+                        <td id='<%=taskSubscriber.user.name%>'>
+                            <div>
+                                <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
+                            </div>
+                            <div>
+                            <a href="/index/<%=viewer.username%>/tasks/<%=task._id%>/dashboard/<%=taskSubscriber.user._id%>" class="user-link" style="font-size:12px;">
+                                <%=taskSubscriber.user.name.slice(0,1).toUpperCase() + taskSubscriber.user.name.slice(1)%>
+                            </a>
+                            </div>
+                        </td>
+                    </tr>
+            <% });%>
 
         </tbody>
     </table>

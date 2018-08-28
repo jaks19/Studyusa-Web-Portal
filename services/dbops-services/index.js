@@ -29,7 +29,8 @@ function promiseToDeepPopulate(queryObject, fieldsString){
   });
 }
 
-dbopsServices.findOneEntryAndPopulate = async function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req, res, deep=false, exclude={}) {
+dbopsServices.findOneEntryAndPopulate =
+async function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req, res, deep=false, exclude={}) {
     let query = model.findOne(entryRequirement, exclude),
         entry;
 
@@ -49,8 +50,9 @@ dbopsServices.findOneEntryAndPopulate = async function findOneEntryAndPopulate(m
   return entry;
 }
 
-dbopsServices.findAllEntriesAndPopulate = async function findAllEntriesAndPopulate(model, entryRequirement, fieldsArray, req, res, deep=false) {
-    let query = model.find(entryRequirement),
+dbopsServices.findAllEntriesAndPopulate =
+async function findAllEntriesAndPopulate(model, entryRequirement, fieldsArray, req, res, deep=false, exclude={}) {
+    let query = model.find(entryRequirement, exclude),
         entries;
 
     try {
@@ -79,7 +81,8 @@ function promiseToCreateEntry(model, modelObjectWithData){
   });
 }
 
-dbopsServices.createEntryAndSave = async function createEntryAndSave(model, modelObjectWithData, req, res, save = true) {
+dbopsServices.createEntryAndSave =
+async function createEntryAndSave(model, modelObjectWithData, req, res, save = true) {
     let newEntry;
 
     try { newEntry = await promiseToCreateEntry(model, modelObjectWithData) }
@@ -109,7 +112,8 @@ function promiseToUpdateEntryAndSave(model, entryRequirement, changes){
 
 // DOES NOT RETURN THE DOCUMENT (i.e. THE ENTRY)
 // If need the entry, see findByIdAndUpdate below
-dbopsServices.updateEntryAndSave = async function updateEntryAndSave(model, entryRequirement, changes, req, res){
+dbopsServices.updateEntryAndSave =
+async function updateEntryAndSave(model, entryRequirement, changes, req, res){
     try { await promiseToUpdateEntryAndSave(model, entryRequirement, changes) }
     catch(error) {
       req.flash('error', 'error updating the user entries');
@@ -130,7 +134,8 @@ function promiseToFindByIdAndUpdate(model, _id, changes){
 }
 
 // RETURNS THE DOCUMENT (i.e. THE ENTRY) (but only uses _id to search)
-dbopsServices.findByIdAndUpdate = async function findByIdAndUpdate(model, _id, changes, req, res){
+dbopsServices.findByIdAndUpdate =
+async function findByIdAndUpdate(model, _id, changes, req, res){
     let entry;
 
     try { entry = await promiseToFindByIdAndUpdate(model, _id, changes) }
@@ -153,7 +158,8 @@ function promiseToSaveEntry(newEntry){
 }
 
 
-dbopsServices.savePopulatedEntry = async function savePopulatedEntry(populatedEntry, req, res) {
+dbopsServices.savePopulatedEntry =
+async function savePopulatedEntry(populatedEntry, req, res) {
     let entry;
     try { entry = await promiseToSaveEntry(populatedEntry); }
     catch (err) {
@@ -187,7 +193,8 @@ function promiseTofindEntryByIdAndRemove(model, id, req, res){
   });
 }
 
-dbopsServices.findEntryByIdAndRemove = async function findEntryByIdAndRemove(model, id, req, res) {
+dbopsServices.findEntryByIdAndRemove =
+async function findEntryByIdAndRemove(model, id, req, res) {
   try {
     await promiseTofindEntryByIdAndRemove(model, id, req, res);
     req.flash('success', 'Deletion Successful');

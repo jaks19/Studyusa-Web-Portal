@@ -34,3 +34,12 @@ Lowest: Notifs, Comments, Messages
 
 
 (Group is not an app, it is a set that facilitates operations)
+
+
+In MONGOOSE/MONGO, if doc X has doc Y nested and we are creating X or editing X's Y entry etc etc etc
+I DO NOT need to pass in the actual object Y into X! Ofc this is completely acceptable,
+But if I have only the:
+- String _id e.g. req.params.idofY or
+- ID Object e.g. Y._id
+Mongo/oose will do the necessary thing to confirm the id string or object etc.
+Bottomline: Even if Y is nested on X, do not need actual Y to insert into X, can use all the way down to the String of its id!!!
