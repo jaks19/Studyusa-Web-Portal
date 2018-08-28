@@ -1,0 +1,16 @@
+File = require("../models/file");
+
+task id 5b848e4f0faac4f97b31e011
+
+user id 5b82eb8edc54d5bf372177c9
+
+
+
+let fieldString = {
+        path: 'taskSubscribers',
+        model: 'TaskSubscriber',
+        populate: {
+            path: 'comments',
+            model: 'Commentary'
+        }
+    }
