@@ -17,15 +17,20 @@ COMMITTING:
 BRANCHING:
 - If a new feature needs to be developped on a new branch it means you create a separate branch from origin, not the master branch
 - On your computer when you are on that branch, you see all commits you made when you were on that branch
+
 - $ git checkout -b iss53
 Switched to a new branch "iss53" (creates the branch AND moves to it)
+
 - Commits get to that branch and the master branch is unaware of those
-- You do not push to branch as it is a local copy
+- You can push to the branch by Command git push <remote name> <remote branch name>
+
 $ git checkout master
 Switched to branch 'master'
+
 $ git merge iss53
 Merge made by the 'recursive' strategy.
-$ git branch -d hotfix
+
+$ git branch -d iss53
 This deletes the branch once no longer needed
 - This allows locally to go back to master branch and merge the local situation of iss53 to master
 - Merge conficts occur in your master branch locally if you changed same files in both branches locally

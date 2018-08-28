@@ -6,14 +6,14 @@ var taskSchema = new mongoose.Schema({
     published: {type: Boolean, default: false},
     dateCreated: {type: Date, default: Date.now},
     dateEdited: {type: Date, default: Date.now},
-    files: [
-        {type: mongoose.Schema.Types.ObjectId, ref: "File"}
-            ],
     comments: [
         {type: mongoose.Schema.Types.ObjectId, ref: "Commentary"}
             ],
     users: [
                 {type: mongoose.Schema.Types.ObjectId, ref: "User"}
+            ],
+    taskSubscribers: [
+                {type: mongoose.Schema.Types.ObjectId, ref: "TaskSubscriber"}
             ]
 }, {
     usePushEach: true

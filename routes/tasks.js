@@ -12,9 +12,10 @@ let express = require("express"),
     taskServices = require('../services/task-services');
 
 // Models
-let User = require("../models/user"),
-    Task = require("../models/task"),
-    File = require("../models/file");
+let User            = require("../models/user"),
+    Task            = require("../models/task"),
+    TaskSubscriber  = require("../models/taskSubscriber"),
+    Commentary      = require("../models/commentary");
 
 let router = express.Router({ mergeParams: true });
 
@@ -75,13 +76,13 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
 
 
 // See a task's Dashboard where one can upload responses and comments
-router.get('/:taskId/dashboard', authServices.confirmUserCredentials, async function(req, res) {
+router.get('/:taskId/dashboard/:userId', authServices.confirmUserCredentials, async function(req, res) {
     let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'users', 'files', 'comments'], req, res),
-        user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.params.username}, [ 'tasks' ], req, res);
+        user = await dbopsServices.findOneEntryAndPopulate(User, { _id: req.params.userId }, [ ], req, res);
 
     // Filter comments so that a task-student pair only has the comments of that user
     // For other routes, they are not even populated
-    let user_comments = foundTask.comments.filter(function(comment) {
+    let userComments = foundTask.comments.filter(function(comment) {
         if (String(comment.author._id) === String(user._id)){
             return true;
         } else if (comment.recipient != null){
@@ -94,7 +95,7 @@ router.get('/:taskId/dashboard', authServices.confirmUserCredentials, async func
 
     // TODO: same filtering with files, once implemented
 
-    foundTask.comments = user_comments;
+    foundTask.comments = userComments;
 
         res.render('viewTaskDashboard', {
             user: user,
@@ -156,10 +157,63 @@ router.get('/:taskId/preview', authServices.confirmUserCredentials, async functi
         res.render('viewTaskPreview', {
             user: user,
             task: foundTask,
-            loggedIn: true,
-            viewer: req.user
+            loggedIn: true
         });
 });
+
+
+
+
+
+
+
+let promiseToPopulate = function(queryObject, fieldsString){
+
+    return queryObject.populate(fieldsString).exec();
+
+};
+
+let findOneEntryAndPopulate = async function(model, entryRequirement, fieldsArray, req, res, exclude={}) {
+    let query = model.find(entryRequirement),
+        entry;
+
+    try { entry = await promiseToPopulate(query, fieldsString) }
+    catch (err) {
+          // req.flash('error', err);
+          // res.redirect('back');
+          console.log('error');
+          return;
+      }
+
+  return entry;
+}
+
+
+
+// TESTING
+router.get('/:taskId/test/:userId', authServices.confirmUserCredentials, async function(req, res) {
+
+    // let foundTask = Task
+    //     .find({ _id: req.params.taskId })
+    //     .populate({
+    //         path: 'taskSubscribers',
+    //         model: 'TaskSubscriber',
+    //         populate: {
+    //             path: 'comments',
+    //             model: 'Commentary'
+    //         }
+    //     })
+    //     .exec(function(err, task){
+    //         if (err) { console.log(err); }
+    //         console.log(task);
+    //     });
+
+
+
+
+    res.send('OK');
+});
+
 
 
 // Delete
@@ -179,7 +233,6 @@ router.delete('/:taskId', authServices.isAdmin, async function(req, res) {
 
 // All Tasks View
 router.get('/', authServices.confirmUserCredentials, async function(req, res) {
-
     // Fetch tasks
     let tasks = await dbopsServices.findAllEntriesAndPopulate(Task, { }, ['files', 'comments', 'users'], req, res),
         users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res),

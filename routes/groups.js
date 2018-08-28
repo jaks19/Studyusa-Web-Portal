@@ -32,13 +32,14 @@ router.get('/', authServices.confirmUserCredentials, async function(req, res) {
 
 // New Group
 router.post('/', authServices.confirmUserCredentials, async function(req, res) {
-    let checkedUserIds = groupServices.getCheckedUsers(req, res)[0],
-        groupName = req.body.name,
-        newGroupData = new Group({ name: groupName }),
-        groupEntry = await dbopsServices.createEntryAndSave(Group, newGroupData, req, res, false);
+    let groupData = groupServices.getCheckedUsers(req, res);
 
-    if(typeof checkedUserIds !== "undefined")
-    {
+    if(typeof groupData !== "undefined") {
+        let groupName = req.body.name,
+            newGroupData = new Group({ name: groupName }),
+            groupEntry = await dbopsServices.createEntryAndSave(Group, newGroupData, req, res, false);
+
+        let checkedUserIds = groupServices.getCheckedUsers(req, res)[0];
         for (var i = 0; i < checkedUserIds.length; i++) {
             let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ ], req, res);
             checkedUserEntry.group = groupEntry;
@@ -46,10 +47,10 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
             notifServices.assignNotification(req.user.username, groupName, 'group-add', checkedUserEntry.username, req, res);
             dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
         }
+        dbopsServices.savePopulatedEntry(groupEntry, req, res);
+        res.redirect('back');
     }
-
-    dbopsServices.savePopulatedEntry(groupEntry, req, res);
-    res.redirect('back');
+    else return;
 });
 
 

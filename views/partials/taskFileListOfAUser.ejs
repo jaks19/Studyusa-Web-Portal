@@ -11,13 +11,7 @@
             </span>
 
             <div style='max-height:100%; height:30%; overflow:auto; margin-top: 9%; margin-bottom: 9%;'>
-                <% var files = task['files'].reverse(); %>
-                <% files.forEach(function(file){ %>
-                    <div class='container file' style='background:#FFFFFF; width: 100%; float:left;'>
-                        <a href='#' data-toggle="modal" data-target="#<%=file['_id']%>" style="text-decoration:none;"><%=file['filename']%></a>
-                        <br />(Author: <%= file['author'] %>)<hr />
-                    </div>
-                <% }); %>
+                <!-- Removed as File schema will be switched (see untitled) -->
             </div>
             <span class="text-muted">
                 <small class="text-muted">Oldest</small>

@@ -11,7 +11,7 @@
                                         <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
                                     </div>
                                     <div>
-                                    <a href="/index/<%=thisUser.username%>/tasks/<%=task._id%>/dashboard" class="user-link" style="font-size:12px;">
+                                    <a href="/index/<%=viewer.username%>/tasks/<%=task._id%>/dashboard/<%=thisUser._id%>" class="user-link" style="font-size:12px;">
                                         <%=thisUser.name.slice(0,1).toUpperCase() + thisUser.name.slice(1)%>
                                     </a>
                                     </div>

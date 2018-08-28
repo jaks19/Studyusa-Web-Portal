@@ -74,7 +74,6 @@ router.get('/:username', authServices.confirmUserCredentials, async function(req
             loggedIn: true
         });
     }
-    res.redirect('back');
 });
 
 // Delete
