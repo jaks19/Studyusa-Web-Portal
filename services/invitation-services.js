@@ -1,8 +1,8 @@
 var invitationServices = {};
 
 let request = require('request'),
-    dbopsServices = require('../dbops-services'),
-    Invitation = require("../../models/invitation");
+    dbopsServices = require('./dbops-services'),
+    Invitation = require("../models/invitation");
 
 invitationServices.generateCode = function generateCode(length) {
     var text = "";

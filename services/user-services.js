@@ -1,10 +1,10 @@
 var userServices = {};
-let User = require("../../models/user"),
-    Invitation = require("../../models/invitation"),
-    notifServices = require('../notif-services'),
-    dbOpsServices = require('../dbops-services'),
-    apiServices = require('../api-services'),
-    invitationServices = require('../invitation-services');
+let User = require("../models/user"),
+    Invitation = require("../models/invitation"),
+    notifServices = require('./notif-services'),
+    dbOpsServices = require('./dbops-services'),
+    apiServices = require('./api-services'),
+    invitationServices = require('./invitation-services');
 
 function userPageContext(req) {
     let context = '';
