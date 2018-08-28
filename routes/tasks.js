@@ -38,49 +38,44 @@ router.post('/new', authServices.isAdmin, async function(req, res) {
 });
 
 
-// Add/remove users to a Task  OK    NEEDS REFACTORING (MODULARIZING)
+// Add/remove users to a Task OK
 router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
     let [incomingIds, outgoingIds] = taskServices.getCheckedUsers(req, res),
-        incoming = []; // Keep an array of incoming User objects too for including in group
+        foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'taskSubscribers.user', 'archivedTaskSubscribers.user' ], req, res, deep=true),
+        archivedSubscribersIds = foundTask.archivedTaskSubscribers.map(ats => String(ats.user._id)),
+        existingSubscriberIds = foundTask.taskSubscribers.map(ts => String(ts.user._id));
 
-    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'taskSubscribers.user' ], req, res, deep=true);
+    console.log(incomingIds, outgoingIds);
 
-    if(typeof incomingIds[0] !== "undefined") {
-        for (var i = 0; i < incomingIds.length; i++) {
-            let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': incomingIds[i] }, [ 'tasks' ], req, res);
-            incoming.push(checkedUserEntry);
-            checkedUserEntry.tasks = checkedUserEntry.tasks.concat([foundTask]);
-            await dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
-        }
+    let totallyNewSubscriberIds = incomingIds.filter(_id => !archivedSubscribersIds.includes(_id)),
+        toUnarchiveSubscriberIds = incomingIds.filter(_id => archivedSubscribersIds.includes(_id)),
+        toArchiveSubscriberIds = outgoingIds;
+
+    let totallyNewSubscribers = [],
+        toUnarchiveSubscribers = foundTask.archivedTaskSubscribers.filter(ats => toUnarchiveSubscriberIds.includes(String(ats.user._id))),
+        toArchiveSubscribers = foundTask.taskSubscribers.filter(ts => toArchiveSubscriberIds.includes(String(ts.user._id)));
+
+    // Create the totally-new taskSubscribers
+    for (var i = 0; i < totallyNewSubscriberIds.length; i++) {
+        let user = await dbopsServices.findOneEntryAndPopulate(User, { '_id': incomingIds[i] }, [ ], req, res),
+            totallyNewSubscriberData = new TaskSubscriber({ user: user, task: foundTask }),
+            totallyNewSubscriber = await dbopsServices.createEntryAndSave(TaskSubscriber, totallyNewSubscriberData, req, res, true);
+
+        totallyNewSubscribers.push(totallyNewSubscriber);
     }
 
-    if(typeof outgoingIds[0] !== "undefined") {
-        for (var j = 0; j < outgoingIds.length; j++) {
-            let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { '_id': outgoingIds[j] }, [ 'tasks' ], req, res);
-            foundUser.tasks = foundUser.tasks.filter( task => !(task._id === String(req.params.taskId)) );
-            await dbopsServices.savePopulatedEntry(foundUser, req, res);
-        }
-    }
-
-    let newSubscribers = [];
-    for (var i = 0; i < incoming.length; i++) {
-        var userDocument = incoming[i];
-        let newSubscriberData = new TaskSubscriber({ user: userDocument });
-        let newSubscriber = await dbopsServices.createEntryAndSave(TaskSubscriber, newSubscriberData, req, res, true);
-        newSubscribers.push(newSubscriber);
-    }
-
-
-    let subscribersOldToStay = foundTask.taskSubscribers.filter( taskSubscriber => !outgoingIds.includes(String(taskSubscriber.user._id)) );
-
-    foundTask.taskSubscribers = newSubscribers.concat(subscribersOldToStay);
+    // Update the Task Document
+    let keptAsSubscribers = foundTask.taskSubscribers.filter(ts => !toArchiveSubscriberIds.includes(String(ts.user._id)));
+    foundTask.taskSubscribers = keptAsSubscribers.concat(totallyNewSubscribers).concat(toUnarchiveSubscribers);
+    let keptAsArchived = foundTask.archivedTaskSubscribers.filter(ats => !toUnarchiveSubscriberIds.includes(String(ats.user._id)));
+    foundTask.archivedTaskSubscribers = keptAsArchived.concat(toArchiveSubscribers);
     await dbopsServices.savePopulatedEntry(foundTask, req, res);
 
     res.redirect('back');
 });
 
 
-// See a task's Dashboard where one can upload responses and comments OK
+// See a task's Dashboard where one can upload responses and comments TODO
 router.get('/:taskId/dashboard/:userId', authServices.confirmUserCredentials, async function(req, res) {
     let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], req, res, deep=true),
         user = await dbopsServices.findOneEntryAndPopulate(User, { _id: req.params.userId }, [ ], req, res),
@@ -165,13 +160,16 @@ router.get('/:taskId/preview', authServices.confirmUserCredentials, async functi
 
 // Delete OK
 router.delete('/:taskId', authServices.isAdmin, async function(req, res) {
-    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { '_id': req.params.taskId }, [ 'users' ], req, res),
-        foundUsers = foundTask.users;
+    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { '_id': req.params.taskId }, [ 'taskSubscribers.user', 'archivedTaskSubscribers.user' ], req, res, deep=true);
 
-    for (var i = 0; i < foundTask.users.length; i++) {
-        let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { '_id': foundTask.users[i]._id }, [ 'tasks' ], req, res);
-        foundUser.tasks = foundUser.tasks.filter( task => !(task._id === foundTask._id) );
-        await dbopsServices.savePopulatedEntry(foundUser, req, res);
+    for (var i = 0; i < foundTask.taskSubscribers.length; i++) {
+        let ts = foundTask.taskSubscribers[i];
+        dbopsServices.findEntryByIdAndRemove(TaskSubscriber, ts._id, req, res);
+    }
+
+    for (var i = 0; i < foundTask.archivedTaskSubscribers.length; i++) {
+        let ats = foundTask.archivedTaskSubscribers[i];
+        dbopsServices.findEntryByIdAndRemove(TaskSubscriber, ats._id, req, res);
     }
 
     await dbopsServices.findEntryByIdAndRemove(Task, req.params.taskId, req, res);

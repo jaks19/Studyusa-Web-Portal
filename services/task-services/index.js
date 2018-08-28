@@ -33,20 +33,25 @@ taskServices.getTaskData = async function getTaskData(req, res) {
 }
 
 taskServices.getCheckedUsers = function getCheckedUsers(req, res) {
-  if (req.body.incoming == null && req.body.outgoing == null){
+    if (req.body.incoming == null && req.body.outgoing == null){
       req.flash('error', "Error, you did not choose any user!");
-      return res.redirect('back');
-  }
+    }
 
-  var checkedIncoming;
-  if (!Array.isArray(req.body.incoming)) { checkedIncoming = [req.body.incoming] }
-  else { checkedIncoming = req.body.incoming }
+    let checkedIncoming = [],
+        checkedOutgoing = [];
 
-  var checkedOutgoing;
-  if (!Array.isArray(req.body.outgoing)) { checkedOutgoing = [req.body.outgoing] }
-  else { checkedOutgoing = req.body.outgoing }
+    if (!(req.body.incoming == null)){
+        if (!Array.isArray(req.body.incoming)) { checkedIncoming = [req.body.incoming] }
+        else { checkedIncoming = req.body.incoming }
+    }
 
-  return [checkedIncoming, checkedOutgoing];
+
+    if (!(req.body.outgoing == null)){
+        if (!Array.isArray(req.body.outgoing)) { checkedOutgoing = [req.body.outgoing] }
+        else { checkedOutgoing = req.body.outgoing }
+    }
+
+    return [checkedIncoming, checkedOutgoing];
 }
 
 module.exports = taskServices;

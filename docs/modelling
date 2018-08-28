@@ -1,0 +1,36 @@
+There are high level objects like users, tasks etc
+
+There are low-level, small objects like messages, comments, taskSubscribers
+
+Policy is: If there can be infinitely many of the low-levels for one high level, then the high level needs to have an array of these
+           If instead, there are only one low-level per high-level then do not need to include it there
+
+Example:
+A user can have unlimited messages with admins. So user holds all of them in an array.
+(TO populate or not depends on the scenario)
+
+A task can have many taskSubscribers that wrap around a User
+A task will have an array of taskSubscribers
+The user does not need any tie to its taskSubscriber wrapper as we can just search for the wrapper directly to deal with the wrapper.
+
+Also, anyway, TASK is an app and an app should wrap around atomic components of the system
+
+
+
+
+
+
+
+
+Apps: Tasks, Invitations, Payments
+
+Wrappers used by apps: TaskSubscribers (maybe message thread?)
+
+Atomic units of webapp: User, Group
+
+Lowest: Notifs, Comments, Messages
+
+
+
+
+(Group is not an app, it is a set that facilitates operations)

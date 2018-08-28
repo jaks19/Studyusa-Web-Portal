@@ -24,7 +24,7 @@ userServices.getUserData = async function getUserData(username, req, res) {
         [ userData.activeInvitations, userData.expiredInvitations ] = await invitationServices.getSortedInvitations(req, res);
     } else {
         userData.articles = await apiServices.retrieveNews(req),
-        userData.subs = userData.populatedUser.submissions.reverse();
+        // userData.subs = userData.populatedUser.submissions.reverse();
         userData.tasks = userData.populatedUser.tasks.reverse();
     }
 

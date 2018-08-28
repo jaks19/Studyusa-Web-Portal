@@ -96,6 +96,7 @@ app.use('/index/:username/notifs', notifRoutes),
 app.use('/index/:username/invitations', invitationRoutes),
 app.use('/index/:username/tasks', taskRoutes);
 
+
 // Wandering Routes
 app.get('/*', function(req, res){
     res.render('index', {loggedIn: false});

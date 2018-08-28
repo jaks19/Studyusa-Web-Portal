@@ -4,6 +4,7 @@ var mongoose = require("mongoose");
 
 // Need to add the new object designed for files as File was deprecated for being a keyword
 var taskSubscriberSchema = new mongoose.Schema({
+        task: {type: mongoose.Schema.Types.ObjectId, ref: "Task"},
         user: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
         unpublishedWorkspace: {type: String},
         comments: [
@@ -14,3 +15,11 @@ var taskSubscriberSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("TaskSubscriber", taskSubscriberSchema);
+
+// Note:
+// Adding ref to another document is just an id UNTIL YOU POPULATE
+// Adding Task or User to this schema i.e. a nested document is NOT equivalent to just repeating stuff again and again
+// If these are never populated, they can just serve as ids that we can search against
+// That is why here we use task and user as searching for a combination of task and user leads us to the exact unique taskSubscriber document
+
+// TODO: find out if we ever populate an object say a user, just to grab its id and do something with it, because we DO NOT NEED TO POPULATE
