@@ -3,7 +3,7 @@ var mongoose = require("mongoose"),
 
 var userSchema = new mongoose.Schema({
     name: String,
-    username: String,
+    username: {type: String, index: true, unique: true},
     password: String,
     admin: {type: Boolean, default: false},
     dateJoined: {type: Date, default: Date.now},
@@ -21,5 +21,10 @@ var userSchema = new mongoose.Schema({
 });
 
 userSchema.plugin(passportLocalMongoose);
+
+// Index the db by the username because search by username often
+// Gives search as fast as by _id since index is on _id by default
+// (Both _id and username will be fast, this does not override)
+// (Done in the schema itself, see username field)
 
 module.exports = mongoose.model("User", userSchema);
