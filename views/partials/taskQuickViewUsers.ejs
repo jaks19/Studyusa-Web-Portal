@@ -3,16 +3,15 @@
         <tbody style='overflow:auto;'>
 
 
-                    <% task.users.forEach(function(thisUser){ %>
-                        <% d = new Date(thisUser.lastLoggedIn) %>
+                    <% task.taskSubscribers.forEach(function(taskSubscriber){ %>
                             <tr align='center'>
-                                <td id='<%=thisUser.name%>'>
+                                <td id='<%=taskSubscriber.user.name%>'>
                                     <div>
                                         <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
                                     </div>
                                     <div>
-                                    <a href="/index/<%=viewer.username%>/tasks/<%=task._id%>/dashboard/<%=thisUser._id%>" class="user-link" style="font-size:12px;">
-                                        <%=thisUser.name.slice(0,1).toUpperCase() + thisUser.name.slice(1)%>
+                                    <a href="/index/<%=viewer.username%>/tasks/<%=task._id%>/dashboard/<%=taskSubscriber.user._id%>" class="user-link" style="font-size:12px;">
+                                        <%=taskSubscriber.user.name.slice(0,1).toUpperCase() + taskSubscriber.user.name.slice(1)%>
                                     </a>
                                     </div>
                                 </td>

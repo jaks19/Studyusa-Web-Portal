@@ -1,5 +1,8 @@
 var mongoose = require("mongoose");
 
+// Populating nested documents made easier
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
+
 var taskSchema = new mongoose.Schema({
     title: {type: String, required: true},
     prompt: {type: String, required: true},
@@ -19,7 +22,6 @@ var taskSchema = new mongoose.Schema({
     usePushEach: true
 });
 
-module.exports = mongoose.model("Task", taskSchema);
+taskSchema.plugin(deepPopulate, {});
 
-//  Questions fr finalizing mongo:
-// 1  Populating when item nested in an object?
+module.exports = mongoose.model("Task", taskSchema);

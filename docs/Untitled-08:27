@@ -14,3 +14,10 @@ let fieldString = {
             model: 'Commentary'
         }
     }
+
+
+
+
+let task = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'taskSubscribers.comments', 'taskSubscribers.user' ], req, res, deep=true);
+console.log(task.taskSubscribers[0].comments[0]);
+console.log(task.taskSubscribers[0].user);

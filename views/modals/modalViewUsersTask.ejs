@@ -7,17 +7,17 @@
                     <table id='quick-view' class="table user-list" style='overflow:auto;' >
                         <tbody style='overflow:auto;'>
 
-                                    <% if (task.users.length > 0) { %>
-                                        <% task.users.forEach(function(thisUser){ %>
-                                            <% d = new Date(thisUser.lastLoggedIn) %>
+                                    <% if (task.taskSubscribers.length > 0) { %>
+                                        <% task.taskSubscribers.forEach(function(taskSubscriber){ %>
+                                            <% d = new Date(taskSubscriber.user.lastLoggedIn) %>
                                                 <tr>
-                                                    <td id='<%=thisUser.name%>'>
+                                                    <td id='<%=taskSubscriber.user.name%>'>
                                                         <div align='center'>
                                                             <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
                                                         </div>
                                                         <div align='center'>
-                                                        <a href="/index/<%=thisUser.username%>/tasks/<%=task._id%>/dashboard" class="user-link" style="font-size:12px; margin: 0px;">
-                                                            <%=thisUser.name.slice(0,1).toUpperCase() + thisUser.name.slice(1)%>
+                                                        <a href="/index/<%=taskSubscriber.user.username%>/tasks/<%=task._id%>/dashboard" class="user-link" style="font-size:12px; margin: 0px;">
+                                                            <%=taskSubscriber.user.name.slice(0,1).toUpperCase() + taskSubscriber.user.name.slice(1)%>
                                                         </a>
                                                         </div>
                                                     </td>

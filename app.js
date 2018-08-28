@@ -38,8 +38,10 @@ mongoose.connect(process.env.dbUrl, {
     bufferMaxEntries: 0 // clear old broken connections
 
 });
+
 // ES6 promises, since mongoose promises deprecated
 mongoose.Promise = global.Promise;
+
 
 // Passport Config (For Authentication)
 app.use(require("express-session")({

@@ -19,12 +19,27 @@ function promiseToPopulate(queryObject, fieldsString){
   });
 }
 
-dbopsServices.findOneEntryAndPopulate = async function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req, res, exclude={}) {
+function promiseToDeepPopulate(queryObject, fieldsString){
+  return new Promise(function (resolve, reject) {
+    // Need deepPopulate plugin added to the object's Schema
+    queryObject.deepPopulate(fieldsString).exec(function(error, newEntry){
+        if (error) { reject(error) }
+        else { resolve(newEntry) }
+    });
+  });
+}
+
+dbopsServices.findOneEntryAndPopulate = async function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req, res, deep=false, exclude={}) {
     let query = model.findOne(entryRequirement, exclude),
-        fieldsString = fieldsArray.join(' '),
         entry;
 
-    try { entry = await promiseToPopulate(query, fieldsString) }
+    try {
+        if (deep){ entry = await promiseToDeepPopulate(query, fieldsArray) }
+        else {
+            let fieldsString = fieldsArray.join(' ');
+            entry = await promiseToPopulate(query, fieldsString)
+        }
+    }
     catch (err) {
           req.flash('error', err);
           res.redirect('back');
@@ -34,12 +49,18 @@ dbopsServices.findOneEntryAndPopulate = async function findOneEntryAndPopulate(m
   return entry;
 }
 
-dbopsServices.findAllEntriesAndPopulate = async function findAllEntriesAndPopulate(model, entryRequirement, fieldsArray, req, res) {
+dbopsServices.findAllEntriesAndPopulate = async function findAllEntriesAndPopulate(model, entryRequirement, fieldsArray, req, res, deep=false) {
     let query = model.find(entryRequirement),
-        fieldsString = fieldsArray.join(' '),
         entries;
 
-    try { entries = await promiseToPopulate(query, fieldsString) }
+    try {
+        if (deep){ entries = await promiseToDeepPopulate(query, fieldsArray) }
+        else{
+            let fieldsString = fieldsArray.join(' ');
+            entries = await promiseToPopulate(query, fieldsString);
+        }
+
+    }
     catch (err) {
           req.flash('error', err);
           res.redirect('back');

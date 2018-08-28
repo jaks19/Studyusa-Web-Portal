@@ -22,20 +22,20 @@
                                     <div class='row'>
                                         <div class='col-xs-12'>
 
-                                            <% task.users.forEach(function(thisUser){ %>
-                                                <% d = new Date(thisUser.lastLoggedIn) %>
+                                            <% task.taskSubscribers.forEach(function(taskSubscriber){ %>
+                                                <% d = new Date(taskSubscriber.user.lastLoggedIn) %>
                                                     <tr>
-                                                        <td style='padding-left: 20px;' id='<%=thisUser.name%>'>
+                                                        <td style='padding-left: 20px;' id='<%=taskSubscriber.user.name%>'>
                                                             <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
-                                                            <a href="/index/<%=thisUser.username%>/tasks/<%=task._id%>" class="user-link" style="font-size:20px;">
-                                                                <%=thisUser.name.slice(0,1).toUpperCase() + thisUser.name.slice(1)%>
+                                                            <a href="/index/<%=taskSubscriber.user.username%>/tasks/<%=task._id%>" class="user-link" style="font-size:20px;">
+                                                                <%=taskSubscriber.user.name.slice(0,1).toUpperCase() + taskSubscriber.user.name.slice(1)%>
                                                             </a>
-                                                            <span class="user-subhead"><% if (thisUser.admin){ %>admin<% }else{ %>user <% } %> </span>
+                                                            <span class="user-subhead"><% if (taskSubscriber.user.admin){ %>admin<% }else{ %>user <% } %> </span>
                                                         </td>
 
-                                                        <td id='<%=thisUser.name%>'>
+                                                        <td id='<%=taskSubscriber.user.name%>'>
                                                             <div>
-                                                            <input type="checkbox" value='<%=thisUser._id%>' name="outgoing" class="intoout" />
+                                                            <input type="checkbox" value='<%=taskSubscriber.user._id%>' name="outgoing" class="intoout" />
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -63,7 +63,7 @@
                                     <div class='row'>
                                         <div class='col-xs-12'>
 
-                                            <% var taskUserIds = task.users.map((user) => { return String(user._id) }) %>
+                                            <% var taskUserIds = task.taskSubscribers.map((taskSubscriber) => { return String(taskSubscriber.user._id) }) %>
 
                                             <% users.forEach(function(thisUser){ %>
                                                 <% if (!taskUserIds.includes(String(thisUser._id))) { %>
