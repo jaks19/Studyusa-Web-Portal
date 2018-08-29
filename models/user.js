@@ -2,23 +2,20 @@ var mongoose = require("mongoose"),
     passportLocalMongoose = require("passport-local-mongoose");
 
 var userSchema = new mongoose.Schema({
-    name: String,
-    username: {type: String, index: true, unique: true},
-    password: String,
-    admin: {type: Boolean, default: false},
-    dateJoined: {type: Date, default: Date.now},
-    lastLoggedIn: {type: Date, default: Date.now},
-    group : {type: mongoose.Schema.Types.ObjectId, ref: "Group"},
-    // Rethink model when doing these:
-    messages : [
-        {type: mongoose.Schema.Types.ObjectId, ref: "Comment"}
-    ],
-    notifs : [
-        {type: mongoose.Schema.Types.ObjectId, ref: "Notif"}
-    ]
-}, {
-    usePushEach: true
-});
+        name: {type: String, required: true},
+        username: {type: String, index: true, unique: true, required: true},
+        password: String,
+        admin: {type: Boolean, default: false, required: true},
+        dateJoined: {type: Date, default: Date.now, required: true},
+        lastLoggedIn: {type: Date, default: Date.now, required: true},
+        group : {type: mongoose.Schema.Types.ObjectId, ref: "Group"},
+
+        // Rethink model when doing these:
+        messages : [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+        notifs : [{ type: mongoose.Schema.Types.ObjectId, ref: "Notif" }],
+    }, {
+        usePushEach: true
+    });
 
 userSchema.plugin(passportLocalMongoose);
 
@@ -28,3 +25,5 @@ userSchema.plugin(passportLocalMongoose);
 // (Done in the schema itself, see username field)
 
 module.exports = mongoose.model("User", userSchema);
+
+// Testing TODO: Check uniqueness of username and salting of password

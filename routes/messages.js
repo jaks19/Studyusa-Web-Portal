@@ -30,7 +30,7 @@ router.post('/personal/', authServices.confirmUserCredentials, async function(re
     let foundClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], req, res),
         sender = req.user,
         newM = new Message({ username: sender.username, content: req.body.textareacontent }),
-        newMessage = await dbopsServices.createEntryAndSave(Message, newM, req, res);
+        newMessage = await dbopsServices.savePopulatedEntry(newM, req, res);
 
     foundClient.messages.push(newMessage);
     dbopsServices.savePopulatedEntry(foundClient, req, res);

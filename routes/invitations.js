@@ -16,7 +16,7 @@ router.post('/new', authServices.isAdmin, async function(req, res) {
         dateNow = new Date(Date.now()),
         dateValid = (new Date()).setDate(dateNow.getDate() + validDays),
         newInvitationData = new Invitation({ code: newCode, validUntil: dateValid, nickname: nickname }),
-        newInvitation = await dbopsServices.createEntryAndSave(Invitation, newInvitationData, req, res);
+        newInvitation = await dbopsServices.savePopulatedEntry(newInvitationData, req, res);
     invitationServices.garbageCollectInvitations(req, res, garbageCollectDays);
     res.redirect('/index/admin/?invitation=yes');
 });

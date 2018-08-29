@@ -1,0 +1,43 @@
+A unit test consists of three parts.
+
+Arrange
+Act
+Assert
+
+Mocha sets up and runs test
+Chai is used for assertions (has a bunch of them)
+
+
+When calling something that is async, e.g. mongoose find(),
+(recall that in our dbopsservices we wrap such a call in a Promise that we await)
+But here in a test if we are directly calling say mongoose save fn, then we can take the call back
+For mocha to wait for the callback and end depending on the error or success,
+We pass in a done argument (can name anything) that we call when the callback is done
+
+describe('xxxxxxx', function() {
+    it('should be invalid if name is empty', function(done) {
+        var m = new Meme();
+
+        m.validate(function(err) {
+            expect(err.errors.name).to.exist;
+            done();
+        });
+    });
+});
+
+
+When testing our functions that return promises that we await, we can use this kind of pattern,
+where we await inside the mocha test
+
+describe('#find()', function() {
+  it('responds with matching records', async function() {
+    const users = await db.find({ type: 'User' });
+    users.should.have.length(3);
+  });
+});
+
+Actually we can use await even up there in the first example. So either callback or await the promise.
+Note that we also make the mocha fn async (this will be thrown as error if not done anyway)
+
+
+Models untested: comment, file, notif

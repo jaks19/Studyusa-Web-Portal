@@ -75,7 +75,7 @@ router.post('/:userId', authServices.confirmUserCredentials, async function(req,
             content: content })
     }
 
-    let newComment = await dbopsServices.createEntryAndSave(Commentary, newCommentObject, req, res, true);
+    let newComment = await dbopsServices.savePopulatedEntry(newCommentObject, req, res);
     console.log(newComment);
 
     taskSubscriber.comments = taskSubscriber.comments.concat([newComment]);

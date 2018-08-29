@@ -8,10 +8,10 @@
   },
   "scripts": {
     "clean": "rm -rf build && mkdir build",
-    "babel-transpile": "babel --ignore .c9,.git,docs,heroku,node_modules,images,notifJson,old,styles,views,.babelrc,.gitignore,package.json,.env -d ./build . -s",
-    "copy-untranspiled": "cp -R ./views ./images ./notifJson ./styles ./package.json ./package-lock.json ./.env ./build/",
+    "babel-transpile": "babel --ignore .c9,.git,heroku,node_modules,notifJson,styles,views,public,dump,.babelrc,.gitignore,package.json,.env -d ./build . -s",
+    "copy-untranspiled": "cp -R ./views ./public ./notifJson ./package.json ./package-lock.json ./.env ./build/",
     "build": "npm run clean && npm run babel-transpile && npm run copy-untranspiled",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha test/**/*.js",
     "start": "node app.js",
     "build-run-local": "npm run build && cp -R ./node_modules ./build/ && cd ./build && heroku local",
     "start-local": "heroku local"
@@ -63,5 +63,11 @@
         }
       ]
     ]
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-datetime": "^1.5.0",
+    "mocha": "^5.2.0",
+    "sinon": "^6.1.5"
   }
 }

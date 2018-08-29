@@ -37,7 +37,7 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
     if(typeof groupData !== "undefined") {
         let groupName = req.body.name,
             newGroupData = new Group({ name: groupName }),
-            groupEntry = await dbopsServices.createEntryAndSave(Group, newGroupData, req, res, false);
+            groupEntry = await dbopsServices.savePopulatedEntry(newGroupData, req, res);
 
         let checkedUserIds = groupServices.getCheckedUsers(req, res)[0];
         for (var i = 0; i < checkedUserIds.length; i++) {
@@ -75,7 +75,7 @@ router.put('/:groupId/add', authServices.confirmUserCredentials, async function(
     {
         for (var i = 0; i < outgoingIds.length; i++) {
             let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { '_id': outgoingIds[i] }, [ ], req, res);
-            await dbopsServices.updateEntryAndSave(User, { '_id': outgoingIds[i] }, { $unset: {"group": null}});
+            await dbopsServices.findByIdAndUpdate(User, outgoingIds[i], { $unset: {"group": null}}, req, res);
             // notifServices.assignNotification(req.user.username, foundGroup.name, 'group-remove', req.params.username, req, res);oundUser);
         }
     }
@@ -105,9 +105,9 @@ router.post('/:groupId/messages', authServices.confirmUserCredentials, async fun
         oneClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ 'group' ], req, res),
         foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { '_id': req.params.groupId }, [ 'users' ], req, res),
         newM = new Message({ username: sender.username, content: req.body.textareacontent }),
-        newMessage = await dbopsServices.createEntryAndSave(Message, newM, req, res);
+        newMessage = await dbopsServices.savePopulatedEntry(newM, req, res);
         foundGroup.messages.push(newMessage);
-        dbopsServices.savePopulatedEntry(foundGroup, req, res);
+        await dbopsServices.savePopulatedEntry(foundGroup, req, res);
         foundGroup.users.forEach(function(receiver) {
             notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver.username, req, res);
         });
@@ -146,7 +146,7 @@ router.delete('/:groupId', authServices.confirmUserCredentials, async function(r
     let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { '_id': req.params.groupId }, [ 'users' ], req, res);
 
     for (var i = 0; i < foundGroup.users.length; i++) {
-        await dbopsServices.updateEntryAndSave(User, { 'username': foundGroup.users[i].username }, { $unset: {"group": null}})
+        dbopsServices.findByIdAndUpdate(User, foundGroup.users[i]._id, { $unset: {"group": null}}, req, res)
         // Notif not created properly, throws a flash card (red)
         // await notifServices.assignNotification(req.user.username, foundGroup.name, 'group-delete', foundGroup.users[i].username, req, res);
     }

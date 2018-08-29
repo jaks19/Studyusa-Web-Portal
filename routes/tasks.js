@@ -7,7 +7,6 @@
 let express = require("express"),
     authServices = require('../services/auth-services'),
     dbopsServices = require('../services/dbops-services'),
-    filesystemServices = require('../services/filesystem-services'),
     notifServices = require('../services/notif-services'),
     taskServices = require('../services/task-services');
 
@@ -27,7 +26,7 @@ router.post('/new', authServices.isAdmin, async function(req, res) {
     let title = req.body.title,
         prompt = DEFAULT_PROMPT_PRE + String(req.user.username) + DEFAULT_PROMPT_POST,
         newTaskEntryData = new Task({ title: title, prompt: prompt }),
-        taskCreated = await dbopsServices.createEntryAndSave(Task, newTaskEntryData, req, res, true),
+        taskCreated = await dbopsServices.savePopulatedEntry(newTaskEntryData, req, res),
         user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.user.username}, [ ], req, res);
 
     res.render('./admin/editTaskPrompt', {
@@ -41,7 +40,7 @@ router.post('/new', authServices.isAdmin, async function(req, res) {
 // Add/remove users to a Task OK
 router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
     let [incomingIds, outgoingIds] = taskServices.getCheckedUsers(req, res),
-        foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'taskSubscribers.user', 'archivedTaskSubscribers.user' ], req, res, deep=true),
+        foundTask = await dbopsServices.findOneEntryAndDeepPopulate(Task, { _id: req.params.taskId }, [ 'taskSubscribers.user', 'archivedTaskSubscribers.user' ], req, res),
         archivedSubscribersIds = foundTask.archivedTaskSubscribers.map(ats => String(ats.user._id)),
         existingSubscriberIds = foundTask.taskSubscribers.map(ts => String(ts.user._id));
 
@@ -59,7 +58,7 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
     for (var i = 0; i < totallyNewSubscriberIds.length; i++) {
         let user = await dbopsServices.findOneEntryAndPopulate(User, { '_id': incomingIds[i] }, [ ], req, res),
             totallyNewSubscriberData = new TaskSubscriber({ user: user, task: foundTask }),
-            totallyNewSubscriber = await dbopsServices.createEntryAndSave(TaskSubscriber, totallyNewSubscriberData, req, res, true);
+            totallyNewSubscriber = await dbopsServices.savePopulatedEntry(totallyNewSubscriberData, req, res);
 
         totallyNewSubscribers.push(totallyNewSubscriber);
     }
@@ -77,7 +76,7 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
 
 // See a task's Dashboard where one can upload responses and comments OK
 router.get('/:taskId/dashboard/:userId', authServices.confirmUserCredentials, async function(req, res) {
-    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], req, res, deep=true),
+    let foundTask = await dbopsServices.findOneEntryAndDeepPopulate(Task, { _id: req.params.taskId }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], req, res),
         user = await dbopsServices.findOneEntryAndPopulate(User, { _id: req.params.userId }, [ ], req, res),
         viewer = req.user,
         taskSubscriber;
@@ -107,7 +106,7 @@ router.put('/:taskId/prompt', authServices.isAdmin, async function(req, res) {
     let data = await taskServices.getTaskData(req, res);
 
     if (data.prompt != null) {
-        await dbopsServices.updateEntryAndSave(Task, { _id: req.params.taskId }, { prompt: data.prompt, dateEdited: Date.now() }, req, res);
+        await dbopsServices.findByIdAndUpdate(Task, { _id: req.params.taskId }, { prompt: data.prompt, dateEdited: Date.now() }, req, res);
     }
 
     res.send('Task was autosaved!');
@@ -160,7 +159,7 @@ router.get('/:taskId/preview', authServices.confirmUserCredentials, async functi
 
 // Delete OK
 router.delete('/:taskId', authServices.isAdmin, async function(req, res) {
-    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { '_id': req.params.taskId }, [ 'taskSubscribers.user', 'archivedTaskSubscribers.user' ], req, res, deep=true);
+    let foundTask = await dbopsServices.findOneEntryAndDeepPopulate(Task, { '_id': req.params.taskId }, [ 'taskSubscribers.user', 'archivedTaskSubscribers.user' ], req, res);
 
     for (var i = 0; i < foundTask.taskSubscribers.length; i++) {
         let ts = foundTask.taskSubscribers[i];
@@ -179,7 +178,7 @@ router.delete('/:taskId', authServices.isAdmin, async function(req, res) {
 // All Tasks View OK
 router.get('/', authServices.confirmUserCredentials, async function(req, res) {
     // Fetch tasks
-    let tasks = await dbopsServices.findAllEntriesAndPopulate(Task, { }, [ 'taskSubscribers.user' ], req, res, deep=true),
+    let tasks = await dbopsServices.findAllEntriesAndDeepPopulate(Task, { }, [ 'taskSubscribers.user' ], req, res),
         users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res),
         user = await dbopsServices.findOneEntryAndPopulate(User, {'_id': req.user._id}, [ 'tasks' ], req, res),
         taskSubscriberObjectsThisUser = await dbopsServices.findAllEntriesAndPopulate(TaskSubscriber, { 'user': user._id }, [ 'task', 'comments' ], req, res);

@@ -17,13 +17,13 @@ let router = express.Router({
 });
 
 // Download file (Get add)
-router.get('/:addId', authServices.confirmUserCredentials, async function(req, res) { 
+router.get('/:addId', authServices.confirmUserCredentials, async function(req, res) {
     let foundAdd = await dbopsServices.findOneEntryAndPopulate(Add, { '_id' : req.params.addId }, [ 'submission' ], req, res);
     res.download(filesystemServices.getExistingFilePath(foundAdd, req));
 });
 
 // Delete File (Delete add)
-router.delete('/:addId', authServices.confirmUserCredentials, async function(req, res) { 
+router.delete('/:addId', authServices.confirmUserCredentials, async function(req, res) {
     let username = req.params.username,
         foundAdd = await dbopsServices.findOneEntryAndPopulate(Add, { '_id': req.params.addId }, ['submission'], req, res),
         foundSub = foundAdd.submission,
@@ -38,8 +38,8 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
         foundSub = await dbopsServices.findOneEntryAndPopulate(Submission, { '_id': req.params.id }, [ 'user' ], req, res),
         fileName = await filesystemServices.getAddedFileName(req, res),
         newAddData = new Add({ file: fileName, author: req.user.username, submission: foundSub }),
-        newAdd = await dbopsServices.createEntryAndSave(Add, newAddData, req, res);
-        
+        newAdd = await dbopsServices.savePopulatedEntry(newAddData, req, res);
+
     foundSub.adds.push(newAdd);
     dbopsServices.savePopulatedEntry(foundSub, req, res);
     notifServices.assignNotification(req.user.username, foundSub.title, 'add', foundSub.user.username, req, res);

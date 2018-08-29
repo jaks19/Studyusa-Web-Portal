@@ -27,12 +27,12 @@ router.get('/',authServices.confirmUserCredentials, async function(req, res) {
 router.post('/', authServices.confirmUserCredentials, async function(req, res) { //IMPORTANT: normally you would use a post request to an index page but I already have one POST req going there for Users
     let fileData = await filesystemServices.getNewFileMetadata(req, res),
         newSubData = new Submission({ title: fileData.title }),
-        newSubmission = await dbopsServices.createEntryAndSave(Submission, newSubData, req, res, false),
+        newSubmission = await dbopsServices.savePopulatedEntry(newSubData, req, res),
         foundUser = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ ], req, res),
         newAddData = new Add({ file: fileData.fileName, author: foundUser.username, submission: newSubmission }),
-        newAdd = await dbopsServices.createEntryAndSave(Add, newAddData, req, res),
+        newAdd = await dbopsServices.savePopulatedEntry(newAddData, req, res),
         newCommentData = new Comment({ username: req.user.username, content: fileData.message }),
-        newComment = await dbopsServices.createEntryAndSave(Comment, newCommentData, req, res);
+        newComment = await dbopsServices.savePopulatedEntry(newCommentData, req, res);
 
     newSubmission.user = foundUser;
     newSubmission.messages.push(newComment);

@@ -26,12 +26,12 @@ router.get('/', authServices.confirmUserCredentials, async function(req, res) {
 });
 
 // New Payment - POST
-router.post('/', authServices.confirmUserCredentials, async function(req, res) { 
+router.post('/', authServices.confirmUserCredentials, async function(req, res) {
     let username = req.user.username,
         charge = await paymentServices.createStripeCharge(req.body.amount, req.body.stripeToken, req.body.purpose, req, res);
     let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { 'username': username }, [ ], req, res),
         newPaymentData = paymentServices.gatherPaymentData(foundUser, req, charge),
-        newPayment = await dbopsServices.createEntryAndSave(Payment, newPaymentData, req, res);
+        newPayment = await dbopsServices.savePopulatedEntry(newPaymentData, req, res);
     foundUser.payments.push(newPayment);
     foundUser.balance -= req.body.amount;
     dbopsServices.savePopulatedEntry(foundUser, req, res);

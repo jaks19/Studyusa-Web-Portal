@@ -7,7 +7,6 @@ let express = require("express"),
 let userServices = require('../services/user-services'),
     authServices = require('../services/auth-services'),
     invitationServices = require('../services/invitation-services'),
-    filesystemServices = require('../services/filesystem-services'),
     dbopsServices = require('../services/dbops-services');
 
 // Models
