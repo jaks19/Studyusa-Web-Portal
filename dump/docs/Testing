@@ -41,3 +41,46 @@ Note that we also make the mocha fn async (this will be thrown as error if not d
 
 
 Models untested: comment, file, notif
+
+
+
+
+For a listener, HAVE to use the DONE indicator:
+
+before(function(done) {
+    mongoose.connect("mongodb://localhost/studyusa-portal");
+
+    // await User.init();
+    mongoose.connection.on('connected', function(){
+        console.log('HJUGGJGJ');
+        console.error('NOOOOOO');
+        done();
+    });
+});
+
+Since .on('connected') is a listener and does not return a promise because it is not bound to happen
+Can wrap in promise, but more readable to just call done
+
+Here is the promise wrapping version:
+before(async function() {
+    mongoose.connect("mongodb://localhost/studyusa-portal");
+
+    await new Promise(function (resolve, reject) {
+      mongoose.connection.on('connected', function(){
+          console.log('YAAAA');
+          resolve()
+      });
+    });
+});
+
+If something is used just once then just use the callback. Recall how async await is
+useful mostly for refactoring and extracting methods and preventing endless callback nesting
+
+
+var mlog = require("mocha-logger"); useful for long tests as adds a sequential message to console
+
+EITHER THE TEST TAKES DONE ARGUMENT OR ASYNC, NOT BOTH! If going with done, everything
+inside needs callbacks, no await
+If make async and use await, cannot call done!!!!
+Whaat can do is have an async function inside, sure, but call then on it and go into the callbacks
+Example if have an async function helper and wanna use it just use and call .then

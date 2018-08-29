@@ -12,7 +12,7 @@ var dbopsServices = {};
 // This lib makes it easy to just change or mongoose versions in the back
 
 dbopsServices.findOneEntryAndPopulate =
-async function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req, res, exclude={}) {
+function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req, res, exclude={}) {
     let fieldsString = fieldsArray.join(' ');
     return new Promise(function (resolve, reject) {
       model.findOne(entryRequirement, exclude).populate(fieldsString).exec(function(error, newEntry){
@@ -24,7 +24,7 @@ async function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req
 
 dbopsServices.findOneEntryAndDeepPopulate =
 // Need deepPopulate plugin added to the object's Schema
-async function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req, res, exclude={}) {
+function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req, res, exclude={}) {
     return new Promise(function (resolve, reject) {
       model.findOne(entryRequirement, exclude).deepPopulate(fieldsArray).exec(function(error, newEntry){
           if (error) { reject(error) }
@@ -34,7 +34,7 @@ async function findOneEntryAndPopulate(model, entryRequirement, fieldsArray, req
 }
 
 dbopsServices.findAllEntriesAndPopulate =
-async function findAllEntriesAndPopulate(model, entryRequirement, fieldsArray, req, res, exclude={}) {
+function findAllEntriesAndPopulate(model, entryRequirement, fieldsArray, req, res, exclude={}) {
     let fieldsString = fieldsArray.join(' ');
     return new Promise(function (resolve, reject) {
       model
@@ -47,7 +47,7 @@ async function findAllEntriesAndPopulate(model, entryRequirement, fieldsArray, r
 }
 
 dbopsServices.findAllEntriesAndDeepPopulate =
-async function findAllEntriesAndPopulate(model, entryRequirement, fieldsArray, req, res, exclude={}) {
+function findAllEntriesAndPopulate(model, entryRequirement, fieldsArray, req, res, exclude={}) {
      // Need deepPopulate plugin added to the object's Schema
     return new Promise(function (resolve, reject) {
       model
@@ -61,7 +61,7 @@ async function findAllEntriesAndPopulate(model, entryRequirement, fieldsArray, r
 
 
 dbopsServices.findByIdAndUpdate =
-async function findByIdAndUpdate(model, _id, changes, req, res){
+function findByIdAndUpdate(model, _id, changes, req, res){
     return new Promise(function (resolve, reject) {
       // { new: true } allows the NEW entry to be returned, not the old one
       model.findByIdAndUpdate( _id, changes, {new: true}, function(error, newEntry){
@@ -73,7 +73,7 @@ async function findByIdAndUpdate(model, _id, changes, req, res){
 
 
 dbopsServices.savePopulatedEntry =
-async function savePopulatedEntry(populatedEntry, req, res) {
+function savePopulatedEntry(populatedEntry, req, res) {
     return new Promise(function (resolve, reject) {
       populatedEntry.save( function(error, data){
           if (error) { reject(error) }
@@ -84,7 +84,7 @@ async function savePopulatedEntry(populatedEntry, req, res) {
 
 
 dbopsServices.findEntryByIdAndRemove =
-async function findEntryByIdAndRemove(model, id, req, res) {
+function findEntryByIdAndRemove(model, id, req, res) {
     return new Promise(function (resolve, reject) {
       model.findByIdAndRemove(id, function(error){
           if (error){ reject(error) }

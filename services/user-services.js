@@ -13,6 +13,21 @@ function userPageContext(req) {
     return context;
 }
 
+userServices.registerUser = function registerUser(makeAdmin=false, req) {
+    let newUserObject = new User({
+        name: req.body.name,
+        username: req.body.username,
+        admin: makeAdmin
+    });
+
+    return new Promise(function (resolve, reject) {
+        User.register(newUserObject, req.body.password, function(error){
+            if (error) { reject(error) }
+            else { resolve()}
+        });
+     });
+}
+
 userServices.getUserData = async function getUserData(username, req, res) {
     var userData = {};
     userData.populatedUser = await dbOpsServices.findOneEntryAndPopulate(User, {'username': username}, ['notifs', 'tasks', 'group'], req, res);

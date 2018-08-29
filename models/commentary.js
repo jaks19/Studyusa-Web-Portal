@@ -4,7 +4,7 @@
 var mongoose = require("mongoose");
 
 var commentarySchema = new mongoose.Schema({
-    author: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
+    author: {type: mongoose.Schema.Types.ObjectId, ref: "User", required: true},
     recipient: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
     date: {type: Date, default: Date.now},
     content: {type: String, required: true}

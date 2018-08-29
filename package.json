@@ -11,7 +11,8 @@
     "babel-transpile": "babel --ignore .c9,.git,heroku,node_modules,notifJson,styles,views,public,dump,.babelrc,.gitignore,package.json,.env -d ./build . -s",
     "copy-untranspiled": "cp -R ./views ./public ./notifJson ./package.json ./package-lock.json ./.env ./build/",
     "build": "npm run clean && npm run babel-transpile && npm run copy-untranspiled",
-    "test": "mocha test/**/*.js",
+    "test": "mocha test/ --recursive",
+    "integration": "mocha test/integration/**/*.js",
     "start": "node app.js",
     "build-run-local": "npm run build && cp -R ./node_modules ./build/ && cd ./build && heroku local",
     "start-local": "heroku local"
@@ -68,6 +69,7 @@
     "chai": "^4.1.2",
     "chai-datetime": "^1.5.0",
     "mocha": "^5.2.0",
+    "mocha-logger": "^1.0.6",
     "sinon": "^6.1.5"
   }
 }
