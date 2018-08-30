@@ -12,8 +12,6 @@ describe('User Model', function() {
 
     describe('Data Validation', function() {
 
-        let optionsNothing = {}
-
         it('Should produce a User model instantiation without errors, given all required fields', async function() {
             let error;
 
@@ -24,7 +22,7 @@ describe('User Model', function() {
         });
 
         it('Should throw a ValidationError if none of the required fields are provided', async function() {
-            let userNoData = new User(optionsNothing),
+            let userNoData = new User({}),
                 error;
 
             try { await userNoData.validate() }
@@ -35,12 +33,8 @@ describe('User Model', function() {
 
         describe('Omitting fields one by one', function() {
 
-            let noName = { username: 'user', password: 'password' },
-                noUsername = { name: 'user one two three', password: 'password' },
-                noPassword = { username: 'user', name: 'user one two three' };
-
             it('Should throw a ValidationError if name not provided', async function() {
-                let userNoName = new User(noName),
+                let userNoName = new User({ username: 'user', password: 'password' }),
                     error;
 
                 try { await userNoName.validate() }
@@ -50,7 +44,7 @@ describe('User Model', function() {
             });
 
             it('Should throw a ValidationError if username not provided', async function() {
-                let userNoUsername = new User(noUsername),
+                let userNoUsername = new User({ name: 'user one two three', password: 'password' }),
                     error;
 
                 try { await userNoUsername.validate() }

@@ -12,17 +12,10 @@ var User = require("../models/user"),
 var router = express.Router({ mergeParams: true });
 
 // Show Personal Messages
-router.get('/personal/', authServices.confirmUserCredentials, async function(req, res) {
-    let client = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ 'messages' ], req, res);
-    res.render('personalMessages', { user: req.user, messages: client.messages, loggedIn: true, client: client });
-});
-
-// Show Group Messages
-// ROUTE DEPRECATED TO a route from groups /index/username/groups/groupid/messages/
-router.get('/group/', authServices.confirmUserCredentials, async function(req, res) {
-    let foundClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], req, res),
-        foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { 'name': foundClient.group }, [ 'messages', 'users' ], req, res);
-    res.render('groupMessages', { messages: foundGroup['messages'], loggedIn: true, user: req.user, users: foundGroup.users, client: foundClient });
+router.get('/personal', authServices.confirmUserCredentials, async function(req, res) {
+    let user = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ 'messages' ], req, res);
+    // In future with many admins, need to filter on admin's id
+    res.render('personalMessages', { user: req.user, messages: user.messages, loggedIn: true, client: client });
 });
 
 // New Personal Message
