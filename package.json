@@ -8,10 +8,10 @@
   },
   "scripts": {
     "clean": "rm -rf build && mkdir build",
-    "babel-transpile": "babel --ignore .c9,.git,heroku,node_modules,notifJson,styles,views,public,dump,.babelrc,.gitignore,package.json,.env -d ./build . -s",
-    "copy-untranspiled": "cp -R ./views ./public ./notifJson ./package.json ./package-lock.json ./.env ./build/",
+    "babel-transpile": "babel --ignore .c9,.git,test,heroku,node_modules,text,styles,views,public,dump,.babelrc,.gitignore,package.json,.env -d ./build . -s",
+    "copy-untranspiled": "cp -R ./views ./public ./text ./package.json ./package-lock.json ./.env ./build/",
     "build": "npm run clean && npm run babel-transpile && npm run copy-untranspiled",
-    "test": "mocha test/ --recursive",
+    "test": "nyc --reporter=text mocha test/ --recursive",
     "integration": "mocha test/integration/**/*.js",
     "start": "node app.js",
     "build-run-local": "npm run build && cp -R ./node_modules ./build/ && cd ./build && heroku local",

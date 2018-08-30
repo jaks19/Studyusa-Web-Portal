@@ -70,7 +70,7 @@ var
     authRoutes              = require('./routes/auth'),
     userRoutes              = require('./routes/users'),
     taskCommentsRoutes      = require('./routes/taskComments'),
-    taskResponsesRoutes   = require('./routes/taskResponses'),
+    // taskResponsesRoutes   = require('./routes/taskResponses'),
     // paymentRoutes           = require('./routes/payments'),
     messageRoutes           = require('./routes/messages'),
     groupRoutes             = require('./routes/groups'),
@@ -84,7 +84,7 @@ var
 app.use(authRoutes),
 app.use('/index', userRoutes),
 app.use('/index/:username/tasks/:taskId/comments', taskCommentsRoutes),
-app.use('/index/:username/tasks/:taskId/responses', taskResponsesRoutes),
+// app.use('/index/:username/tasks/:taskId/responses', taskResponsesRoutes),
 // app.use('/index/:username/submit/:id/adds', addsRoutes);
 // app.use('/index/:username/submit/:id/s3/:subTitle', amazons3Routes);
 // app.use('/index/:username/submit', submissionRoutes);

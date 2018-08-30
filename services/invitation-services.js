@@ -12,13 +12,13 @@ invitationServices.generateCode = function generateCode(length) {
 }
 
 invitationServices.garbageCollectInvitations = async function garbageCollectInvitations(req, res, garbageCollectDays) {
-    let allInvitations = await dbopsServices.findAllEntriesAndPopulate(Invitation, { }, [ ], req, res);
+    let allInvitations = await dbopsServices.findAllEntriesAndPopulate(Invitation, { }, [ ], false);
     allInvitations.forEach(function(thisInvitation) {
         let thisValidDate = new Date(thisInvitation.validUntil),
             today = new Date(Date.now()),
             tooOldBar = (new Date()).setDate(today.getDate() - garbageCollectDays);
         if (thisValidDate < tooOldBar){
-            try { dbopsServices.findEntryByIdAndRemove(Invitation, thisInvitation._id, req, res) }
+            try { dbopsServices.findEntryByIdAndRemove(Invitation, thisInvitation._id) }
             catch(error) { req.flash('error', 'nah!') }
         }
     });
@@ -26,7 +26,7 @@ invitationServices.garbageCollectInvitations = async function garbageCollectInvi
 }
 
 invitationServices.getSortedInvitations = async function getSortedInvitations(req, res){
-    let invitations = await dbopsServices.findAllEntriesAndPopulate(Invitation, { }, [ ], req, res),
+    let invitations = await dbopsServices.findAllEntriesAndPopulate(Invitation, { }, [ ], true),
         active = [],
         expired = [];
 
@@ -46,7 +46,7 @@ invitationServices.isValid = async function isValid(req, res, garbageCollect=tru
     if (req.body.code == 190295) {return true}
     ////
 
-    var invitation = await dbopsServices.findOneEntryAndPopulate(Invitation, { code: req.body.code }, [ ], req, res);
+    var invitation = await dbopsServices.findOneEntryAndPopulate(Invitation, { code: req.body.code }, [ ], true);
     if (!invitation) { return false }
 
     let thisDate = new Date(invitation.validUntil),
@@ -54,7 +54,7 @@ invitationServices.isValid = async function isValid(req, res, garbageCollect=tru
     if (thisDate < today){ return false }
 
     if(garbageCollect) {
-        try { dbopsServices.findEntryByIdAndRemove(Invitation, invitation._id, req, res) }
+        try { dbopsServices.findEntryByIdAndRemove(Invitation, invitation._id) }
         catch(err){ req.flash('error', 'nope!!') }
     }
     return true;

@@ -23,7 +23,7 @@ describe('Testing Passport and User Schema: Register a new user', function() {
         catch(err) { mlog.log('error', err) }
 
         let entry;
-        try { entry = await dbopsServices.findOneEntryAndPopulate(User, { username: optionsNewUser.username }, []) }
+        try { entry = await dbopsServices.findOneEntryAndPopulate(User, { username: optionsNewUser.username }, [], true) }
         catch(err) { mlog.log('error', err) }
 
         expect(entry.password).not.to.exist;

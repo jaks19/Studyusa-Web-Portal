@@ -7,11 +7,12 @@ groupServices.getCheckedUsers = function getCheckedUsers(req, res) {
       return;
   }
 
-  var checkedIncoming;
+  let checkedIncoming;
+  let checkedOutgoing;
+
   if (!Array.isArray(req.body.incoming)) { checkedIncoming = [req.body.incoming] }
   else { checkedIncoming = req.body.incoming }
 
-  var checkedOutgoing;
   if (!Array.isArray(req.body.outgoing)) { checkedOutgoing = [req.body.outgoing] }
   else { checkedOutgoing = req.body.outgoing }
 

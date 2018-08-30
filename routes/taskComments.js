@@ -16,34 +16,34 @@ let router = express.Router({ mergeParams: true });
 // Edit Comment
 router.put('/:commentId', authServices.confirmUserCredentials, async function(req, res) {
     let newText = req.body.newText,
-        foundComment = await dbopsServices.findOneEntryAndPopulate(Commentary, { '_id': req.params.commentId }, [ 'author' ], req, res),
+        foundComment = await dbopsServices.findOneEntryAndPopulate(Commentary, { '_id': req.params.commentId }, [ 'author' ], false),
         wait_time_minutes = 5;
 
     if (req.user.admin) {
         if (String(foundComment.author._id) === String(req.user._id)){
             foundComment.content = newText;
-            await dbopsServices.savePopulatedEntry(foundComment, req, res);
+            await dbopsServices.savePopulatedEntry(foundComment);
         }
     } else if (String(foundComment.author._id) === String(req.user._id) && (new Date(foundComment.date) > (Date.now() - (wait_time_minutes*60*1000))) ){
         foundComment.content = newText;
-        await dbopsServices.savePopulatedEntry(foundComment, req, res);
+        await dbopsServices.savePopulatedEntry(foundComment);
     }
 
-    dbopsServices.savePopulatedEntry(foundComment, req, res);
+    dbopsServices.savePopulatedEntry(foundComment);
     res.redirect('back');
 });
 
 // Delete Comment
 router.delete('/:commentId', authServices.confirmUserCredentials, async function(req, res) {
-    let comment = await dbopsServices.findOneEntryAndPopulate(Commentary, { '_id': req.params.commentId }, [ 'author' ], req, res),
+    let comment = await dbopsServices.findOneEntryAndPopulate(Commentary, { '_id': req.params.commentId }, [ 'author' ], true),
         wait_time_minutes = 5.1;  //(add epsilon just in case person clicks UI but time is up before request served)
 
     if (req.user.admin) {
         if (String(comment.author._id) === String(req.user._id)){
-            await dbopsServices.findEntryByIdAndRemove(Commentary, req.params.commentId, req, res);
+            await dbopsServices.findEntryByIdAndRemove(Commentary, req.params.commentId);
         }
     } else if (String(comment.author._id) === String(req.user._id) && (new Date(comment.date) > (Date.now() - (wait_time_minutes*60*1000))) ){
-            await dbopsServices.findEntryByIdAndRemove(Commentary, req.params.commentId, req, res);
+            await dbopsServices.findEntryByIdAndRemove(Commentary, req.params.commentId);
     }
 
     res.redirect('back');
@@ -55,7 +55,7 @@ router.post('/:userId', authServices.confirmUserCredentials, async function(req,
     let content = req.body.textareacontent,
         newCommentObject,
         foundTask = await dbopsServices.findOneEntryAndDeepPopulate(Task,
-            { '_id': req.params.taskId }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], req, res);
+            { '_id': req.params.taskId }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], false);
 
     let allTaskSubscribers = foundTask.taskSubscribers;
     let taskSubscriber = allTaskSubscribers.filter(ts => String(ts.user._id) === req.params.userId)[0]
@@ -73,11 +73,9 @@ router.post('/:userId', authServices.confirmUserCredentials, async function(req,
             content: content })
     }
 
-    let newComment = await dbopsServices.savePopulatedEntry(newCommentObject, req, res);
-    console.log(newComment);
-
+    let newComment = await dbopsServices.savePopulatedEntry(newCommentObject);
     taskSubscriber.comments = taskSubscriber.comments.concat([newComment]);
-    await dbopsServices.savePopulatedEntry(taskSubscriber, req, res);
+    await dbopsServices.savePopulatedEntry(taskSubscriber);
     // notifServices.assignNotification(req.user.username, foundSub.title, 'comment', req.params.username, req, res);
     res.redirect('back');
 });

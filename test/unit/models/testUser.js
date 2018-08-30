@@ -80,6 +80,10 @@ describe('User Model', function() {
             expect(userComplete.group).to.be.an('undefined');
         });
 
+        it('Should have empty array "tasks"', function() {
+            expect(userComplete.tasks).to.be.an('array').that.is.empty;
+        });
+
         it('Should have empty array "messages"', function() {
             expect(userComplete.messages).to.be.an('array').that.is.empty;
         });

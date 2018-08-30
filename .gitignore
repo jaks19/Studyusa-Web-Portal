@@ -5,3 +5,4 @@ node_modules
 .env
 build
 mongod
+.nyc_output

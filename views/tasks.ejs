@@ -29,8 +29,7 @@
                                         <div class='row'>
                                             <div class='col-xs-12'>
 
-                                                <% taskSubscriberObjects.reverse().forEach(function(taskSubscriberObject){ %>
-                                                    <% task = taskSubscriberObject.task %>
+                                                <% user.tasks.reverse().forEach(function(task){ %>
                                                     <% var d = new Date(task['dateCreated']); %>
                                                     <% var d_edit = new Date(task['dateEdited']); %>
 

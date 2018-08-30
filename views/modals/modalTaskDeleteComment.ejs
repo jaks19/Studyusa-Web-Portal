@@ -7,7 +7,7 @@
             </div>
 
             <div class="modal-body">
-                <form style='text-align:center' action="/index/<%=viewer.username%>/tasks/<%=task._id%>/comments/<%=comment._id%>?_method=Delete" method='POST' enctype='multipart/form-data'>
+                <form style='text-align:center' action="/index/<%=user.username%>/tasks/<%=task._id%>/comments/<%=comment._id%>?_method=Delete" method='POST' enctype='multipart/form-data'>
                     <button type="button" data-toggle="modal" data-target="#delete-<%=comment.__id%>" class="btn btn-danger glyphicon glyphicon-remove"></button>
                     <button type="submit" class="btn btn-success glyphicon glyphicon-ok"></button>
                 </form>

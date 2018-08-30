@@ -13,8 +13,8 @@ var router = express.Router({ mergeParams: true });
 
 // Show Personal Messages
 router.get('/:studentId', authServices.confirmUserCredentials, async function(req, res) {
-    let student = await dbopsServices.findOneEntryAndPopulate(User, { '_id': req.params.studentId }, [ 'messages' ], req, res);
-    console.log(student);
+    let student = await dbopsServices.findOneEntryAndPopulate(User, { '_id': req.params.studentId }, [ 'messages' ], true);
+
     // In future with many admins, need to filter on admin's id
     res.render('personalMessages', {
         user: req.user,
@@ -25,7 +25,7 @@ router.get('/:studentId', authServices.confirmUserCredentials, async function(re
 
 // New Personal Message
 router.post('/:studentId', authServices.confirmUserCredentials, async function(req, res) {
-    let foundStudent = await dbopsServices.findOneEntryAndPopulate(User, { '_id': req.params.studentId }, [], req, res),
+    let foundStudent = await dbopsServices.findOneEntryAndPopulate(User, { '_id': req.params.studentId }, [], false),
         sender = req.user,
         newMessageData,
         newMessage;
@@ -36,12 +36,9 @@ router.post('/:studentId', authServices.confirmUserCredentials, async function(r
         newMessageData = new Commentary({ author: sender._id, recipient: foundStudent._id, content: req.body.textareacontent });
     }
 
-    newMessage = await dbopsServices.savePopulatedEntry(newMessageData, req, res);
-    console.log(foundStudent);
+    newMessage = await dbopsServices.savePopulatedEntry(newMessageData);
     foundStudent.messages = foundStudent.messages.concat([ newMessage ]);
-    console.log(foundStudent.messages);
-
-    await dbopsServices.savePopulatedEntry(foundStudent, req, res);
+    await dbopsServices.savePopulatedEntry(foundStudent);
     // notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg', foundClient.username, req, res);
     res.redirect('back');
 });

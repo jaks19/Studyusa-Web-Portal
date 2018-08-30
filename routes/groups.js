@@ -5,7 +5,7 @@ var express = require("express"),
     groupServices = require('../services/group-services'),
     notifServices = require('../services/notif-services'),
     userServices = require('../services/user-services'),
-    format = require('../notifJson');
+    format = require('../text/notifJson');
 
 // Models
 var Group = require("../models/group"),
@@ -16,9 +16,9 @@ let router = express.Router({ mergeParams: true });
 
 // Index
 router.get('/', authServices.confirmUserCredentials, async function(req, res) {
-    let groups = await dbopsServices.findAllEntriesAndPopulate(Group, { }, [ 'users' ], req, res),
-        freeUsers = await dbopsServices.findAllEntriesAndPopulate(User, { 'group': null }, [ ], req, res),
-        users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res);
+    let groups = await dbopsServices.findAllEntriesAndPopulate(Group, { }, [ 'users' ], true),
+        freeUsers = await dbopsServices.findAllEntriesAndPopulate(User, { 'group': null }, [ ], true),
+        users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], true);
 
     res.render('./admin/groups', {
         user: req.user,
@@ -37,17 +37,17 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
     if(typeof groupData !== "undefined") {
         let groupName = req.body.name,
             newGroupData = new Group({ name: groupName }),
-            groupEntry = await dbopsServices.savePopulatedEntry(newGroupData, req, res);
+            groupEntry = await dbopsServices.savePopulatedEntry(newGroupData);
 
         let checkedUserIds = groupServices.getCheckedUsers(req, res)[0];
         for (var i = 0; i < checkedUserIds.length; i++) {
-            let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ ], req, res);
+            let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ ], false);
             checkedUserEntry.group = groupEntry;
             groupEntry.users.push(checkedUserEntry);
             notifServices.assignNotification(req.user.username, groupName, 'group-add', checkedUserEntry.username, req, res);
-            dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
+            dbopsServices.savePopulatedEntry(checkedUserEntry);
         }
-        dbopsServices.savePopulatedEntry(groupEntry, req, res);
+        dbopsServices.savePopulatedEntry(groupEntry);
         res.redirect('back');
     }
     else return;
@@ -57,16 +57,16 @@ router.post('/', authServices.confirmUserCredentials, async function(req, res) {
 // Add/remove to Group
 router.put('/:groupId/add', authServices.confirmUserCredentials, async function(req, res) {
     let [incomingIds, outgoingIds] = groupServices.getCheckedUsers(req, res),
-        foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users' ], req, res),
+        foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users' ],  false),
         incoming = []; // Keep an array of incoming User objects too for including in group
 
     if(typeof incomingIds[0] !== "undefined")
     {
         for (var i = 0; i < incomingIds.length; i++) {
-            let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': incomingIds[i] }, [ 'group' ], req, res);
+            let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': incomingIds[i] }, [ 'group' ], false);
             incoming.push(checkedUserEntry);
             checkedUserEntry.group = foundGroup;
-            dbopsServices.savePopulatedEntry(checkedUserEntry, req, res);
+            dbopsServices.savePopulatedEntry(checkedUserEntry);
             // notifServices.assignNotification(req.user.username, foundGroup.name, 'group-add', checkedUserEntry.username, req, res);
         }
     }
@@ -74,8 +74,7 @@ router.put('/:groupId/add', authServices.confirmUserCredentials, async function(
     if(typeof outgoingIds[0] !== "undefined")
     {
         for (var i = 0; i < outgoingIds.length; i++) {
-            let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { '_id': outgoingIds[i] }, [ ], req, res);
-            await dbopsServices.findByIdAndUpdate(User, outgoingIds[i], { $unset: {"group": null}}, req, res);
+            await dbopsServices.findByIdAndUpdate(User, outgoingIds[i], { $unset: {"group": null}});
             // notifServices.assignNotification(req.user.username, foundGroup.name, 'group-remove', req.params.username, req, res);oundUser);
         }
     }
@@ -85,7 +84,7 @@ router.put('/:groupId/add', authServices.confirmUserCredentials, async function(
     var usersFinal = usersOldIn.filter( user => !outgoingIds.includes(String(user._id)) );
 
     foundGroup.users = usersFinal;
-    await dbopsServices.savePopulatedEntry(foundGroup, req, res);
+    await dbopsServices.savePopulatedEntry(foundGroup);
 
     res.redirect('back');
 
@@ -93,8 +92,8 @@ router.put('/:groupId/add', authServices.confirmUserCredentials, async function(
 
 // See group messages
 router.get('/:groupId/messages', authServices.confirmUserCredentials, async function(req, res) {
-    let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users', 'messages' ], req, res),
-        foundViewer = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], req, res);
+    let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users', 'messages' ], true),
+        foundViewer = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], true);
 
     res.render('groupMessages', { group: foundGroup, loggedIn: true, user: req.user });
 });
@@ -102,12 +101,12 @@ router.get('/:groupId/messages', authServices.confirmUserCredentials, async func
 // post  group message
 router.post('/:groupId/messages', authServices.confirmUserCredentials, async function(req, res) {
     let sender = req.user,
-        foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { '_id': req.params.groupId }, [ 'users' ], req, res),
+        foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { '_id': req.params.groupId }, [ 'users' ], false),
         newMessageData = new Commentary({ author: sender._id, content: req.body.textareacontent }),
-        newMessage = await dbopsServices.savePopulatedEntry(newMessageData, req, res);
+        newMessage = await dbopsServices.savePopulatedEntry(newMessageData);
 
     foundGroup.messages = foundGroup.messages.concat([ newMessage ])
-    await dbopsServices.savePopulatedEntry(foundGroup, req, res);
+    await dbopsServices.savePopulatedEntry(foundGroup);
 
     // foundGroup.users.forEach(function(receiver) {
     //     notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver.username, req, res);
@@ -141,14 +140,14 @@ router.get('/:groupId', authServices.confirmUserCredentials, async function(req,
 
 // Delete a Group
 router.delete('/:groupId', authServices.confirmUserCredentials, async function(req, res) {
-    let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { '_id': req.params.groupId }, [ 'users' ], req, res);
+    let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { '_id': req.params.groupId }, [ 'users' ], true);
 
     for (var i = 0; i < foundGroup.users.length; i++) {
-        dbopsServices.findByIdAndUpdate(User, foundGroup.users[i]._id, { $unset: {"group": null}}, req, res)
+        dbopsServices.findByIdAndUpdate(User, foundGroup.users[i]._id, { $unset: {"group": null}})
         // Notif not created properly, throws a flash card (red)
         // await notifServices.assignNotification(req.user.username, foundGroup.name, 'group-delete', foundGroup.users[i].username, req, res);
     }
-    await dbopsServices.findEntryByIdAndRemove(Group, foundGroup._id, req, res);
+    await dbopsServices.findEntryByIdAndRemove(Group, foundGroup._id);
     res.redirect('back');
 });
 

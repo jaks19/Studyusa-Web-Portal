@@ -9,6 +9,7 @@ var userSchema = new mongoose.Schema({
         dateJoined: {type: Date, default: Date.now, required: true},
         lastLoggedIn: {type: Date, default: Date.now, required: true},
         group : {type: mongoose.Schema.Types.ObjectId, ref: "Group"},
+        tasks: [{type: mongoose.Schema.Types.ObjectId, ref: "Task"}],
 
         // Rethink model when doing these:
         messages : [{ type: mongoose.Schema.Types.ObjectId, ref: "Commentary" }],

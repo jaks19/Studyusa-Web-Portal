@@ -1,7 +1,7 @@
 <% let show_edit_box = false; %>
 
-<% if(String(viewer._id) === String(comment.author._id)){ %>
-    <% if (viewer.admin) { show_edit_box = true } %>
+<% if(String(user._id) === String(comment.author._id)){ %>
+    <% if (user.admin) { show_edit_box = true } %>
     <% if (new Date(comment['date']) > (Date.now() - (5*60*1000))) { show_edit_box = true } %>
 
 <% } %>
@@ -18,6 +18,6 @@
         </ul>
     </div>
     <% include ../modals/modalTaskDeleteComment %>
-    <% include ../modals/modalTaskEditCommentText %>
+    <% include ../modals/modalTaskEditComment %>
 
 <% } %>

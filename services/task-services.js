@@ -1,57 +1,145 @@
-var taskServices = {};
+let taskServices = {};
 
-let _ =  require('lodash'),
-    path = require('path'),
-    fs = require("fs"), // To read-from/write-to files
-    multiparty = require("multiparty"); // To get file object upon selection from pc for upload
+const dbopsServices = require('../services/dbops-services');
 
-function getPromiseToParseForm(req) {
-    // form.parse needs a callback so we make this wrapper to give back a promise instead
-    return new Promise(function (resolve, reject) {
-        let form = new multiparty.Form();
+const User            = require('../models/user');
+const Task            = require("../models/task");
+const TaskSubscriber  = require('../models/taskSubscriber');
 
-        form.parse(req, function(error, fields, files){
-            if (error) { reject(error) }
-            else { resolve([ fields, files ]) }
+taskServices.sortCheckedIds = function sortCheckedIds ( incomingIds, outgoingIds, task ) {
+    let archivedSubscribersIds =
+        task.archivedTaskSubscribers.map(ats => String(ats.user._id));
+    let idsFirstTime =
+        incomingIds.filter(_id => !archivedSubscribersIds.includes(_id));
+    let idsToUnarchive =
+        incomingIds.filter(_id => archivedSubscribersIds.includes(_id));
+    let idsToArchive = outgoingIds;
+
+    return [ idsFirstTime, idsToUnarchive, idsToArchive ];
+}
+
+taskServices.getWhoToArchiveAndUnarchive =
+    function getWhoToArchiveAndUnarchive (idsFirstTime,  idsToUnarchive, idsToArchive, task) {
+
+        let subscriberDocsToUnarchive = task.archivedTaskSubscribers
+            .filter(ats => idsToUnarchive.includes(String(ats.user._id)));
+        let subscriberDocsToArchive = task.taskSubscribers
+            .filter(ts => idsToArchive.includes(String(ts.user._id)));
+
+        return [ subscriberDocsToUnarchive, subscriberDocsToArchive ];
+}
+
+taskServices.getTotallyNewSubscriberDocuments =
+    async function getTotallyNewSubscriberDocuments (idsFirstTime) {
+
+        let newSubscriberDocs = [];
+        for (var i = 0; i < idsFirstTime.length; i++) {
+            let user = await dbopsServices.findOneEntryAndPopulate(User, { '_id': idsFirstTime[i] }, [ 'tasks' ], true);
+            let totallyNewSubscriberData = new TaskSubscriber({ user: user });
+            let totallyNewSubscriber = await dbopsServices.savePopulatedEntry(totallyNewSubscriberData);
+            let totallyNewSubscriberPopulated = await dbopsServices.findOneEntryAndDeepPopulate(TaskSubscriber,
+                { '_id': totallyNewSubscriber._id }, [ 'user.tasks' ], false);
+
+            newSubscriberDocs.push(totallyNewSubscriberPopulated);
+        }
+        return newSubscriberDocs;
+}
+
+taskServices.addORRemoveHandleBarsToUserDocs =
+    function addORRemoveHandleBarsToUserDocs(task, totallyNewSubscriberDocs, subscriberDocsToUnarchive, subscriberDocsToArchive) {
+        let docsToAddHandleBars = totallyNewSubscriberDocs.concat(subscriberDocsToUnarchive);
+        let docsToRemoveHandleBars = subscriberDocsToArchive;
+
+        // No need to wait as will eventually happen and useful for user end only
+        docsToAddHandleBars.forEach( (doc) => {
+            doc.user.tasks = doc.user.tasks.concat([ task ]);
+            dbopsServices.savePopulatedEntry(doc.user);
         });
-    });
+        docsToRemoveHandleBars.forEach( (doc) => {
+            doc.user.tasks = doc.user.tasks.filter( (tsk) => String(tsk._id) !== String(task._id) );
+            dbopsServices.savePopulatedEntry(doc.user);
+        });
+
+        return;
+    }
+
+taskServices.getStayingPutSubscribers =
+    function getStayingPutSubscribers ( idsToUnarchive, idsToArchive, task ) {
+
+    let keptAsSubscribers = task.taskSubscribers.filter(ts => !idsToArchive.includes(String(ts.user._id)));
+    let keptAsArchived = task.archivedTaskSubscribers.filter(ats => !idsToUnarchive.includes(String(ats.user._id)));
+
+    return [ keptAsSubscribers, keptAsArchived ];
 }
 
-taskServices.getTaskData = async function getTaskData(req, res) {
-    let taskData = {};
+taskServices.applyFindingsToTask =
+    function applyFindingsToTask(task, keptAsSubscribers, newSubscriberDocs,
+        subscriberDocsToUnarchive, keptAsArchived, subscriberDocsToArchive){
 
-    try {
-        let [ fields, files ] = await getPromiseToParseForm(req);
-        if (fields.title != null) { taskData.title = fields['title'][0] }
-        if (fields.prompt != null) { taskData.prompt = fields['prompt'][0] }
-        return taskData;
-    }
-    catch (error) {
-        req.flash('error', 'Could not retrieve task metadata');
-        res.redirect('back');
-    }
+        task.taskSubscribers =
+            keptAsSubscribers
+            .concat(newSubscriberDocs)
+            .concat(subscriberDocsToUnarchive);
+
+        task.archivedTaskSubscribers =
+            keptAsArchived.concat(subscriberDocsToArchive);
+
+        return task;
 }
 
-taskServices.getCheckedUsers = function getCheckedUsers(req, res) {
-    if (req.body.incoming == null && req.body.outgoing == null){
-      req.flash('error', "Error, you did not choose any user!");
+taskServices.prepareAdminDashboardData =
+    async function prepareAdminDashboardData(requestInfo){
+
+        let [ taskId, viewer, soughtUserId ] = requestInfo;
+        let taskSubscriberObject;
+        let taskObjectFullyLoaded;
+
+        taskObjectFullyLoaded = await dbopsServices.findOneEntryAndDeepPopulate(Task,
+            { _id: taskId }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], true);
+
+        // Admin not on their own dashboard
+        // If on their own dashboard, the specific taskSubscriberObject remains undefined
+        if (String(viewer._id) !== String(soughtUserId)) {
+            taskSubscriberObject = (taskObjectFullyLoaded.taskSubscribers
+                .filter(ts => String(ts.user._id) === String(soughtUserId)))[0];
+        }
+
+        return [ taskObjectFullyLoaded, taskSubscriberObject ];
+}
+
+taskServices.prepareUserDashboardData =
+    async function prepareUserDashboardData(requestInfo){
+
+        let [ taskId, viewer, soughtUserId ] = requestInfo;
+        let taskSubscriberObject;
+        let taskObjectFullyLoaded;
+
+        // A user here has to be on their own dashboard since we check their credentials
+        // Populate everything at first, to extract required taskSubscriber
+        taskObjectFullyLoaded = await dbopsServices.findOneEntryAndDeepPopulate(Task,
+            { _id: taskId }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], true);
+
+        // Get only this user's taskSubscriber object
+        taskSubscriberObject = taskObjectFullyLoaded.taskSubscribers
+            .filter(ts => String(ts.user._id) === String(soughtUserId))[0];
+
+        // Reduce the unnecessarily exposed data
+        taskObjectFullyLoaded.taskSubscribers = [ ];
+        taskObjectFullyLoaded.archivedTaskSubscribers = [ ];
+
+        return [ taskObjectFullyLoaded, taskSubscriberObject ];
+}
+
+
+taskServices.recycleTaskSubscribers = function recycleTaskSubscribers(taskToDelete) {
+    let taskSubscribersToRecycle = taskToDelete.taskSubscribers
+        .concat(taskToDelete.archivedTaskSubscribers);
+
+    for (var i = 0; i < taskSubscribersToRecycle.length; i++) {
+        let ts = taskSubscribersToRecycle[i];
+        dbopsServices.findEntryByIdAndRemove(TaskSubscriber, ts._id);
     }
-
-    let checkedIncoming = [],
-        checkedOutgoing = [];
-
-    if (!(req.body.incoming == null)){
-        if (!Array.isArray(req.body.incoming)) { checkedIncoming = [req.body.incoming] }
-        else { checkedIncoming = req.body.incoming }
-    }
-
-
-    if (!(req.body.outgoing == null)){
-        if (!Array.isArray(req.body.outgoing)) { checkedOutgoing = [req.body.outgoing] }
-        else { checkedOutgoing = req.body.outgoing }
-    }
-
-    return [checkedIncoming, checkedOutgoing];
+    return;
 }
 
 module.exports = taskServices;

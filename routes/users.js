@@ -1,7 +1,7 @@
 // Packages
 let express = require("express"),
     path = require('path'),
-    format = require('../notifJson');
+    format = require('../text/notifJson');
 
 // Services
 let userServices = require('../services/user-services'),
@@ -79,11 +79,11 @@ router.get('/:username', authServices.confirmUserCredentials, async function(req
 });
 
 // Delete
-router.delete('/:username', authServices.confirmUserCredentials, async function(req, res) {
+router.delete('/:username', async function(req, res) {
     let username = req.params.username,
         userData = await userServices.getUserData(username, req, res);
 
-    await dbopsServices.findEntryByIdAndRemove(User, userData.populatedUser._id, req, res);
+    await dbopsServices.findEntryByIdAndRemove(User, userData.populatedUser._id);
     res.redirect('back');
 });
 

@@ -30,19 +30,19 @@ userServices.registerUser = function registerUser(makeAdmin=false, req) {
 
 userServices.getUserData = async function getUserData(username, req, res) {
     var userData = {};
-    userData.populatedUser = await dbOpsServices.findOneEntryAndPopulate(User, {'username': username}, ['notifs', 'tasks', 'group'], req, res);
+    userData.populatedUser = await dbOpsServices.findOneEntryAndPopulate(User, {'username': username}, ['notifs', 'tasks', 'group'], false);
     userData.allNotifs = userData.populatedUser.notifs.reverse();
     userData.unseenNotifs = notifServices.getBothSeenAndUnseenNotifs(userData.populatedUser.notifs)[1];
     userData.context = userPageContext(req);
     if (userData.populatedUser.admin){
-        userData.users = await dbOpsServices.findAllEntriesAndPopulate(User, { }, ['group'], req, res);
+        userData.users = await dbOpsServices.findAllEntriesAndPopulate(User, { }, ['group'], true);
         [ userData.activeInvitations, userData.expiredInvitations ] = await invitationServices.getSortedInvitations(req, res);
     } else {
         userData.articles = await apiServices.retrieveNews(req);
     }
 
     userData.populatedUser.lastLoggedIn = Date.now();
-    dbOpsServices.savePopulatedEntry(userData.populatedUser, req, res);
+    dbOpsServices.savePopulatedEntry(userData.populatedUser);
 
     return userData;
 }

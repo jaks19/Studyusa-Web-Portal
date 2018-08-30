@@ -3,20 +3,20 @@
 <div class='row new' align='center'>
     <div class='col-xs-12' style='padding-bottom: 1%;'>
         <h1 style='padding-bottom: 1%;'><%= task.title %></h1>
-        <button class="sort-choosable"><a class='blend' href ="/index/<%=viewer.username%>/tasks/<%=task._id%>/preview">Instructions</a></button>
+        <button class="sort-choosable"><a class='blend' href ="/index/<%=user.username%>/tasks/<%=task._id%>/preview">Instructions</a></button>
         <button class="sort-chosen">Workbench</button>
     </div>
 </div>
 
 <div class='row'>
 
-    <% if (viewer.admin) { %>
+    <% if (user.admin) { %>
         <div class='col-sm-2 col-xs-12' align='center' style='padding: 3%;'>
             <% include ./partials/taskQuickViewUsers %>
         </div>
     <% } %>
 
-    <% if (!user.admin) { %>
+    <% if (typeof taskSubscriber !== "undefined") { %>
         <div class='col-sm-4 col-sm-offset-1 col-xs-12' align='center' style='padding: 3%;'>
             <% include ./partials/taskFileListOfAUser %>
         </div>

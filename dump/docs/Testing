@@ -107,3 +107,10 @@ var spy = sinon.spy(object, 'its function name');
 We can even place a stub or spy at that callback
 
 - Mock: Stubbing a whole object, not just a fn
+
+
+
+Testing any function:
+Give variety of acceptable inputs
+Expect expected outputs
+Mock anything in between that is outside of this method's duties (black-box the outside assuming everything correct from them)

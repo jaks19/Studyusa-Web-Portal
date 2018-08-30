@@ -16,13 +16,13 @@ notifServices.getBothSeenAndUnseenNotifs = function getBothSeenAndUnseenNotifs(n
 
 async function assignNotif(doerAccountUserName, nameOfTheConcernedObjectChangedOrCreatedOrDeleted, eventStringInNotifJson, receivingAccountUsername, req, res) {
     let notifData = new Notif({ causerName: doerAccountUserName, objectName: nameOfTheConcernedObjectChangedOrCreatedOrDeleted, event: eventStringInNotifJson }),
-        newNotif = await dbopsServices.savePopulatedEntry(notifData, req, res),
+        newNotif = await dbopsServices.savePopulatedEntry(notifData),
         userCriteria = {};
     if (receivingAccountUsername == 'admin') { userCriteria = { 'admin': true } }
     else { userCriteria = { 'username': receivingAccountUsername } }
-    let foundUser = await dbopsServices.findOneEntryAndPopulate(User, userCriteria, [ ], req, res);
+    let foundUser = await dbopsServices.findOneEntryAndPopulate(User, userCriteria, [ ], false);
     foundUser.notifs.push(newNotif);
-    dbopsServices.savePopulatedEntry(foundUser, req, res);
+    dbopsServices.savePopulatedEntry(foundUser);
 };
 
 notifServices.assignNotification = async function assignNotification(doerAccountUserName, objectName, eventString, receivingAccountUsername, req, res) {
