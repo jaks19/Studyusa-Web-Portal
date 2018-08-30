@@ -20,7 +20,6 @@ mongoHelper.startDatabase = function startDatabase(databaseNameString){
 
 mongoHelper.stopAndDropDatabase = function stopAndDropDatabase(){
     return new Promise(function (resolve, reject) {
-        console.log(mongoose.connection);
         mongoose.connection.db.dropDatabase(function(){
           mongoose.connection.close();
           resolve();

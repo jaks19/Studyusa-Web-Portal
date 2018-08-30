@@ -81,11 +81,11 @@ describe('User Model', function() {
         });
 
         it('Should have empty field for "messages"', function() {
-            expect(userComplete.group).to.be.an('undefined');
+            expect(userComplete.messages).to.be.an('array').that.is.empty;
         });
 
         it('Should have empty field for "notifs"', function() {
-            expect(userComplete.group).to.be.an('undefined');
+            expect(userComplete.notifs).to.be.an('array').that.is.empty;
         });
     });
 

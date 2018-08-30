@@ -8,15 +8,8 @@ var taskSchema = new mongoose.Schema({
     prompt: String,
     dateCreated: {type: Date, default: Date.now, required: true},
     dateEdited: {type: Date, default: Date.now},
-    comments: [
-        {type: mongoose.Schema.Types.ObjectId, ref: "Commentary"}
-            ],
-    taskSubscribers: [
-                {type: mongoose.Schema.Types.ObjectId, ref: "TaskSubscriber"}
-            ],
-    archivedTaskSubscribers: [
-        {type: mongoose.Schema.Types.ObjectId, ref: "TaskSubscriber"}
-    ]
+    taskSubscribers: [ {type: mongoose.Schema.Types.ObjectId, ref: "TaskSubscriber"} ],
+    archivedTaskSubscribers: [ {type: mongoose.Schema.Types.ObjectId, ref: "TaskSubscriber"} ]
 }, {
     usePushEach: true
 });

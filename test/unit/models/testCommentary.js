@@ -7,8 +7,8 @@ var factory = require('../../helpers/unsaved-mongoose-docs');
 describe('Commentary Model', function() {
 
     let optionsComplete = {
-        author: factory.dummyUser1,
-        recipient: factory.dummyUser2,
+        author: factory.user1,
+        recipient: factory.user2,
         content: 'This is a comment'
     }
 
@@ -48,7 +48,7 @@ describe('Commentary Model', function() {
             });
 
             it('Should throw a ValidationError if content not provided', async function() {
-                let commentNoContent = new Commentary({author: factory.dummyUser1}),
+                let commentNoContent = new Commentary({author: factory.user1}),
                     error;
 
                 try { await commentNoContent.validate() }
@@ -73,7 +73,7 @@ describe('Commentary Model', function() {
 
 
         it('Should have empty field for "recipient" if not provided', function() {
-            let commentNoRecipient = new Commentary({author: factory.dummyUser1, content: 'This is a comment'});
+            let commentNoRecipient = new Commentary({author: factory.user1, content: 'This is a comment'});
 
             expect(commentNoRecipient.recipient).to.be.an('undefined');
         });

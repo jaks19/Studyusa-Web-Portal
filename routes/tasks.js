@@ -44,8 +44,6 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
         archivedSubscribersIds = foundTask.archivedTaskSubscribers.map(ats => String(ats.user._id)),
         existingSubscriberIds = foundTask.taskSubscribers.map(ts => String(ts.user._id));
 
-    console.log(incomingIds, outgoingIds);
-
     let totallyNewSubscriberIds = incomingIds.filter(_id => !archivedSubscribersIds.includes(_id)),
         toUnarchiveSubscriberIds = incomingIds.filter(_id => archivedSubscribersIds.includes(_id)),
         toArchiveSubscriberIds = outgoingIds;
