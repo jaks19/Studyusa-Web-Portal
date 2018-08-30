@@ -6,6 +6,7 @@ var deepPopulate = require('mongoose-deep-populate')(mongoose);
 // Need to add the new object designed for files as File was deprecated for being a keyword
 var taskSubscriberSchema = new mongoose.Schema({
         user: {type: mongoose.Schema.Types.ObjectId, ref: "User", required: true},
+        task: {type: mongoose.Schema.Types.ObjectId, ref: "Task", required: true},
         unpublishedWorkspace: String,
         comments: [
             {type: mongoose.Schema.Types.ObjectId, ref: "Commentary"}

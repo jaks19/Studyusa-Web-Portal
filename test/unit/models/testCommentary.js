@@ -74,7 +74,12 @@ describe('Commentary Model', function() {
 
         it('Should have empty field for "recipient" if not provided', function() {
             let commentNoRecipient = new Commentary({author: factory.user1, content: 'This is a comment'});
+            let error;
 
+            try { commentNoRecipient.validate() }
+            catch (err) { error = err; }
+
+            expect(error).not.to.exist;
             expect(commentNoRecipient.recipient).to.be.an('undefined');
         });
 

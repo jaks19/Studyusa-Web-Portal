@@ -77,11 +77,12 @@ describe('User Model', function() {
         });
 
         it('Should have empty field for "group"', function() {
-            expect(userComplete.group).to.be.an('undefined');
-        });
+            let error;
+            try { userComplete.validate() }
+            catch (err) { error = err; }
 
-        it('Should have empty array "tasks"', function() {
-            expect(userComplete.tasks).to.be.an('array').that.is.empty;
+            expect(error).not.to.exist;
+            expect(userComplete.group).to.be.an('undefined');
         });
 
         it('Should have empty array "messages"', function() {

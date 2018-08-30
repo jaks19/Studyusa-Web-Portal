@@ -30,38 +30,17 @@ taskServices.getWhoToArchiveAndUnarchive =
 }
 
 taskServices.getTotallyNewSubscriberDocuments =
-    async function getTotallyNewSubscriberDocuments (idsFirstTime) {
+    async function getTotallyNewSubscriberDocuments (idsFirstTime, task) {
 
         let newSubscriberDocs = [];
         for (var i = 0; i < idsFirstTime.length; i++) {
             let user = await dbopsServices.findOneEntryAndPopulate(User, { '_id': idsFirstTime[i] }, [ 'tasks' ], true);
-            let totallyNewSubscriberData = new TaskSubscriber({ user: user });
+            let totallyNewSubscriberData = new TaskSubscriber({ user: user, task: task });
             let totallyNewSubscriber = await dbopsServices.savePopulatedEntry(totallyNewSubscriberData);
-            let totallyNewSubscriberPopulated = await dbopsServices.findOneEntryAndDeepPopulate(TaskSubscriber,
-                { '_id': totallyNewSubscriber._id }, [ 'user.tasks' ], false);
-
-            newSubscriberDocs.push(totallyNewSubscriberPopulated);
+            newSubscriberDocs.push(totallyNewSubscriber);
         }
         return newSubscriberDocs;
 }
-
-taskServices.addORRemoveHandleBarsToUserDocs =
-    function addORRemoveHandleBarsToUserDocs(task, totallyNewSubscriberDocs, subscriberDocsToUnarchive, subscriberDocsToArchive) {
-        let docsToAddHandleBars = totallyNewSubscriberDocs.concat(subscriberDocsToUnarchive);
-        let docsToRemoveHandleBars = subscriberDocsToArchive;
-
-        // No need to wait as will eventually happen and useful for user end only
-        docsToAddHandleBars.forEach( (doc) => {
-            doc.user.tasks = doc.user.tasks.concat([ task ]);
-            dbopsServices.savePopulatedEntry(doc.user);
-        });
-        docsToRemoveHandleBars.forEach( (doc) => {
-            doc.user.tasks = doc.user.tasks.filter( (tsk) => String(tsk._id) !== String(task._id) );
-            dbopsServices.savePopulatedEntry(doc.user);
-        });
-
-        return;
-    }
 
 taskServices.getStayingPutSubscribers =
     function getStayingPutSubscribers ( idsToUnarchive, idsToArchive, task ) {

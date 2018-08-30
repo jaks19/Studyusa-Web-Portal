@@ -63,9 +63,7 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
             taskServices.getWhoToArchiveAndUnarchive(idsFirstTime,  idsToUnarchive, idsToArchive, foundTask);
 
         let totallyNewSubscriberDocs =
-            await taskServices.getTotallyNewSubscriberDocuments(idsFirstTime);
-
-        taskServices.addORRemoveHandleBarsToUserDocs(foundTask, totallyNewSubscriberDocs, subscriberDocsToUnarchive, subscriberDocsToArchive);
+            await taskServices.getTotallyNewSubscriberDocuments(idsFirstTime, foundTask);
 
         let [ keptAsSubscribers, keptAsArchived ] =
             taskServices.getStayingPutSubscribers(idsToUnarchive, idsToArchive, foundTask);
@@ -176,35 +174,27 @@ router.delete('/:taskId', authServices.isAdmin, async function(req, res) {
 
 // All Tasks View OK
 router.get('/', authServices.confirmUserCredentials, async function(req, res) {
-    // Variables common to admin and user
-    // Need list of tasks handlebar for users. Will be empty for admin.
-    let user = await dbopsServices.findOneEntryAndPopulate(User, {'_id': req.user._id}, [ 'tasks' ], true);
-    // Fetch tasks
-    let tasks = await dbopsServices.findAllEntriesAndDeepPopulate(Task, { }, [ 'taskSubscribers.user' ], true),
-        users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], true);
+    let user = req.user;
 
-    let
+    if (user.admin) {
+        let tasks = await dbopsServices.findAllEntriesAndDeepPopulate(Task, { }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], true);
+        let users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], true);
 
-
-        taskSubscriberObjectsThisUser = await dbopsServices.findAllEntriesAndPopulate(TaskSubscriber, { 'user': user._id }, [ 'comments' ], true),
-
-
-    if (user.admin){
         res.render('./admin/tasks', {
             user: user,
-
             users: users,
             tasks: tasks,
-
             loggedIn: true
         });
-    } else {
+    }
+
+    else {
+        let taskSubscriberObjectsThisUser = await dbopsServices.findAllEntriesAndPopulate(TaskSubscriber,
+            { user: user._id }, [ 'task', 'comments' ], true);
+
         res.render('tasks', {
             user: user,
-
             taskSubscriberObjects: taskSubscriberObjectsThisUser,
-
-
             loggedIn: true
         });
     }
