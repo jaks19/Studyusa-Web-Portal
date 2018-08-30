@@ -100,5 +100,8 @@ exported.task2 = new Task({
     archivedTaskSubscribers: [ exported.taskSubscriber4 ]
 })
 
+exported.message1 = exported.comment1;
+
+exported.message2 = exported.comment2;
 
 module.exports = exported;
