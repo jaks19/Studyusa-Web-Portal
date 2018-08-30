@@ -80,11 +80,11 @@ describe('User Model', function() {
             expect(userComplete.group).to.be.an('undefined');
         });
 
-        it('Should have empty field for "messages"', function() {
+        it('Should have empty array "messages"', function() {
             expect(userComplete.messages).to.be.an('array').that.is.empty;
         });
 
-        it('Should have empty field for "notifs"', function() {
+        it('Should have empty array for "notifs"', function() {
             expect(userComplete.notifs).to.be.an('array').that.is.empty;
         });
     });

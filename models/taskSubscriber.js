@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 
 // Need to add the new object designed for files as File was deprecated for being a keyword
 var taskSubscriberSchema = new mongoose.Schema({
-        user: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
+        user: {type: mongoose.Schema.Types.ObjectId, ref: "User", required: true},
         unpublishedWorkspace: String,
         comments: [
             {type: mongoose.Schema.Types.ObjectId, ref: "Commentary"}

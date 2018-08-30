@@ -4,12 +4,12 @@
 
 <div class='col-md-2 col-md-offset-1 col-xs-12'>
     <ul class="list-group" style='max-height:70%; overflow:auto;'>
-        <li class="list-group-item" align='center'><strong>People in Group (<%=users.length%>)</strong></li>
-      <% users.forEach(function(us){ %>
+        <li class="list-group-item" align='center'><strong>People in Group (<%=group.users.length%>)</strong></li>
+      <% group.users.forEach(function(_user){ %>
             <li class="list-group-item">
                 <div class="media-body"  align='center'>
                     <img class="media-object" src="http://placehold.it/80"> <br>
-                    <h4 class="media-heading"><%=us.username.slice(0,1).toUpperCase() + us.username.slice(1) %></h4>
+                    <h4 class="media-heading"><%=_user.username.slice(0,1).toUpperCase() + _user.username.slice(1) %></h4>
                 </div>
             </li>
       <% }); %>
@@ -23,7 +23,7 @@
                 <div class="list-group-item" align='center'><strong>Messages in this group</strong></div>
                 <div class="panel-body">
 
-                    <form action='/index/<%=client.username%>/groups/<%=group._id%>/messages' id='commentForm' method='POST'>
+                    <form action='/index/<%=user.username%>/groups/<%=group._id%>/messages' id='commentForm' method='POST'>
                         <textarea class="form-control" placeholder="Enter Message here..." rows="3" name ='textareacontent' style='margin-bottom:1%;'></textarea>
                         <button type='submit' class="btn btn-primary btn-sm pull-right" name = 'butt' style='background:#6666F1;'>Send</button>
                         <div class="clearfix"></div>
@@ -31,10 +31,10 @@
                     <hr>
 
                     <ul class="media-list" style='max-height:70%; overflow:auto;'>
-                        <% if (messages.length == 0){ %>
+                        <% if (group.messages.length == 0){ %>
                             <% include ./repeats/noMessageBlock %>
                         <% } else { %>
-                            <% messages.reverse().forEach(function(message){ %>
+                            <% group.messages.reverse().forEach(function(message){ %>
                                 <% include ./repeats/displayMessage %>
                             <% }); %>
                         <% } %>

@@ -71,13 +71,13 @@ describe('Task Model', function() {
             expect(dateEdited > timeTenSecondsAgo).to.be.true;
         });
 
-        it('Should have empty field for "taskSubscribers" if not provided', function() {
+        it('Should have empty array for "taskSubscribers" if not provided', function() {
             let taskNoTaskSubscribers = new Task({title: 'Task Title 1'});
 
             expect(taskNoTaskSubscribers.taskSubscribers).to.be.an('array').that.is.empty;
         });
 
-        it('Should have empty field for "archivedTaskSubscribers" if not provided', function() {
+        it('Should have empty array for "archivedTaskSubscribers" if not provided', function() {
             let taskNoArchivedTaskSubscribers = new Task({title: 'This is a task'});
 
             expect(taskNoArchivedTaskSubscribers.archivedTaskSubscribers).to.be.an('array').that.is.empty;

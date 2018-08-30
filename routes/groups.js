@@ -10,7 +10,7 @@ var express = require("express"),
 // Models
 var Group = require("../models/group"),
     User = require("../models/user"),
-    Message = require("../models/comment");
+    Commentary = require("../models/commentary");
 
 let router = express.Router({ mergeParams: true });
 
@@ -94,29 +94,27 @@ router.put('/:groupId/add', authServices.confirmUserCredentials, async function(
 // See group messages
 router.get('/:groupId/messages', authServices.confirmUserCredentials, async function(req, res) {
     let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users', 'messages' ], req, res),
-        foundClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], req, res);
+        foundViewer = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], req, res);
 
-    res.render('groupMessages', { group: foundGroup, messages: foundGroup['messages'], loggedIn: true, user: req.user, users: foundGroup.users, client: foundClient });
+    res.render('groupMessages', { group: foundGroup, loggedIn: true, user: req.user });
 });
 
 // post  group message
 router.post('/:groupId/messages', authServices.confirmUserCredentials, async function(req, res) {
     let sender = req.user,
-        oneClient = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [ 'group' ], req, res),
         foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { '_id': req.params.groupId }, [ 'users' ], req, res),
-        newM = new Message({ username: sender.username, content: req.body.textareacontent }),
-        newMessage = await dbopsServices.savePopulatedEntry(newM, req, res);
-        foundGroup.messages.push(newMessage);
-        await dbopsServices.savePopulatedEntry(foundGroup, req, res);
-        foundGroup.users.forEach(function(receiver) {
-            notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver.username, req, res);
-        });
-        res.redirect('back');
+        newMessageData = new Commentary({ author: sender._id, content: req.body.textareacontent }),
+        newMessage = await dbopsServices.savePopulatedEntry(newMessageData, req, res);
+
+    foundGroup.messages = foundGroup.messages.concat([ newMessage ])
+    await dbopsServices.savePopulatedEntry(foundGroup, req, res);
+
+    // foundGroup.users.forEach(function(receiver) {
+    //     notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver.username, req, res);
+    // });
+
+    res.redirect('back');
 });
-
-
-
-
 
 // See a specific Group's members
 router.get('/:groupId', authServices.confirmUserCredentials, async function(req, res) {

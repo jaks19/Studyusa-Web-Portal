@@ -11,7 +11,7 @@ var userSchema = new mongoose.Schema({
         group : {type: mongoose.Schema.Types.ObjectId, ref: "Group"},
 
         // Rethink model when doing these:
-        messages : [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+        messages : [{ type: mongoose.Schema.Types.ObjectId, ref: "Commentary" }],
         notifs : [{ type: mongoose.Schema.Types.ObjectId, ref: "Notif" }],
     }, {
         usePushEach: true
