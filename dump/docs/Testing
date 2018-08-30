@@ -1,3 +1,8 @@
+BEFORE WRITING THE CODE, WOULD I HAVE THIS TEST? This helps identify what is actually
+a unit test. If you would write it means it is key to that module, not between modules (integration)
+Then write it. If you are testing something you had no idea would happen before working on this component,
+more like something higher level the it should not be a unit test.
+
 A unit test consists of three parts.
 
 Arrange
@@ -84,3 +89,21 @@ inside needs callbacks, no await
 If make async and use await, cannot call done!!!!
 Whaat can do is have an async function inside, sure, but call then on it and go into the callbacks
 Example if have an async function helper and wanna use it just use and call .then
+
+
+Sinon:
+Restore a spy or stub at the end (stub.restore())
+Sinon has sown assert that gives error messages tailored to what sinon does
+(Not like chai that just compares values etc )
+
+- Spy: allows original function to exist and just observe things related to it
+var spy = sinon.spy(object, 'its function name');
+
+- Stub: Changes original function for a complete fake
+ var stub = sinon.stub(object, 'its function name');
+ can yield a desired value (stub.yields(x,x,x,))
+ Or just yield() to return (if stubbed fn had a callback, yield goes to callback)
+
+We can even place a stub or spy at that callback
+
+- Mock: Stubbing a whole object, not just a fn

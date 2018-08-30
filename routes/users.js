@@ -11,8 +11,9 @@ let userServices = require('../services/user-services'),
 
 // Models
 let User = require("../models/user");
+
 // Note: turn on if need an admin next
-let makeAdmin = true;
+let makeAdmin = false;
 
 let router = express.Router({ mergeParams: true });
 

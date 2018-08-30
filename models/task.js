@@ -5,14 +5,11 @@ var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 var taskSchema = new mongoose.Schema({
     title: {type: String, required: true},
-    prompt: {type: String, required: true},
-    dateCreated: {type: Date, default: Date.now},
+    prompt: String,
+    dateCreated: {type: Date, default: Date.now, required: true},
     dateEdited: {type: Date, default: Date.now},
     comments: [
         {type: mongoose.Schema.Types.ObjectId, ref: "Commentary"}
-            ],
-    users: [
-                {type: mongoose.Schema.Types.ObjectId, ref: "User"}
             ],
     taskSubscribers: [
                 {type: mongoose.Schema.Types.ObjectId, ref: "TaskSubscriber"}

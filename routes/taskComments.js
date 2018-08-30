@@ -53,14 +53,12 @@ router.delete('/:commentId', authServices.confirmUserCredentials, async function
 // New Comment (Model for efficient search and creation! ref: mongoose tip)
 router.post('/:userId', authServices.confirmUserCredentials, async function(req, res) {
     let content = req.body.textareacontent,
-        newCommentObject;
+        newCommentObject,
+        foundTask = await dbopsServices.findOneEntryAndDeepPopulate(Task,
+            { '_id': req.params.taskId }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], req, res);
 
-    // Finding the taskSubscriber directly through taskId and userId is as fast as through taskSubscriberId
-    // Because we created an index for this combination
-    let taskSubscriber = await dbopsServices.findOneEntryAndPopulate(TaskSubscriber, {
-        'task': req.params.taskId,
-        'user': req.params.userId
-    }, [ 'comments' ], req, res);
+    let allTaskSubscribers = foundTask.taskSubscribers;
+    let taskSubscriber = allTaskSubscribers.filter(ts => String(ts.user._id) === req.params.userId)[0]
 
     if (req.user.admin){
         newCommentObject = new Commentary({

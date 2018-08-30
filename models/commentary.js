@@ -13,9 +13,9 @@ var commentarySchema = new mongoose.Schema({
 });
 
 
-// Too deep to populate users' tasks then task comments then comment Author, so use a pre for now until update mongoose
+// Always want author and recipient when dealing with a comment
 
-var autoPopulateLead = function(next) {
+let autoPopulateLead = function(next) {
   this.populate('author');
   this.populate('recipient');
   next();
@@ -24,7 +24,5 @@ var autoPopulateLead = function(next) {
 commentarySchema.
   pre('findOne', autoPopulateLead).
   pre('find', autoPopulateLead);
-
-
 
 module.exports = mongoose.model("Commentary", commentarySchema);

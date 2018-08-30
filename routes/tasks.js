@@ -57,7 +57,7 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
     // Create the totally-new taskSubscribers
     for (var i = 0; i < totallyNewSubscriberIds.length; i++) {
         let user = await dbopsServices.findOneEntryAndPopulate(User, { '_id': incomingIds[i] }, [ ], req, res),
-            totallyNewSubscriberData = new TaskSubscriber({ user: user, task: foundTask }),
+            totallyNewSubscriberData = new TaskSubscriber({ user: user }),
             totallyNewSubscriber = await dbopsServices.savePopulatedEntry(totallyNewSubscriberData, req, res);
 
         totallyNewSubscribers.push(totallyNewSubscriber);
@@ -181,7 +181,7 @@ router.get('/', authServices.confirmUserCredentials, async function(req, res) {
     let tasks = await dbopsServices.findAllEntriesAndDeepPopulate(Task, { }, [ 'taskSubscribers.user' ], req, res),
         users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], req, res),
         user = await dbopsServices.findOneEntryAndPopulate(User, {'_id': req.user._id}, [ 'tasks' ], req, res),
-        taskSubscriberObjectsThisUser = await dbopsServices.findAllEntriesAndPopulate(TaskSubscriber, { 'user': user._id }, [ 'task', 'comments' ], req, res);
+        taskSubscriberObjectsThisUser = await dbopsServices.findAllEntriesAndPopulate(TaskSubscriber, { 'user': user._id }, [ 'comments' ], req, res);
 
     if (user.admin){
         res.render('./admin/tasks', {
