@@ -70,7 +70,7 @@ router.post('/:userId', authServices.confirmUserCredentials, async function(req,
 
         thisTaskSubscriber.comments = thisTaskSubscriber.comments.concat([ savedComment ]);
         await dbopsServices.savePopulatedEntry(thisTaskSubscriber);
-        // notifServices.assignNotification(req.user.username, foundSub.title, 'comment', req.params.username, req, res);
+        // notifServices.assignNotification(req.user.username, foundSub.title, 'comment', req.params.username);
     }
 
     catch (error) { req.flash('error', error.message) }

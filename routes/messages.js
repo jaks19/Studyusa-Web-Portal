@@ -34,15 +34,18 @@ router.post('/:userId', authServices.confirmUserIdentity, async function(req, re
         let foundStudent = await dbopsServices.findOneEntryAndPopulate(User, { '_id': req.params.userId }, [], false);
         let sender = req.user;
 
-        let [ author, recipient, content ] = [ sender._id, undefined, req.body.textareacontent ];
-        if (String(sender._id) !== String(foundStudent._id)){ recipient = foundStudent._id }
+        let [ author, recipient, content ] = [ sender, undefined, req.body.textareacontent ];
+        if (String(sender._id) !== String(foundStudent._id)){ recipient = foundStudent }
 
         let newMessageData = new Commentary({ author: author, recipient: recipient, content: content });
         let newMessage = await dbopsServices.savePopulatedEntry(newMessageData);
 
         foundStudent.messages = foundStudent.messages.concat([ newMessage ]);
         await dbopsServices.savePopulatedEntry(foundStudent);
-        // notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg', foundClient.username, req, res);
+
+        let notifReceiver;
+        if (typeof recipient == "undefined") {  recipient = { username: 'admin' } }
+        notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg', recipient.username);
     }
 
     catch (error) { req.flash('error', error.message) }

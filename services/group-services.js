@@ -15,7 +15,7 @@ groupServices.updateMembershipIncomingUsers =
             userEntry.group = groupEntry;
             let savedUserEntry = await dbopsServices.savePopulatedEntry(userEntry);
             incomingUserDocs.push(savedUserEntry)
-            // notifServices.assignNotification(req.user.username, groupName, 'group-add', checkedUserEntry.username, req, res);
+            // notifServices.assignNotification(req.user.username, groupName, 'group-add', checkedUserEntry.username);
         }
 
         return incomingUserDocs;
@@ -31,7 +31,7 @@ groupServices.updateMembershipOutgoingUsers =
             await dbopsServices.findByIdAndUpdate(User, id_out,
                 { $unset: {"group": null}})
 
-            // notifServices.assignNotification(req.user.username, groupName, 'group-add', checkedUserEntry.username, req, res);
+            // notifServices.assignNotification(req.user.username, groupName, 'group-add', checkedUserEntry.username);
         }
 
         return;
@@ -60,7 +60,7 @@ groupServices.recycleGroupMembers =
         for (const user of users) {
             await dbopsServices.findByIdAndUpdate(User, user._id,
                 { $unset: {"group": null}});
-            // await notifServices.assignNotification(req.user.username, foundGroup.name, 'group-delete', foundGroup.users[i].username, req, res);
+            // await notifServices.assignNotification(req.user.username, foundGroup.name, 'group-delete', foundGroup.users[i].username);
         }
 
         return;

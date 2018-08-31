@@ -1,21 +1,22 @@
-// Packages
-let express = require("express"),
-    authServices = require('../services/auth-services'),
-    notifServices = require('../services/notif-services'),
-    dbopsServices = require('../services/dbops-services');
+const express = require("express");
+const format = require('../text/notifJson');
 
-// Models
-let Notif = require("../models/notif"),
-    User  = require("../models/user"),
-    format = require('../text/notifJson');
+const authServices = require('../services/auth-services');
+const notifServices = require('../services/notif-services');
+const dbopsServices = require('../services/dbops-services');
 
-// To be Exported
+const Notif = require("../models/notif");
+const User  = require("../models/user");
+
+
 var router = express.Router({ mergeParams: true });
 
 // View Notifs
 router.get('/', authServices.confirmUserCredentials, async function(req, res) {
-    let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { 'username' : req.params.username }, [ 'notifs' ], true),
-        [unseenNotifs, seenNotifs] = notifServices.getBothSeenAndUnseenNotifs(foundUser.notifs);
+
+    try {
+        let foundUser = await dbopsServices.findOneEntryAndPopulate(User, { 'username' : req.params.username }, [ 'notifs' ], true);
+        let [unseenNotifs, seenNotifs] = notifServices.getBothSeenAndUnseenNotifs(foundUser.notifs);
 
         res.render('notifs', {
             user: foundUser,
@@ -25,13 +26,26 @@ router.get('/', authServices.confirmUserCredentials, async function(req, res) {
             seenNotifs: seenNotifs.reverse(),
             client: foundUser
         });
+    }
+
+    catch (error) {
+        req.flash('error', error.message);
+        res.redirect('back');
+    }
+
 });
 
-// Notif Toggling seen-unseen
-router.get('/:id/toggle', authServices.confirmUserCredentials, async function(req, res) {
-    let foundNotif = await dbopsServices.findOneEntryAndPopulate(Notif, { '_id': req.params.id }, [], false);
-    foundNotif.seen = !foundNotif.seen;
-    dbopsServices.savePopulatedEntry(foundNotif);
+// Notif Toggling seen-unseen TODO: Dragula
+router.put('/:notifId', authServices.confirmUserCredentials, async function(req, res) {
+    try {
+        let foundNotif = await dbopsServices.findOneEntryAndPopulate(Notif, { '_id': req.params.notifId }, [], false);
+        foundNotif.seen = !foundNotif.seen;
+        dbopsServices.savePopulatedEntry(foundNotif);
+    }
+    catch (error) {
+        req.flash('error', error.message);
+    }
+
     res.redirect('back');
 });
 

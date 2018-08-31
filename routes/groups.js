@@ -87,7 +87,7 @@ router.put('/:groupId/add', authServices.isAdmin, async function(req, res) {
         await groupServices.updateGroupMembership(foundGroup, incomingUsers, outgoingIds);
     }
 
-    catch(error) { req.flash('error', error.message) }    
+    catch(error) { req.flash('error', error.message) }
 
     res.redirect('back');
 
@@ -129,7 +129,7 @@ router.post('/:groupId/messages', authServices.confirmUserCredentials, async fun
         await dbopsServices.savePopulatedEntry(foundGroup);
 
         // for (const receiver of foundGroup.users) {
-        //     notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver.username, req, res);
+        //     notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver.username);
         // });
     }
     catch (error) { req.flash('error', error.message) }
