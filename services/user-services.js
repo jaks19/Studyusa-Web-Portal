@@ -32,8 +32,8 @@ userServices.registerUser = function registerUser(makeAdmin=false, req) {
 }
 
 userServices.loadUserData = async function loadUserData(username, req) {
-    var userData = {};
-
+    let userData = {};
+    
     userData.populatedUser = await dbopsServices.findOneEntryAndPopulate(User, {'username': username}, ['notifs', 'tasks', 'group'], false);
     userData.allNotifs = userData.populatedUser.notifs.reverse();
     userData.unseenNotifs = notifServices.getBothSeenAndUnseenNotifs(userData.populatedUser.notifs)[1];
@@ -45,7 +45,7 @@ userServices.loadUserData = async function loadUserData(username, req) {
         userData.groupToLoad = req.query.groupId || -1;
     }
 
-    else {  userData.articles = await apiServices.retrieveNews(req) }
+    else {  userData.articles = await apiServices.retrieveNews() }
 
     return userData;
 }

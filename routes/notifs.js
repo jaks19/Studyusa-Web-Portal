@@ -1,5 +1,5 @@
 const express = require("express");
-const format = require('../text/notifJson');
+const format = require('../config/notifications-format');
 
 const authServices = require('../services/auth-services');
 const notifServices = require('../services/notif-services');

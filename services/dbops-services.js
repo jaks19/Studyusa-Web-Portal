@@ -103,5 +103,4 @@ function findEntryByIdAndRemove(model, id) {
     });
 }
 
-
 module.exports = dbopsServices;

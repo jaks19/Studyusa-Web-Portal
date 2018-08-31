@@ -1,0 +1,7 @@
+Error handled at route, no service catches anything.
+
+Only routes have a try catch.
+
+Will log a useful message (likewise on success) to user.
+
+Will log the error message using Winston library.

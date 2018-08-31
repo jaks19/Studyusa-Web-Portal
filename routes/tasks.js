@@ -3,7 +3,7 @@
 
 // Packages
 const express        = require("express");
-const constants      = require('../text/constants');
+const constants      = require('../config/constants');
 const authServices   = require('../services/auth-services');
 const dbopsServices  = require('../services/dbops-services');
 const notifServices  = require('../services/notif-services');

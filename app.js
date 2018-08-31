@@ -1,41 +1,35 @@
 require("babel-polyfill")
 
-// Require
-var
-    bodyParser     = require("body-parser"),
-    mongoose       = require("mongoose"),
-    express        = require("express"),
-    app            = express(),
-    passport       = require("passport"),
-    LocalStrategy  = require("passport-local"),
-    User           = require("./models/user"),
-    flash          = require('connect-flash'),
-    methodOverride = require("method-override"),
-    path           = require('path');
-    // path.join('/foo', 'bar', 'baz/asdf', 'quux', '..');
-    // Returns: '/foo/bar/baz/asdf'
+// Note: Every use of app.use(X) is basically adding middleware X to the middleware stack along the flow to routes
+// This is an express app to routes are watched by express and these middleware act before the route responses
+const express = require("express");
+const app     = express();
 
 
-// App Config
+// Views are going to end by ejs so no need to specify '.ejs' each time
 app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({extended : true})); // To parse the body of a request
-app.use(methodOverride('_method'));
 
 
 // These allow referring to files in front-end
 // app.use('/tingle', express.static(path.join(__dirname, '/node_modules/tingle.js/dist/')));
 // For example allows front-end code to just say /tingle/filename and it actually finds filename in '/node_modules/tingle.js/dist/'
+//
+// We use Path for easy path construction
+// Returns: '/foo/bar/baz/asdf'
+// path.join('/foo', 'bar', 'baz/asdf', 'quux', '..');
+const path = require('path');
 app.use('/tingle', express.static(__dirname + '/node_modules/tingle.js/dist/'));
 app.use('/scripts', express.static(__dirname + '/scripts/'));
 app.use('/public', express.static(__dirname + '/public/'));
 
 
+// Connect to database
+const mongoose = require("mongoose");
 mongoose.connect(process.env.dbUrl, {
     useMongoClient: true, // because mongoose openUri() deprecated
     autoReconnect: true, // reconnect if lose connection
     reconnectTries: Number.MAX_VALUE, // try reconnecting infinitely
     bufferMaxEntries: 0 // clear old broken connections
-
 });
 
 // ES6 promises, since mongoose promises deprecated
@@ -43,15 +37,16 @@ mongoose.Promise = global.Promise;
 
 
 // Passport Config (For Authentication)
+const passport       = require("passport");
+const LocalStrategy  = require("passport-local");
+const User           = require("./models/user");
+
 app.use(require("express-session")({
     secret: "xyz",
     resave: false,
     saveUninitialized: false
 }));
 
-
-// More App Config
-app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());    // Session tracking (Passport sees if user still online)
 passport.use(new LocalStrategy(User.authenticate())); //Strategy on how to authenticate. Provided in library passport-local-mongoose
@@ -59,27 +54,51 @@ passport.serializeUser(User.serializeUser()); // Provide Hash/unhash method (alr
 passport.deserializeUser(User.deserializeUser()); // Method for reverse of above (same lib: passport-local-mongoose)
 // Right now req.user has a user with nothing populated, if wanted could change deserialize to populate when doing so (left for now, see tasks routes for viewng tasks as a user for e.g.)
 
+
+// Error-Logging
+
+// Printing errors to screen in flash cards (req.flash())
+const flash = require('connect-flash');
+app.use(flash());
+
+// // Logging of HTTP routing history
+// const morgan = require('morgan');
+// const winston = require('./config/winston');
+// // 'combined' is just the format of the logging
+// app.use(morgan('combined', { stream: winston.stream }));
+
 app.use(function(req, res, next){
     res.locals.error = req.flash('error');
     res.locals.success = req.flash('success');
     next();
 });
 
-// Restful Routes
-var
-    authRoutes              = require('./routes/auth'),
-    userRoutes              = require('./routes/users'),
-    taskCommentsRoutes      = require('./routes/taskComments'),
-    // taskResponsesRoutes   = require('./routes/taskResponses'),
-    // paymentRoutes           = require('./routes/payments'),
-    messageRoutes           = require('./routes/messages'),
-    groupRoutes             = require('./routes/groups'),
-    notifRoutes             = require('./routes/notifs'),
-    invitationRoutes        = require('./routes/invitations'),
-    taskRoutes              = require('./routes/tasks');
-    // addsRoutes              = require('./routes/adds'),
-    // submissionRoutes        = require('./routes/submissions'),
-    // amazons3Routes          = require('./routes/amazons3');
+
+// Parsing body of requests for forms etc
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({extended : true})); // To parse the body of a request
+
+
+// Routes
+
+// Allows PUT, DELETE etc in routes when not supported by client (?_method=PUT etc)
+const methodOverride  = require("method-override");
+app.use(methodOverride('_method'));
+
+// All the routes go here in logical order
+const authRoutes              = require('./routes/auth');
+const userRoutes              = require('./routes/users');
+const taskCommentsRoutes      = require('./routes/taskComments');
+// const taskResponsesRoutes     = require('./routes/taskResponses');
+// const paymentRoutes           = require('./routes/payments');
+const messageRoutes           = require('./routes/messages');
+const groupRoutes             = require('./routes/groups');
+const notifRoutes             = require('./routes/notifs');
+const invitationRoutes        = require('./routes/invitations');
+const taskRoutes              = require('./routes/tasks');
+// const addsRoutes              = require('./routes/adds');
+// const submissionRoutes        = require('./routes/submissions');
+// const amazons3Routes          = require('./routes/amazons3');
 
 app.use(authRoutes),
 app.use('/index', userRoutes),
@@ -96,7 +115,7 @@ app.use('/index/:username/invitations', invitationRoutes),
 app.use('/index/:username/tasks', taskRoutes);
 
 
-// Wandering Routes
+// Catch Wandering Routes
 app.get('/*', function(req, res){
     res.render('index', {loggedIn: false});
 });
