@@ -5,9 +5,9 @@ const options = {
     file: {
         // 0: error, 1: warn, 2: info, 3: verbose, 4: debug, 5: silly
         // If choose a level anything at that level up to level error (most important) will be logged
-        level: 'debug',
+        level: 'info',
         // Where to log the messages
-        filename: path.join(__dirname, '/logs/app.log'),
+        filename: __dirname + '/../logs/app.log',
         // Exceptions will go through here
         handleExceptions: true,
         // Output in JSON?
@@ -49,7 +49,7 @@ let logger = winston.createLogger({
 // create a stream object with a 'write' function that will be used by `morgan`
 logger.stream = {
     write: function(message, encoding) {
-        // use the 'info' log level so the output will be picked up by both transports (file and console)
+        // Make the message from Morgan be at the level of 
         logger.info(message);
     },
 };

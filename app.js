@@ -62,10 +62,12 @@ const flash = require('connect-flash');
 app.use(flash());
 
 // // Logging of HTTP routing history
-// const morgan = require('morgan');
-// const winston = require('./config/winston');
-// // 'combined' is just the format of the logging
-// app.use(morgan('combined', { stream: winston.stream }));
+const morgan = require('morgan');
+const winston = require('./config/winston');
+
+// 'tiny' is just the format of the logging
+// see https://github.com/expressjs/morgan for formats
+app.use(morgan('tiny', { stream: winston.stream }));
 
 app.use(function(req, res, next){
     res.locals.error = req.flash('error');
