@@ -1,4 +1,4 @@
-var groupServices = {};
+let groupServices = {};
 
 const dbopsServices = require('../services/dbops-services');
 

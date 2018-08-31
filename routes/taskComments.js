@@ -1,82 +1,79 @@
-// Packages
-var express = require("express"),
-    authServices = require('../services/auth-services'),
-    dbopsServices = require('../services/dbops-services'),
-    notifServices = require('../services/notif-services'),
-    mongoose = require('mongoose');
+const express = require("express");
+const authServices = require('../services/auth-services');
+const dbopsServices = require('../services/dbops-services');
+const notifServices = require('../services/notif-services');
+const taskCommentsServices = require('../services/task-comments-services');
 
-// Models
-var Task = require("../models/task"),
-    TaskSubscriber  = require("../models/taskSubscriber"),
-    Commentary = require("../models/commentary"),
-    User = require("../models/user");
+const Task = require("../models/task");
+const TaskSubscriber = require("../models/taskSubscriber");
+const Commentary = require("../models/commentary");
+
 
 let router = express.Router({ mergeParams: true });
 
 // Edit Comment
 router.put('/:commentId', authServices.confirmUserCredentials, async function(req, res) {
-    let newText = req.body.newText,
-        foundComment = await dbopsServices.findOneEntryAndPopulate(Commentary, { '_id': req.params.commentId }, [ 'author' ], false),
-        wait_time_minutes = 5;
+    try {
+        let editedText = req.body.newText;
+        let foundComment = await dbopsServices.findOneEntryAndPopulate(Commentary,
+            { '_id': req.params.commentId }, [ 'author' ], false);
 
-    if (req.user.admin) {
-        if (String(foundComment.author._id) === String(req.user._id)){
-            foundComment.content = newText;
+        let editableTimeIntervalInMinutes = 5;
+
+        if (taskCommentsServices.theCommentIsStillEditable(req.user,
+            foundComment, editableTimeIntervalInMinutes)){
+
+            foundComment.content = editedText;
             await dbopsServices.savePopulatedEntry(foundComment);
         }
-    } else if (String(foundComment.author._id) === String(req.user._id) && (new Date(foundComment.date) > (Date.now() - (wait_time_minutes*60*1000))) ){
-        foundComment.content = newText;
-        await dbopsServices.savePopulatedEntry(foundComment);
     }
 
-    dbopsServices.savePopulatedEntry(foundComment);
+    catch (error) { req.flash('error', error.message) }
     res.redirect('back');
 });
 
+
 // Delete Comment
 router.delete('/:commentId', authServices.confirmUserCredentials, async function(req, res) {
-    let comment = await dbopsServices.findOneEntryAndPopulate(Commentary, { '_id': req.params.commentId }, [ 'author' ], true),
-        wait_time_minutes = 5.1;  //(add epsilon just in case person clicks UI but time is up before request served)
 
-    if (req.user.admin) {
-        if (String(comment.author._id) === String(req.user._id)){
+    try {
+        let commentToDelete = await dbopsServices.findOneEntryAndPopulate(Commentary, { '_id': req.params.commentId }, [ 'author' ], true);
+        let editableTimeIntervalInMinutes = 5.1;  //(add epsilon just in case person clicks UI but time is up before request served)
+
+        if (taskCommentsServices.theCommentIsStillEditable(req.user,
+            commentToDelete, editableTimeIntervalInMinutes)){
             await dbopsServices.findEntryByIdAndRemove(Commentary, req.params.commentId);
         }
-    } else if (String(comment.author._id) === String(req.user._id) && (new Date(comment.date) > (Date.now() - (wait_time_minutes*60*1000))) ){
-            await dbopsServices.findEntryByIdAndRemove(Commentary, req.params.commentId);
     }
 
+    catch (error) { req.flash('error', error.message) }
     res.redirect('back');
 });
 
 
 // New Comment (Model for efficient search and creation! ref: mongoose tip)
 router.post('/:userId', authServices.confirmUserCredentials, async function(req, res) {
-    let content = req.body.textareacontent,
-        newCommentObject,
-        foundTask = await dbopsServices.findOneEntryAndDeepPopulate(Task,
-            { '_id': req.params.taskId }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], false);
 
-    let allTaskSubscribers = foundTask.taskSubscribers;
-    let taskSubscriber = allTaskSubscribers.filter(ts => String(ts.user._id) === req.params.userId)[0]
+    try {
+        let thisTaskSubscriber = await dbopsServices.findOneEntryAndPopulate(TaskSubscriber, {
+                user: req.params.userId,
+                task: req.params.taskId
+            }, [ 'comments' ], false);
 
-    if (req.user.admin){
-        newCommentObject = new Commentary({
-            author: req.user._id, // Id object works
-            recipient: req.params.userId, // Id String also works
-            content: content })
-    } else {
-        // No recipient. If in the future, have multiple admins, will have a
-        // reply option perhaps and a way to grab id of who the person is replying to
-        newCommentObject = new Commentary({
-            author: req.user._id,
-            content: content })
+        // No recipient if user to admin assuming only one admin.
+        // If in the future, have multiple admins, need a way to grab id of who the person is replying to
+        let [ author, recipient, content ] = [ req.user._id, undefined, req.body.textareacontent ];
+        if (req.user.admin) { recipient = req.params.userId }
+
+        let newCommentObject = new Commentary({ author: author, recipient: recipient, content: content });
+        let savedComment = await dbopsServices.savePopulatedEntry(newCommentObject);
+
+        thisTaskSubscriber.comments = thisTaskSubscriber.comments.concat([ savedComment ]);
+        await dbopsServices.savePopulatedEntry(thisTaskSubscriber);
+        // notifServices.assignNotification(req.user.username, foundSub.title, 'comment', req.params.username, req, res);
     }
 
-    let newComment = await dbopsServices.savePopulatedEntry(newCommentObject);
-    taskSubscriber.comments = taskSubscriber.comments.concat([newComment]);
-    await dbopsServices.savePopulatedEntry(taskSubscriber);
-    // notifServices.assignNotification(req.user.username, foundSub.title, 'comment', req.params.username, req, res);
+    catch (error) { req.flash('error', error.message) }
     res.redirect('back');
 });
 

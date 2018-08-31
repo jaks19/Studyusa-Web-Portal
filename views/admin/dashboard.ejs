@@ -262,6 +262,10 @@ a:link, a:visited, a:hover, a:active {
     <% include ../modals/modalNotifsWelcome %>
 <% } %>
 
+<% if (context=='invitation'){ %>
+    <% include ../modals/modalInvitationCodes %>
+<% } %>
+
 <script>
     $(document).ready(function(){
         $('#greet').modal('show');

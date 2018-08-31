@@ -41,7 +41,7 @@ userServices.loadUserData = async function loadUserData(username, req) {
 
     if (userData.populatedUser.admin){
         userData.users = await dbopsServices.findAllEntriesAndPopulate(User, { }, ['group'], true);
-        [ userData.activeInvitations, userData.expiredInvitations ] = await invitationServices.getSortedInvitations(req);
+        [ userData.activeInvitations, userData.expiredInvitations ] = await invitationServices.getSortedInvitations();
         userData.groupToLoad = req.query.groupId || -1;
     }
 

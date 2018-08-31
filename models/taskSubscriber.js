@@ -15,6 +15,8 @@ var taskSubscriberSchema = new mongoose.Schema({
         usePushEach: true
 });
 
+taskSubscriberSchema.index({task: 1, user: 1}, {unique: true});
+
 taskSubscriberSchema.plugin(deepPopulate, {});
 
 module.exports = mongoose.model("TaskSubscriber", taskSubscriberSchema);

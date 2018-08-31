@@ -10,7 +10,7 @@ const dbopsServices = require('../services/dbops-services');
 const User = require("../models/user");
 
 // Note: turn on if need an admin next
-const makeAdmin = true;
+const makeAdmin = false;
 
 
 let router = express.Router({ mergeParams: true });
@@ -27,7 +27,7 @@ router.get('/new', function(req, res) {
 router.post('/', async function(req, res) {
 
     try {
-        let tokenValidity = await invitationServices.isValid(req, res, true);
+        let tokenValidity = await invitationServices.isValid(req.body.code, true);
         if (!tokenValidity) {
             req.flash('error', 'The token you entered is either invalid or expired. Please contact your counselor for a new one.');
             res.redirect('back');
