@@ -41,8 +41,6 @@ formServices.getCheckedValuesByName = function getCheckedValuesByName(names, req
         else if (!Array.isArray(req.body[name])) { nameToArrayOfValues[name] = [req.body[name]] }
         // More than one selected
         else { nameToArrayOfValues[name] = req.body[name] }
-
-        console.log(nameToArrayOfValues);
     }
     return nameToArrayOfValues;
 }

@@ -1,0 +1,21 @@
+foreach does run each sequentially but it just means it fires the functions sequentially on each element
+But the function cannot be awaited so if there is something async in there, you have no idea about order of ops
+
+With map again same thing but because map returns promises to do the task on each element i.e.
+[a,b,c ...] returns [promise a, promise b, ...]
+However, with map, one can make synchronous by Promise.all to await the whole array of promises :
+
+await Promise.all(files.map(async (file) => {
+    const contents = await fs.readFile(file, 'utf8')
+    console.log(contents)
+  }));
+
+  https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop
+
+  Filter is synchronous!
+
+  New js has a for loop that is synchronous!!!
+  for (const file of files) {
+    const contents = await fs.readFile(file, 'utf8');
+    console.log(contents);
+  }

@@ -1,10 +1,13 @@
-var userServices = {};
-let User = require("../models/user"),
-    Invitation = require("../models/invitation"),
-    notifServices = require('./notif-services'),
-    dbOpsServices = require('./dbops-services'),
-    apiServices = require('./api-services'),
-    invitationServices = require('./invitation-services');
+
+const notifServices = require('./notif-services');
+const dbopsServices = require('./dbops-services');
+const apiServices = require('./api-services');
+const invitationServices = require('./invitation-services');
+
+const User = require("../models/user");
+const Invitation = require("../models/invitation");
+
+let userServices = {};
 
 function userPageContext(req) {
     let context = '';
@@ -14,13 +17,13 @@ function userPageContext(req) {
 }
 
 userServices.registerUser = function registerUser(makeAdmin=false, req) {
-    let newUserObject = new User({
-        name: req.body.name,
-        username: req.body.username,
-        admin: makeAdmin
-    });
-
     return new Promise(function (resolve, reject) {
+        let newUserObject = new User({
+            name: req.body.name,
+            username: req.body.username,
+            admin: makeAdmin
+        });
+
         User.register(newUserObject, req.body.password, function(error){
             if (error) { reject(error) }
             else { resolve()}
@@ -28,23 +31,28 @@ userServices.registerUser = function registerUser(makeAdmin=false, req) {
      });
 }
 
-userServices.getUserData = async function getUserData(username, req, res) {
+userServices.loadUserData = async function loadUserData(username, req) {
     var userData = {};
-    userData.populatedUser = await dbOpsServices.findOneEntryAndPopulate(User, {'username': username}, ['notifs', 'tasks', 'group'], false);
+
+    userData.populatedUser = await dbopsServices.findOneEntryAndPopulate(User, {'username': username}, ['notifs', 'tasks', 'group'], false);
     userData.allNotifs = userData.populatedUser.notifs.reverse();
     userData.unseenNotifs = notifServices.getBothSeenAndUnseenNotifs(userData.populatedUser.notifs)[1];
-    userData.context = userPageContext(req);
+    userData.pageContext = userPageContext(req);
+
     if (userData.populatedUser.admin){
-        userData.users = await dbOpsServices.findAllEntriesAndPopulate(User, { }, ['group'], true);
-        [ userData.activeInvitations, userData.expiredInvitations ] = await invitationServices.getSortedInvitations(req, res);
-    } else {
-        userData.articles = await apiServices.retrieveNews(req);
+        userData.users = await dbopsServices.findAllEntriesAndPopulate(User, { }, ['group'], true);
+        [ userData.activeInvitations, userData.expiredInvitations ] = await invitationServices.getSortedInvitations(req);
+        userData.groupToLoad = req.query.groupId || -1;
     }
 
-    userData.populatedUser.lastLoggedIn = Date.now();
-    dbOpsServices.savePopulatedEntry(userData.populatedUser);
+    else {  userData.articles = await apiServices.retrieveNews(req) }
 
     return userData;
+}
+
+userServices.updateLastLoggedIn = async function updateLastLoggedIn(user) {
+    user.lastLoggedIn = Date.now();
+    await dbopsServices.savePopulatedEntry(user);
 }
 
 module.exports = userServices;

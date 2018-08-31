@@ -25,7 +25,7 @@ invitationServices.garbageCollectInvitations = async function garbageCollectInvi
     return;
 }
 
-invitationServices.getSortedInvitations = async function getSortedInvitations(req, res){
+invitationServices.getSortedInvitations = async function getSortedInvitations(req){
     let invitations = await dbopsServices.findAllEntriesAndPopulate(Invitation, { }, [ ], true),
         active = [],
         expired = [];

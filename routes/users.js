@@ -1,19 +1,17 @@
-// Packages
-let express = require("express"),
-    path = require('path'),
-    format = require('../text/notifJson');
+const express = require("express");
+const path = require('path');
+const format = require('../text/notifJson');
 
-// Services
-let userServices = require('../services/user-services'),
-    authServices = require('../services/auth-services'),
-    invitationServices = require('../services/invitation-services'),
-    dbopsServices = require('../services/dbops-services');
+const userServices = require('../services/user-services');
+const authServices = require('../services/auth-services');
+const invitationServices = require('../services/invitation-services');
+const dbopsServices = require('../services/dbops-services');
 
-// Models
-let User = require("../models/user");
+const User = require("../models/user");
 
 // Note: turn on if need an admin next
-let makeAdmin = false;
+const makeAdmin = true;
+
 
 let router = express.Router({ mergeParams: true });
 
@@ -24,66 +22,87 @@ router.get('/new', function(req, res) {
     });
 });
 
+
 // New User Signup
 router.post('/', async function(req, res) {
-    let tokenValidity = await invitationServices.isValid(req, res, true);
-    if (!tokenValidity) {
-        req.flash('error', 'The token you entered is either invalid or expired. Please contact your counselor for a new one.');
-        res.redirect('back');
-        return;
-     }
 
-    try { await userServices.registerUser(makeAdmin, req) }
+    try {
+        let tokenValidity = await invitationServices.isValid(req, res, true);
+        if (!tokenValidity) {
+            req.flash('error', 'The token you entered is either invalid or expired. Please contact your counselor for a new one.');
+            res.redirect('back');
+            return;
+         }
+
+         await userServices.registerUser(makeAdmin, req);
+         req.flash('success', 'Your account was successfully created!')
+         res.redirect('/');
+    }
+
     catch(error) {
         req.flash('error', error.message);
         res.redirect('back');
-        return;
     }
-
-    res.redirect('/');
 });
 
 
 // User Dashboard (regular or admin)
 router.get('/:username', authServices.confirmUserCredentials, async function(req, res) {
-    let username = req.params.username,
-        userData = await userServices.getUserData(username, req, res);
 
-    if (userData.populatedUser.admin){
-        res.render('./admin/dashboard', {
-            user: req.user,
-            users: userData.users,
-            client: userData.populatedUser,
-            notifs: userData.allNotifs,
-            unseenNotifs: userData.unseenNotifs,
-            format: format,
-            activeInvitations: userData.activeInvitations,
-            expiredInvitations: userData.expiredInvitations,
-            context: userData.context,
-            loggedIn: true,
-            groupId: -1
-        });
-    } else {
-        res.render('show', {
-            user: req.user,
-            client: userData.populatedUser,
-            notifs: userData.allNotifs,
-            unseenNotifs: userData.unseenNotifs,
-            format: format,
-            tasks: userData.tasks,
-            articles: userData.articles,
-            context: userData.context,
-            loggedIn: true
-        });
+    try {
+        let userData = await userServices.loadUserData(req.params.username, req);
+        userServices.updateLastLoggedIn(userData.populatedUser);
+
+        if (userData.populatedUser.admin){
+            res.render('./admin/dashboard', {
+                user: userData.populatedUser,
+                users: userData.users,
+                notifs: userData.allNotifs,
+                unseenNotifs: userData.unseenNotifs,
+                format: format,
+                activeInvitations: userData.activeInvitations,
+                expiredInvitations: userData.expiredInvitations,
+                context: userData.pageContext,
+                loggedIn: true,
+                groupId: userData.groupToLoad
+            });
+        }
+
+        else {
+            res.render('show', {
+                user: userData.populatedUser,
+                notifs: userData.allNotifs,
+                unseenNotifs: userData.unseenNotifs,
+                format: format,
+                tasks: userData.tasks,
+                articles: userData.articles,
+                context: userData.pageContext,
+                loggedIn: true
+            });
+        }
+    }
+
+    catch (error) {
+        req.flash('error', error.message);
+        res.redirect('back');
     }
 });
 
-// Delete
-router.delete('/:username', async function(req, res) {
-    let username = req.params.username,
-        userData = await userServices.getUserData(username, req, res);
 
-    await dbopsServices.findEntryByIdAndRemove(User, userData.populatedUser._id);
+// Delete
+router.delete('/:username', authServices.isAdmin, async function(req, res) {
+
+    try {
+        let userToDelete = await dbopsServices.findOneEntryAndPopulate(User,
+            {'username': req.params.username}, [ ], true);
+
+        await dbopsServices.findEntryByIdAndRemove(User, userToDelete._id);
+    }
+
+    catch (error) {
+        req.flash('error', error.message);
+    }
+
     res.redirect('back');
 });
 

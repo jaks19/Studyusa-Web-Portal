@@ -55,7 +55,6 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
         let foundTask = await dbopsServices.findOneEntryAndDeepPopulate(Task, { _id: req.params.taskId },
             [ 'taskSubscribers.user.tasks', 'archivedTaskSubscribers.user.tasks' ], false);
 
-
         let [ idsFirstTime, idsToUnarchive, idsToArchive ] =
             taskServices.sortCheckedIds(incomingIds, outgoingIds, foundTask);
 
@@ -82,121 +81,177 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
 
 // See a task's Dashboard where one can upload responses and comments OK
 router.get('/:taskId/dashboard/:userId', authServices.confirmUserIdentity, async function(req, res) {
-    // Extracted from request
-    let taskId = req.params.taskId;
-    let viewer = req.user;
-    let soughtUserId = req.params.userId;
 
-    // Exposing proper amount of data
-    let requestInfo = [ taskId, viewer, soughtUserId ];
-    let exposedTaskObject, taskSubscriberObject;
+    try {
+        // Extracted from request
+        let taskId = req.params.taskId;
+        let viewer = req.user;
+        let soughtUserId = req.params.userId;
 
-    if (viewer.admin) { [ exposedTaskObject, taskSubscriberObject ] =
-        await taskServices.prepareAdminDashboardData(requestInfo) }
-    else { [ exposedTaskObject, taskSubscriberObject ] =
-        await taskServices.prepareUserDashboardData(requestInfo) }
+        // Exposing proper amount of data
+        let requestInfo = [ taskId, viewer, soughtUserId ];
+        let exposedTaskObject, taskSubscriberObject;
 
-    res.render('viewTaskDashboard', {
-        task: exposedTaskObject,
-        loggedIn: true,
-        user: req.user,
-        taskSubscriber: taskSubscriberObject
-    });
+        if (viewer.admin) { [ exposedTaskObject, taskSubscriberObject ] =
+            await taskServices.prepareAdminDashboardData(requestInfo) }
+        else { [ exposedTaskObject, taskSubscriberObject ] =
+            await taskServices.prepareUserDashboardData(requestInfo) }
+
+        res.render('viewTaskDashboard', {
+            task: exposedTaskObject,
+            loggedIn: true,
+            user: req.user,
+            taskSubscriber: taskSubscriberObject
+        });
+    }
+
+    catch (error) {
+        req.flash('error', error.message);
+        res.redirect('back');
+    }
+
 });
 
 
 // Edit Prompt (edits in place, so does not redirect) OK
 router.put('/:taskId/prompt', authServices.isAdmin, async function(req, res) {
-    let dataFields = (await formServices.getPromiseToParseForm(req))[0];
-    let prompt = dataFields['prompt'];
 
-    if (prompt != null) {
-        await dbopsServices.findByIdAndUpdate(Task, { _id: req.params.taskId },
-            { prompt: prompt, dateEdited: Date.now() });
+    try {
+        let dataFields = (await formServices.getPromiseToParseForm(req))[0];
+        let prompt = dataFields['prompt'];
+
+        if (prompt != null) {
+            await dbopsServices.findByIdAndUpdate(Task, { _id: req.params.taskId },
+                { prompt: prompt, dateEdited: Date.now() });
+        }
+
+        res.send('Task was autosaved!');
     }
 
-    res.send('Task was autosaved!');
+    catch (error) { req.flash('error', error.message); }
+
 });
 
 
 // Edit Title (Unlike editing prompt, this one redirects) OK
 router.put('/:taskId/title', authServices.isAdmin, async function(req, res) {
-    let title = req.body.title,
-        foundTask = await dbopsServices.findByIdAndUpdate(Task, req.params.taskId, {
-            title: title,
-            dateEdited: Date.now()
-        });
 
-    // Renders same page as if we just created task and editing the prompt
-    res.render('./admin/editTaskPrompt', {
-        user: req.user,
-        task: foundTask,
-        loggedIn: true
-    });
+    try {
+        let title = req.body.title;
+        let foundTask = await dbopsServices.findByIdAndUpdate(Task, req.params.taskId, {
+                title: title,
+                dateEdited: Date.now()
+            });
+
+        // Renders same page as if we just created task and editing the prompt
+        res.render('./admin/editTaskPrompt', {
+            user: req.user,
+            task: foundTask,
+            loggedIn: true
+        });
+    }
+
+    catch (error) {
+        req.flash('error', error.message);
+        res.redirect('back');
+    }
+
+
 });
 
 // For an already-created task, the page to Edit OK
 router.get('/:taskId/edit', authServices.isAdmin, async function(req, res) {
-    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ ], true),
-        user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.params.username}, [ ], true);
 
-    res.render('./admin/editTaskPrompt', {
-        user: user,
-        task: foundTask,
-        loggedIn: true
-    });
+    try {
+        let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ ], true);
+        let user = await dbopsServices.findOneEntryAndPopulate(User, {username: req.params.username}, [ ], true);
+
+        res.render('./admin/editTaskPrompt', {
+            user: user,
+            task: foundTask,
+            loggedIn: true
+        });
+    }
+
+    catch (error) {
+        req.flash('error', error.message);
+        res.redirect('back');
+    }
+
 });
 
 
 // See a task's prompt and title OK
 router.get('/:taskId/preview', authServices.confirmUserCredentials, async function(req, res) {
-    let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ ], true,
-        { users: 0, comments: 0, files: 0});
+
+    try {
+        let foundTask = await dbopsServices.findOneEntryAndPopulate(Task, { _id: req.params.taskId }, [ ], true,
+            { users: 0, comments: 0, files: 0});
 
         res.render('viewTaskPreview', {
             user: req.user,
             task: foundTask,
             loggedIn: true
         });
+    }
+
+    catch (error) {
+        req.flash('error', error.message);
+        res.redirect('back');
+    }
 });
 
 
 // Delete OK
 router.delete('/:taskId', authServices.isAdmin, async function(req, res) {
-    let foundTask = await dbopsServices.findOneEntryAndDeepPopulate(Task, { '_id': req.params.taskId },
-        [ 'taskSubscribers.user', 'archivedTaskSubscribers.user' ], true);
 
-    taskServices.recycleTaskSubscribers(foundTask);
+    try {
+        let foundTask = await dbopsServices.findOneEntryAndDeepPopulate(Task, { '_id': req.params.taskId },
+            [ 'taskSubscribers.user', 'archivedTaskSubscribers.user' ], true);
 
-    await dbopsServices.findEntryByIdAndRemove(Task, req.params.taskId);
+        taskServices.recycleTaskSubscribers(foundTask);
+        await dbopsServices.findEntryByIdAndRemove(Task, req.params.taskId);
+    }
+
+    catch (error) { req.flash('error', error.message) }
+
     res.redirect('back');
 });
 
+
 // All Tasks View OK
 router.get('/', authServices.confirmUserCredentials, async function(req, res) {
-    let user = req.user;
 
-    if (user.admin) {
-        let tasks = await dbopsServices.findAllEntriesAndDeepPopulate(Task, { }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], true);
-        let users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], true);
+    try {
+        let user = req.user;
 
-        res.render('./admin/tasks', {
-            user: user,
-            users: users,
-            tasks: tasks,
-            loggedIn: true
-        });
+        if (user.admin) {
+            let tasks = await dbopsServices.findAllEntriesAndDeepPopulate(Task, { }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], true);
+            let users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], true);
+
+            res.render('./admin/tasks', {
+                user: user,
+                users: users,
+                tasks: tasks,
+                loggedIn: true
+            });
+        }
+
+        else {
+            let taskSubscriberObjectsThisUser = await dbopsServices.findAllEntriesAndPopulate(TaskSubscriber,
+                { user: user._id }, [ 'task', 'comments' ], true);
+
+            res.render('tasks', {
+                user: user,
+                taskSubscriberObjects: taskSubscriberObjectsThisUser,
+                loggedIn: true
+            });
+        }
     }
 
-    else {
-        let taskSubscriberObjectsThisUser = await dbopsServices.findAllEntriesAndPopulate(TaskSubscriber,
-            { user: user._id }, [ 'task', 'comments' ], true);
-
-        res.render('tasks', {
-            user: user,
-            taskSubscriberObjects: taskSubscriberObjectsThisUser,
-            loggedIn: true
-        });
+    catch (error) {
+        req.flash('error', error.message);
+        res.redirect('back');
     }
 });
 

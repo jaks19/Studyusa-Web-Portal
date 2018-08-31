@@ -1,90 +1,93 @@
-// Packages
-var express = require("express"),
-    authServices = require('../services/auth-services'),
-    dbopsServices = require('../services/dbops-services'),
-    groupServices = require('../services/group-services'),
-    notifServices = require('../services/notif-services'),
-    userServices = require('../services/user-services'),
-    format = require('../text/notifJson');
+const express = require("express");
+const format = require('../text/notifJson');
 
-// Models
-var Group = require("../models/group"),
-    User = require("../models/user"),
-    Commentary = require("../models/commentary");
+const authServices = require('../services/auth-services');
+const dbopsServices = require('../services/dbops-services');
+const groupServices = require('../services/group-services');
+const notifServices = require('../services/notif-services');
+const userServices = require('../services/user-services');
+const formServices = require('../services/form-services');
+
+const Group = require("../models/group");
+const User = require("../models/user");
+const Commentary = require("../models/commentary");
+
 
 let router = express.Router({ mergeParams: true });
 
 // Index
-router.get('/', authServices.confirmUserCredentials, async function(req, res) {
-    let groups = await dbopsServices.findAllEntriesAndPopulate(Group, { }, [ 'users' ], true),
-        freeUsers = await dbopsServices.findAllEntriesAndPopulate(User, { 'group': null }, [ ], true),
-        users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], true);
+router.get('/', authServices.isAdmin, async function(req, res) {
 
-    res.render('./admin/groups', {
-        user: req.user,
-        freeUsers: freeUsers,
-        users: users,
-        groups: groups,
-        loggedIn: true
-    });
+    try {
+        let groups = await dbopsServices.findAllEntriesAndPopulate(Group, { }, [ 'users' ], true);
+        let freeUsers = await dbopsServices.findAllEntriesAndPopulate(User, { 'group': null }, [ ], true);
+        let users = await dbopsServices.findAllEntriesAndPopulate(User, { }, [ ], true);
+
+        res.render('./admin/groups', {
+            user: req.user,
+            freeUsers: freeUsers,
+            users: users,
+            groups: groups,
+            loggedIn: true
+        });
+    }
+    catch (error) {
+        req.flash('error', error.message);
+        res.redirect('back');
+    }
 });
 
 
 // New Group
-router.post('/', authServices.confirmUserCredentials, async function(req, res) {
-    let groupData = groupServices.getCheckedUsers(req, res);
+router.post('/', authServices.isAdmin, async function(req, res) {
 
-    if(typeof groupData !== "undefined") {
-        let groupName = req.body.name,
-            newGroupData = new Group({ name: groupName }),
-            groupEntry = await dbopsServices.savePopulatedEntry(newGroupData);
+    try {
+        let checkedValuesByName = formServices.getCheckedValuesByName(['incoming'], req);
+        let incomingIds = checkedValuesByName['incoming'];
 
-        let checkedUserIds = groupServices.getCheckedUsers(req, res)[0];
-        for (var i = 0; i < checkedUserIds.length; i++) {
-            let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': checkedUserIds[i] }, [ ], false);
-            checkedUserEntry.group = groupEntry;
-            groupEntry.users.push(checkedUserEntry);
-            notifServices.assignNotification(req.user.username, groupName, 'group-add', checkedUserEntry.username, req, res);
-            dbopsServices.savePopulatedEntry(checkedUserEntry);
+        if (incomingIds.length == 0) {
+            req.flash('error', 'No user was selected to be part of the new group, so it was not created!');
+            res.redirect('back');
+            return;
         }
-        dbopsServices.savePopulatedEntry(groupEntry);
-        res.redirect('back');
+
+        let newGroupData = new Group({ name: req.body.name });
+        let groupEntry = await dbopsServices.savePopulatedEntry(newGroupData);
+
+        let incomingUsers = await groupServices.updateMembershipIncomingUsers(incomingIds, groupEntry);
+        groupEntry.users = groupEntry.users.concat(incomingUsers);
+        await dbopsServices.savePopulatedEntry(groupEntry);
+
+        req.flash('success', 'Group successfully created!');
     }
-    else return;
+
+    catch (error) { req.flash('error', error.message) }
+    res.redirect('back');
 });
 
 
 // Add/remove to Group
-router.put('/:groupId/add', authServices.confirmUserCredentials, async function(req, res) {
-    let [incomingIds, outgoingIds] = groupServices.getCheckedUsers(req, res),
-        foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users' ],  false),
-        incoming = []; // Keep an array of incoming User objects too for including in group
+router.put('/:groupId/add', authServices.isAdmin, async function(req, res) {
 
-    if(typeof incomingIds[0] !== "undefined")
-    {
-        for (var i = 0; i < incomingIds.length; i++) {
-            let checkedUserEntry = await dbopsServices.findOneEntryAndPopulate(User, { '_id': incomingIds[i] }, [ 'group' ], false);
-            incoming.push(checkedUserEntry);
-            checkedUserEntry.group = foundGroup;
-            dbopsServices.savePopulatedEntry(checkedUserEntry);
-            // notifServices.assignNotification(req.user.username, foundGroup.name, 'group-add', checkedUserEntry.username, req, res);
+    try{
+        let checkedValuesByName = formServices.getCheckedValuesByName(['incoming', 'outgoing'], req);
+        let incomingIds = checkedValuesByName['incoming'];
+        let outgoingIds = checkedValuesByName['outgoing'];
+
+        if (incomingIds.length == 0 && outgoingIds.length == 0) {
+            req.flash('error', 'No user was selected!');
+            res.redirect('back');
+            return;
         }
+
+        let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users' ],  false);
+
+        let incomingUsers = await groupServices.updateMembershipIncomingUsers(incomingIds, foundGroup);
+        await groupServices.updateMembershipOutgoingUsers(outgoingIds);
+        await groupServices.updateGroupMembership(foundGroup, incomingUsers, outgoingIds);
     }
 
-    if(typeof outgoingIds[0] !== "undefined")
-    {
-        for (var i = 0; i < outgoingIds.length; i++) {
-            await dbopsServices.findByIdAndUpdate(User, outgoingIds[i], { $unset: {"group": null}});
-            // notifServices.assignNotification(req.user.username, foundGroup.name, 'group-remove', req.params.username, req, res);oundUser);
-        }
-    }
-
-    var usersOld = foundGroup.users;
-    var usersOldIn = usersOld.concat(incoming);
-    var usersFinal = usersOldIn.filter( user => !outgoingIds.includes(String(user._id)) );
-
-    foundGroup.users = usersFinal;
-    await dbopsServices.savePopulatedEntry(foundGroup);
+    catch(error) { req.flash('error', error.message) }    
 
     res.redirect('back');
 
@@ -92,62 +95,67 @@ router.put('/:groupId/add', authServices.confirmUserCredentials, async function(
 
 // See group messages
 router.get('/:groupId/messages', authServices.confirmUserCredentials, async function(req, res) {
-    let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { _id: req.params.groupId }, [ 'users', 'messages' ], true),
-        foundViewer = await dbopsServices.findOneEntryAndPopulate(User, { 'username': req.params.username }, [], true);
 
-    res.render('groupMessages', { group: foundGroup, loggedIn: true, user: req.user });
+    try {
+        let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group,
+            { _id: req.params.groupId }, [ 'users', 'messages' ], true);
+        let foundViewer = await dbopsServices.findOneEntryAndPopulate(User,
+            { 'username': req.params.username }, [], true);
+
+        res.render('groupMessages', {
+            group: foundGroup,
+            loggedIn: true,
+            user: req.user
+        });
+    }
+
+    catch (error) {
+        req.flash('error', error.message);
+        res.redirect('back');
+    }
+
 });
 
-// post  group message
+// Post group message
 router.post('/:groupId/messages', authServices.confirmUserCredentials, async function(req, res) {
-    let sender = req.user,
-        foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { '_id': req.params.groupId }, [ 'users' ], false),
-        newMessageData = new Commentary({ author: sender._id, content: req.body.textareacontent }),
-        newMessage = await dbopsServices.savePopulatedEntry(newMessageData);
 
-    foundGroup.messages = foundGroup.messages.concat([ newMessage ])
-    await dbopsServices.savePopulatedEntry(foundGroup);
+    try {
+        let sender = req.user;
+        let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { '_id': req.params.groupId }, [ 'users' ], false);
+        let newMessageData = new Commentary({ author: sender._id, content: req.body.textareacontent });
+        let newMessage = await dbopsServices.savePopulatedEntry(newMessageData);
 
-    // foundGroup.users.forEach(function(receiver) {
-    //     notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver.username, req, res);
-    // });
+        foundGroup.messages = foundGroup.messages.concat([ newMessage ])
+        await dbopsServices.savePopulatedEntry(foundGroup);
+
+        // for (const receiver of foundGroup.users) {
+        //     notifServices.assignNotification(sender.username, newMessage.content.substr(0, 30) + '...', 'msg-group', receiver.username, req, res);
+        // });
+    }
+    catch (error) { req.flash('error', error.message) }
+
 
     res.redirect('back');
 });
 
-// See a specific Group's members
-router.get('/:groupId', authServices.confirmUserCredentials, async function(req, res) {
-    let username = req.params.username,
-        userData = await userServices.getUserData(username, req, res);
 
-    res.render('./admin/dashboard', {
-        user: userData.populatedUser,
-        users: userData.users,
-        client: userData.populatedUser,
-        notifs: userData.allNotifs,
-        unseenNotifs: userData.unseenNotifs,
-        format: format,
-        activeInvitations: userData.activeInvitations,
-        expiredInvitations: userData.expiredInvitations,
-        context: userData.context,
-        // This is exactly the traditional admin dashboard, except the users with groupId
-        // provided are pre-loaded and presented to the screen first.
-        // This is the /index/username/groups/groupid/ get page is.
-        groupId: req.params.groupId,
-        loggedIn: true
-    });
+// See a specific Group's members
+// Loads the admin dashboard with this group pre-loaded as a search term
+router.get('/:groupId', authServices.isAdmin, async function(req, res) {
+    res.redirect('/index/' + req.params.username + '?groupId=' + req.params.groupId);
 });
 
 // Delete a Group
-router.delete('/:groupId', authServices.confirmUserCredentials, async function(req, res) {
-    let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group, { '_id': req.params.groupId }, [ 'users' ], true);
+router.delete('/:groupId', authServices.isAdmin, async function(req, res) {
+    try {
+        let foundGroup = await dbopsServices.findOneEntryAndPopulate(Group,
+            { '_id': req.params.groupId }, [ 'users' ], true);
 
-    for (var i = 0; i < foundGroup.users.length; i++) {
-        dbopsServices.findByIdAndUpdate(User, foundGroup.users[i]._id, { $unset: {"group": null}})
-        // Notif not created properly, throws a flash card (red)
-        // await notifServices.assignNotification(req.user.username, foundGroup.name, 'group-delete', foundGroup.users[i].username, req, res);
+        await groupServices.recycleGroupMembers(foundGroup.users);
+        await dbopsServices.findEntryByIdAndRemove(Group, foundGroup._id);
     }
-    await dbopsServices.findEntryByIdAndRemove(Group, foundGroup._id);
+
+    catch (error) { req.flash('error', error.message) }
     res.redirect('back');
 });
 

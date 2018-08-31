@@ -1,10 +1,10 @@
-let taskServices = {};
-
 const dbopsServices = require('../services/dbops-services');
 
 const User            = require('../models/user');
 const Task            = require("../models/task");
 const TaskSubscriber  = require('../models/taskSubscriber');
+
+let taskServices = {};
 
 taskServices.sortCheckedIds = function sortCheckedIds ( incomingIds, outgoingIds, task ) {
     let archivedSubscribersIds =
@@ -33,12 +33,13 @@ taskServices.getTotallyNewSubscriberDocuments =
     async function getTotallyNewSubscriberDocuments (idsFirstTime, task) {
 
         let newSubscriberDocs = [];
-        for (var i = 0; i < idsFirstTime.length; i++) {
-            let user = await dbopsServices.findOneEntryAndPopulate(User, { '_id': idsFirstTime[i] }, [ 'tasks' ], true);
+        for (const idFirstTime of idsFirstTime) {
+            let user = await dbopsServices.findOneEntryAndPopulate(User, { '_id': idFirstTime }, [ 'tasks' ], true);
             let totallyNewSubscriberData = new TaskSubscriber({ user: user, task: task });
             let totallyNewSubscriber = await dbopsServices.savePopulatedEntry(totallyNewSubscriberData);
             newSubscriberDocs.push(totallyNewSubscriber);
         }
+
         return newSubscriberDocs;
 }
 
@@ -114,10 +115,10 @@ taskServices.recycleTaskSubscribers = function recycleTaskSubscribers(taskToDele
     let taskSubscribersToRecycle = taskToDelete.taskSubscribers
         .concat(taskToDelete.archivedTaskSubscribers);
 
-    for (var i = 0; i < taskSubscribersToRecycle.length; i++) {
-        let ts = taskSubscribersToRecycle[i];
-        dbopsServices.findEntryByIdAndRemove(TaskSubscriber, ts._id);
+    for (const subToRecycle of taskSubscribersToRecycle) {
+        dbopsServices.findEntryByIdAndRemove(TaskSubscriber, subToRecycle._id);
     }
+
     return;
 }
 

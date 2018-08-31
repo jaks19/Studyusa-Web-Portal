@@ -1,13 +1,14 @@
-var express = require("express"),
-    passport = require('passport');
+const express = require("express");
+const passport = require('passport');
 
-var router = express.Router();
+let router = express.Router();
 
 router.post('/login',
     passport.authenticate('local', {
         failureFlash: true,
         failureRedirect: '/index'
     }),
+    
     function(req, res) {
         res.redirect('/index/' + req.user.username + '?welcome=yes');
 });

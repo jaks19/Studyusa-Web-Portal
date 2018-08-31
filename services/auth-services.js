@@ -6,7 +6,6 @@ authServices.confirmUserCredentials = function confirmUserCredentials(req, res, 
 
     req.flash('error', 'You do not have the required permissions to view this page');
     res.redirect('/login');
-    return;
 }
 
 // If accessing index/:username/.../:userId
@@ -15,6 +14,7 @@ authServices.confirmUserCredentials = function confirmUserCredentials(req, res, 
 authServices.confirmUserIdentity = function confirmUserIdentity(req, res, next) {
     if (req.isAuthenticated() && req.params.userId == String(req.user._id)){ return next() }
     else if (req.isAuthenticated() && req.user.admin){ return next() }
+
     req.flash('error', 'You do not have the required permissions to view this page');
     res.redirect('/login');
 }
@@ -27,7 +27,6 @@ authServices.isAdmin = function isAdmin(req, res, next) {
 
     req.flash('error', 'You do not have the required permissions to view this page');
     res.redirect('/login');
-    return;
 }
 
 module.exports = authServices;

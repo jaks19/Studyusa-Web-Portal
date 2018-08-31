@@ -2,7 +2,7 @@ require("babel-polyfill")
 
 'use strict';
 
-var dbopsServices = {};
+let dbopsServices = {};
 
 // A mongoose CRUD operation occurs immediately then provides a callback when done
 // But it DOES NOT return a promise if don't want callback!
@@ -102,5 +102,6 @@ function findEntryByIdAndRemove(model, id) {
       });
     });
 }
+
 
 module.exports = dbopsServices;
