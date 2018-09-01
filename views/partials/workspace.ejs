@@ -1,17 +1,47 @@
-<span class="text-muted">
-    <small class="text-muted">Newest</small><br /><br />
-</span>
-
-<div style='height:80%; overflow:auto; margin-top: 1%; margin-bottom: 7%; margin-left:30%;'>
-    <!-- Removed as File schema will be switched (see untitled) -->
-    <!-- File divs go here -->
+<div class='workspace' style="display: inline-block; font-size: 6px; background-color: white; margin-top: 12%; margin-left: 23%; height:45%; width: 150%; position: relative; text-align: left;">
     asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd
+    <div>
+        <div class="textual">
+            <div style='font-size:25px;'>
+                Click to start working on this task
+            </div>
+        </div>
+    </div>
 </div>
 
-<span class="text-muted">
-    <small class="text-muted">Oldest</small>
-</span>
 
-<div style='margin-top:5%; text-align: right;'>
-    <small class="text-muted"><strong>Work Submission History</strong></small>
-</div>
+<style>
+
+.workspace {
+    opacity: 0.8;
+    filter: alpha(opacity=80); /* For IE8 and earlier */
+
+    z-index:1000;
+    cursor:pointer;
+    padding: 5%;
+}
+
+.textual {
+    display: none;
+}
+
+.workspace:hover .textual{
+    background-color: #b7b7b7;
+    opacity: 0.7;
+    filter: alpha(opacity=70); /* For IE8 and earlier */
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: block;
+
+    padding-top: 45%;
+
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    color: white;
+}
+
+</style>

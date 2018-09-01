@@ -101,14 +101,14 @@ const invitationRoutes        = require('./routes/invitations');
 const taskRoutes              = require('./routes/tasks');
 // const addsRoutes              = require('./routes/adds');
 // const submissionRoutes        = require('./routes/submissions');
-const awsRoutes          = require('./routes/aws');
+const apiRoutes          = require('./routes/api');
 
 app.use(authRoutes),
 app.use('/index', userRoutes),
 app.use('/index/:username/tasks/:taskId/comments', taskCommentsRoutes),
 // app.use('/index/:username/tasks/:taskId/responses', taskResponsesRoutes),
 // app.use('/index/:username/submit/:id/adds', addsRoutes);
-app.use('/index/:username/tasks/:taskId/aws', awsRoutes);
+// app.use('/index/:username/tasks/:taskId/aws', awsRoutes);
 // app.use('/index/:username/submit', submissionRoutes);
 // app.use('/index/:username/pay', paymentRoutes),
 app.use('/index/:username/messages', messageRoutes),
@@ -116,6 +116,8 @@ app.use('/index/:username/groups', groupRoutes),
 app.use('/index/:username/notifs', notifRoutes),
 app.use('/index/:username/invitations', invitationRoutes),
 app.use('/index/:username/tasks', taskRoutes);
+
+app.use('/api', apiRoutes);
 
 
 // const TaskSubscriber = require('./models/taskSubscriber');

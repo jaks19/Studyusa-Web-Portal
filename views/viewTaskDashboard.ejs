@@ -1,44 +1,68 @@
 <% include ./partials/headerUser %>
 
 <div class='row new' align='center'>
-    <div class='col-xs-12' style='padding-bottom: 1%;'>
-        <h1 style='padding-bottom: 1%;'><%= task.title %></h1>
-        <button class="sort-choosable"><a class='blend' href ="/index/<%=user.username%>/tasks/<%=task._id%>/preview">Instructions</a></button>
-        <button class="sort-chosen">Workbench</button>
+    <div class='col-sm-8'>
+        <!-- Column of header and file list and workspace -->
+        <div class ='row'>
+            <div id='quick-view' class='col-xs-12 col-sm-6'>
+                <!-- Carousel for admin to choose among users -->
+                <% include ./partials/taskQuickViewUsers %>
+            </div>
+
+            <!-- Title and buttons for instructions or workbench -->
+            <div class='col-xs-12 col-sm-6' style='padding-bottom: 1%; text-align:center;'>
+                <div class='row'>
+                    <h4 style='position:relative; z-index:0;'><%= task.title %></h4>
+                </div>
+
+                <div class='row'>
+                    <button class="sort-choosable"><a class='blend' href ="/index/<%=user.username%>/tasks/<%=task._id%>/preview">Instructions</a></button>
+                    <button class="sort-chosen">Workbench</button>
+                </div>
+            </div>
+        </div>
+
+
+        <% if (typeof taskSubscriber !== "undefined") { %>
+            <div class='row'>
+                <!-- Still in column left of comments columns, we are below the header row of heading and buttons -->
+
+                <!-- File list on sm screen -->
+                <div class='hidden-xs col-sm-6' align='right' style='width:40%; height:60vh; padding:2%; padding-bottom:5%; margin-top:4%; margin-left:-2%; background-color:#fef9ff; border: 0.5px solid #eed0f5;'>
+                    <!-- File list -->
+                    <% include ./partials/taskFileListOfAUser %>
+                </div>
+
+                <div class='hidden-xs col-sm-2' align='center' style='padding: 3%;'>
+                </div>
+
+                <div class='col-xs-12 col-sm-6' align='center' style='padding: 2%; height:100vh; width: 23%;'>
+                    <!-- Workspace -->
+                    <% include ./partials/workspace %>
+                </div>
+
+            </div>
+        <% } %>
     </div>
-</div>
 
-<div class='row'>
+<% if (typeof taskSubscriber !== "undefined") { %>
+    <div class='col-sm-1'>
+        <!-- Space between left column and comments columns -->
+    </div>
 
-    <% if (user.admin) { %>
-        <div class='col-sm-2 col-xs-12' align='center' style='padding: 3%;'>
-            <% include ./partials/taskQuickViewUsers %>
-        </div>
-    <% } %>
-
-    <% if (typeof taskSubscriber !== "undefined") { %>
-        <div class='col-sm-4 col-sm-offset-1 col-xs-12' align='center' style='padding: 3%;'>
-            <% include ./partials/taskFileListOfAUser %>
-        </div>
- 
-        <div class="col-sm-4 col-xs-12" style='padding: 3%;'>
-            <% include ./partials/taskComments %>
-        </div>
-    <% } %>
-
-<a href='/index/<%=user.username%>/tasks/<%=task._id%>/responses/new'>Submit</a>
+    <div class='col-sm-3' style='margin-top:-5%; background-color:#eaf2f9; padding-top: 1%; border-left: 0.05px solid #bddaf3;'>
+        <% include ./partials/taskComments %>
+    </div>
+<% } %>
 
 </div>
 
-<script>
-        $('#quick-browse').draggable();
-</script>
 
 <style>
+
 body {
     background: #eee;
 }
-
 
 .sort-chosen{
     color: #eeeeee;
@@ -58,7 +82,7 @@ input:focus, textarea, button:focus {
 
 .new button {
     font-size: 100%`;
-    padding: 5px 15px;
+    padding: 1% 4%;
     border-radius: 25px;
     border: none;
     text-decoration: none;

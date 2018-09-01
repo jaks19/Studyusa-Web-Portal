@@ -15,6 +15,7 @@ const User            = require("../models/user");
 const Task            = require("../models/task");
 const TaskSubscriber  = require("../models/taskSubscriber");
 const Commentary      = require("../models/commentary");
+const Workspace       = require("../models/workspace");
 
 const router = express.Router({ mergeParams: true });
 

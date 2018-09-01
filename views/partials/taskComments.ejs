@@ -1,129 +1,84 @@
-<div class="twt-wrapper">
-    <div class="panel panel-info" style='height:60%;'>
-
-        <div class="list-group-item" align='center'>
-            <strong>Comments</strong>
-        </div>
-
-        <div class="panel-body">
-            <form action='/index/<%=user.username%>/tasks/<%=task._id%>/comments/<%=taskSubscriber.user._id%>' id='commentForm' method='POST'>
-                <textarea class="form-control" placeholder="Enter comment here..." rows="3" name='textareacontent' style='margin-bottom:1%;'></textarea>
+<div class='row' style='margin-right:3%; margin-left:0.5%; margin-bottom:3%; margin-top:5%'>
+    <form action='/index/<%=user.username%>/tasks/<%=task._id%>/comments/<%=taskSubscriber.user._id%>' id='commentForm' method='POST'>
+        <div style='width:auto; height:auto; background-color:white;'>
+                <textarea class="form-control" placeholder="Enter comment here..." rows="5" name='textareacontent' style='border:none; margin-bottom:1%;'></textarea>
                 <button type='submit' class="btn btn-info btn-xs pull-right" name='butt'>Post</button>
-                <div class="clearfix"></div>
-            </form>
-
-                <div class="main-box-body clearfix">
-                    <div class="table-responsive" style='height: 60%; overflow:auto;'>
-                        <table class="table user-list">
-                            <tbody>
-
-                                <% if (taskSubscriber.comments.length > 0) { %>
-                                    <% taskSubscriber.comments.reverse().forEach(function(comment){ %>
-                                        <% var d = new Date(comment['date']); %>
-
-                                            <tr style='padding-right: 20%;'>
-                                                <td class='comment'>
-                                                    <div style='float: left;'>
-                                                        <img src="https://bootdey.com/img/Content/user_1.jpg" style='height: 50px; width: 50px;'>
-                                                    </div>
-
-                                                    <div style='float: left; padding-left: 2%;'>
-                                                        <div style='float: left;'>
-                                                            <span><a href="#" style='font-size: 14px;'>
-                                                                <%= comment.author.name %>
-                                                            </a></span>
-                                                        </div>
-                                                        <div class='comment' style='float: left; clear: left;'>
-                                                            <span class='timestring text-muted ' style='font-size: 11px;'><%=d.toISOString()%></span>
-                                                        </div>
-                                                    </div>
-
-
-                                                    <div class='comment-content' style = 'text-align: justify; text-justify: inter-word;'>
-                                                        <%= comment.content %>
-                                                    </div>
-                                                </td>
-
-                                                <td style='vertical-align: top;'>
-                                                    <% include ../modals/modalTaskCommentButtonGroup %>
-                                                </td>
-                                            </tr>
-
-                                    <% }); %>
-                                <% } %>
-
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-
-    </div>
+        </div>
+    </form>
 </div>
 
 
-    <style>
+<div class="main-box-body clearfix" style='height:80vh; overflow:auto;'>
+    <table class="table">
+
+
+            <% if (taskSubscriber.comments.length > 0) { %>
+                <% taskSubscriber.comments.reverse().forEach(function(comment){ %>
+
+                    <% var d = new Date(comment['date']); %>
+
+                        <tr>
+                            <td class='comment'>
+                                <div style='float: left;'>
+                                    <img src="https://bootdey.com/img/Content/user_1.jpg" style='height: 50px; width: 50px;'>
+                                </div>
+
+                                <div style='float: left; padding-left: 2%;'>
+                                    <div style='float: left;'>
+                                        <span><a href="#" style='font-size: 14px;'>
+                                            <%= comment.author.name %>
+                                        </a></span>
+                                    </div>
+                                    <div class='comment' style='float: left; clear: left;'>
+                                        <span class='timestring text-muted ' style='font-size: 11px;'><%=d.toISOString()%></span>
+                                    </div>
+                                </div>
+
+
+                                <div class='comment-content' style = 'text-align: justify; text-justify: inter-word;'>
+                                    <%= comment.content %>
+                                </div>
+                            </td>
+
+                            <td style='vertical-align: top;'>
+                                <% include ../modals/modalTaskCommentButtonGroup %>
+                            </td>
+                        </tr>
+
+                <% }); %>
+            <% } %>
+
+
+
+    </table>
+</div>
+
+
+<style>
+
     .comment-content {
         padding-top:2%;
         width: 140%;
-        color: #76879b;
+        color: #636484;
         font-size: 11px;
         font-family: "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
         float: left;
         clear: left;
     }
-    </style>
 
+    a {
+        color: #3498db;
+        outline: none !important;
+    }
 
-    <style>
-        /*  The Table CSS */
+    /* Width and other config for comment text and img and how they interact */
+    .table tr td:first-child {
+        font-weight: 300;
+        width: 35%;
+    }
 
-        .main-box {
-            background: #eeeeee;
-        }
+    .table tr td:nth-child(2) {
+        width: 15%;
+    }
 
-        .label {
-            border-radius: 3px;
-            font-size: 0.875em;
-            font-weight: 600;
-        }
-
-        a {
-            color: #3498db;
-            outline: none !important;
-        }
-
-        .user-list tbody td>img {
-            position: relative;
-            max-width: 50px;
-            max-height: 50px;
-            float: left;
-            margin-right: 15px;
-        }
-
-        .table thead tr th {
-            text-transform: uppercase;
-            font-size: 0.875em;
-            border-bottom: 2px solid #e7ebee;
-        }
-
-        .table tbody tr td:first-child {
-            font-size: 1.125em;
-            font-weight: 300;
-            width: 35%;
-        }
-
-        .table tbody tr td:nth-child(2) {
-            width: 15%;
-        }
-
-        .table tbody tr td {
-            font-size: 0.875em;
-            vertical-align: middle;
-            border-top: 1px solid #e7ebee;
-            padding: 12px 8px;
-            background-color: #ffffff;
-        }
-    </style>
+</style>

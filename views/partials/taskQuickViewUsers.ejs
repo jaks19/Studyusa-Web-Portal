@@ -1,32 +1,151 @@
-<div style='height: 56%; overflow:auto;'>
-    <table id='quick-view' class="table user-list" style='overflow:auto;' >
-        <tbody style='overflow:auto;'>
+<!-- Make the processing be in js in future -->
+<div id="container" style='width:auto; margin-left:3%; margin-top:-10%;'>
 
+    <div id="arrowL">
+        <span class='glyphicon glyphicon-menu-left' style='margin-top:300%; color:#949494;'></span>
+    </div>
 
+    <div id="list-container" style='width:94%; background-color:red;'>
+        <div class='lister' style='float:left;'>
+
+            <!-- Your repeats go here see commented-out example -->
+            <!--  Use js to enter the divs inside the div class='list' using this example-->
+            <!-- <div class='item'>
+            </div> -->
             <% task.taskSubscribers.forEach(function(taskSubscriber){ %>
-                    <tr align='center'>
-                        <td id='<%=taskSubscriber.user.name%>'>
-                            <div>
-                                <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
-                            </div>
-                            <div>
-                            <a href="/index/<%=user.username%>/tasks/<%=task._id%>/dashboard/<%=taskSubscriber.user._id%>" class="user-link" style="font-size:12px;">
-                                <%=taskSubscriber.user.name.slice(0,1).toUpperCase() + taskSubscriber.user.name.slice(1)%>
-                            </a>
-                            </div>
-                        </td>
-                    </tr>
-            <% });%>
 
-        </tbody>
-    </table>
+                <% if (!taskSubscriber.user.admin) { %>
+
+                        <div class='item' style='height:auto;'>
+                            <!-- Make both the image and the name be the link -->
+                            <a class='names' href="/index/<%=user.username%>/tasks/<%=task._id%>/dashboard/<%=taskSubscriber.user._id%>" class="user-link" style="font-size:12px;">
+
+                                <div id='hovy' style='height:50px;'>
+                                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
+                                </div>
+
+                                <div id='bott' style='height:10px;'>
+                                    <%=taskSubscriber.user.name.slice(0,1).toUpperCase() + taskSubscriber.user.name.slice(1,30)%>
+
+                                </div>
+                            </a>
+
+                        </div>
+                <% } %>
+
+            <% });%>
+        </div>
+    </div>
+
+    <div class="arrow-right" id="arrowR">
+        <span class='glyphicon glyphicon-menu-right' style='margin-top:300%; color:#949494;'></span>
+    </div>
+
 </div>
 
+
 <style>
-    /* Stuff other thn checkboxes */
-    #quick-view {
-        overflow: auto;
-    }
+
+#list-container {
+overflow:hidden;
+float:left;
+}
+
+.lister{
+    background:#e6e4e4;
+    min-width:1400px;
+    float:left;
+    height:90px;
+}
+
+#arrowR{
+    width:3%;
+    height:90px;
+    float:right;
+    cursor:pointer;
+    z-index:10;
+}
+
+#arrowL{
+    width:3%;
+    height:90px;
+    float:left;
+    cursor:pointer;
+    z-index:10;
+}
+
+.item {
+    /* Fix width of the card */
+    width:5%;
+    height:100%;
+    margin:5px;
+    float:left;
+    position:relative;
+
+    opacity: 0.7;
+    filter: alpha(opacity=70); /* For IE8 and earlier */
+    position: relative;
+    z-index:10;
+}
+
+.item:hover {
+    opacity: 0.85;
+    filter: alpha(opacity=85); /* For IE8 and earlier */
+}
+
+a.names:link,
+a.names:visited,
+a.names:hover,
+a.names:active
+{
+   color: #5aa4e0;
+   text-decoration: none;
+}
+
+</style>
+
+
+<script>
+
+$(document).ready(function() {
+    var $item = $('div.item'), // Number of items to have in carousel
+        visible = 4, // Set the number of items that will be visible at a time
+        index = 0, // Starting index
+        endIndex = ( $item.length / visible ) - 1; //End index
+
+    $('div#arrowR').click(function(){
+        if(index < endIndex ){
+          index++;
+          $item.animate({'left':'-=300px'});
+        }
+    });
+
+    $('div#arrowL').click(function(){
+        if(index > 0){
+          index--;
+          $item.animate({'left':'+=300px'});
+        }
+    });
+
+    $('#quick-view').draggable();
+
+});
+
+</script>
+
+
+<script>
+
+// On Mouseenter, make the card rise by 3 px
+$('.item').mouseenter( function(){ $(this).css('bottom', '+=3') });
+
+// On Mouseleave, make the card fall by 3 px
+$('.item').mouseleave( function(){ $(this).css('bottom', '-=3') });
+
+</script>
+
+
+<style>
 
     a {
         color: #3498db;
@@ -37,14 +156,5 @@
         max-width: 50px;
         max-height: 50px;
     }
-
-    tbody tr td {
-        font-size: 1.125em;
-        font-weight: 300;
-        width: 5%;
-        background-color: #ffffff;
-    }
-
-
 
 </style>
