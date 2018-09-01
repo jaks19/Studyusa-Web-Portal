@@ -1,7 +1,8 @@
-var User = require('../../models/user');
-var Commentary = require('../../models/commentary');
-var Task = require('../../models/task');
-var TaskSubscriber = require('../../models/taskSubscriber');
+const User = require('../../models/user');
+const Commentary = require('../../models/commentary');
+const Task = require('../../models/task');
+const TaskSubscriber = require('../../models/taskSubscriber');
+const Workspace = require('../../models/workspace');
 
 
 exported = {}
@@ -58,15 +59,45 @@ exported.comment2 = new Commentary({
     content: 'This is a comment too'
 });
 
+exported.workspace1 = new Workspace({
+    published: true,
+    number: 10,
+    lockedForPublishing: false,
+    content: 'This is my work',
+    concernedStudentName: 'Student 1',
+    taskName: 'Task 100',
+    authorName: 'Mr. Foobar',
+    authorMemo: 'I have worked on my thesis',
+    datePublished: Date.now(),
+    dateEdited: Date.now()
+})
+
+exported.workspace2 = new Workspace({
+    published: false,
+    number: 3,
+    lockedForPublishing: true,
+    content: 'Today is a good day',
+    concernedStudentName: 'Student Havana',
+    taskName: 'Task 007',
+    authorName: 'Sam Smith',
+    authorMemo: 'Last draft',
+    datePublished: Date.now(),
+    dateEdited: Date.now()
+})
+
 exported.taskSubscriber1 = new TaskSubscriber({
     user: exported.user1,
-    unpublishedWorkspace: 'This is my work',
+    task: exported.task1,
+    unpublishedWorkspaceCounselor: exported.workspace1,
+    unpublishedWorkspaceStudent: exported.workspace2,
     comments: [ exported.comment1, exported.comment2 ]
 });
 
 exported.taskSubscriber2 = new TaskSubscriber({
     user: exported.user2,
-    unpublishedWorkspace: 'Hi this is a workspace',
+    task: exported.task2,
+    unpublishedWorkspaceCounselor: exported.workspace2,
+    unpublishedWorkspaceStudent: exported.workspace1,
     comments: [ exported.comment1, exported.comment2 ]
 })
 

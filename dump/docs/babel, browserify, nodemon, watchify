@@ -1,0 +1,121 @@
+Browserify compiles front end scripts into one script
+Also allows us to use ES2016 features in front end such as require modules in our front end code
+E.g. have a script in front end that requires another script (not possible in browsers usually as require is a node feature)
+
+Babel builds our js code from ES 2016 etc (new js) to old js for it to run on any machine. E.g. the machine on which we deploy may have an old nodejs.
+
+My machine runs latest js so in dev I do not need to transpile
+But I need to transpile before deploying.
+
+
+
+Because in dev I do not need to transpile, I can just restart my server any time a change is made to js files and not transpile
+I use nodemon to do that and anytime I save a change, it restarts the server (Recall: without building)
+
+Now browserify's features e.g. running ES2017 IN THE BROWSER does not work in almost all browsers,
+So we HAVE TO transpile the front end code with browserify every time
+
+The build time with browserify is not long and we can watch for changes in front end code, RECOMPILE automatically
+using watchify
+
+FOr my setting, I will use watchify to watch front end code and trigger browserify
+
+I will use nodemon to detect back end changes and refresh
+
+In the end before prod I will use babel to transpile and make my backend code into old js
+
+
+
+
+
+Browserify:
+Even jquery can be nom installed and required in our front end scripts so don't even need that
+Only need to include the bundle script
+
+Now, browserify works usually with a one-page app e.g. a react app where everything is on one page so the whole app uses that one bundle
+But our project has many pages.
+We do not wat say to load tinyMCE on every page and since ONE bundle will be too general, we will end up having hundreds of listeners on buttons for
+example, all hitting at the same time and slowing down our code
+So we add factor-bundle
+
+Usual browserify instructions in package json would be lik:
+"build": "browserify index.js -o dist/bundle.js",
+"watch": "watchify index.js -o dist/bundle.js -v"
+
+But we need to watch and browserify many files ino many bundles so with factor-bundle we can do
+browserify index1.js index2.js -p [ factor-bundle -o dist/index1.js -o dist/index2.js ] \
+  -o dist/common.js
+
+Note that common.js will have all the commonalities in all those scripts  so that if something is found in all of them,
+They are all factored into common.js
+
+So in each page, we will include script tag for pagename.js and common.js
+
+https://stackoverflow.com/questions/21805308/sharing-common-code-across-pages-with-browserify
+
+
+
+In summary:
+Will babel transpile before prod for backend js files
+Will watch for backend changed with nodemon and just restart server when DEV because don't need transpiling with babel for DEV
+Will browserify ./index.js -o dist/bundle.js but will use factor-bundle for a bundle per specified front end js file and a common bundle for commonalities
+Will watch for frontend changes with watchify to rebundle each time we work on front end automatically
+
+You might have noticed, we need TWO watch tasks and we need to specify a LONG list of js files to browserfy separately through factor-bundle
+Why not write our own NPM script to run our server for DEV purposes, instead of having all that in package.json explicitly?
+So we write it using BASH and in package.json, we run an NPM script by not just npm command name (this is for commands written in package.json directly )
+We need to say:
+npm run script-name
+This can be included in other npm commands found in package.json like build && npm run script-name && ...
+
+Also, VERY IMPORTANT: to run two npm tasks in parallel, i.e. our TWO watch tasks, we use command '&', instead of '&&'
+This will go into our new npm script to not crowd the package json
+
+Why did I say using BASH? We are already writing bash. In package json, everytime we say npm run scriptname, it is a bash command.
+We use our own script outside of package json so that we can multi-line bash and make changes easily
+Instead of all the [ factor-bundle ...] filenames on one line, bash allows to change line by adding '\'
+\ means continue reading on next line (When in fact it is all a single line of bash)
+
+https://medium.freecodecamp.org/introduction-to-npm-scripts-1dbb2ae01633
+
+
+
+Summary in terms of code in package json :
+1. babel transpiling
+"scriptname": "babel --ignore .c9,.git,test,heroku,node_modules,config,styles,views,public,dump,.babelrc,.gitignore,package.json,.env -d ./build . -s"
+2. Browserify (but use watchify to run it)
+"scriptname" : "watchify index.js -o dist/bundle.js -v"
+3. Browserify (use watchify to run and use factor-bundle to specify multiple entry points and output points)
+watchify index1.js index2.js -p [ factor-bundle -o dist/index1.js -o dist/index2.js ] \
+  -o dist/common.js
+
+
+
+FINAL:
+"nodemon --exec \"heroku local\" --signal SIGTERM & watchify indexify.js indexify2.js -p [ factor-bundle -o dist/indexify1.js -o dist/indexify2.js ] -o dist/common.js"
+Works for nodemon to watch my js file changes for back and front to be watched by watchify
+Factor-bundle works excellently
+Nodemon runs heroku local so we need --signal SIGTERM to allow it to start and restart heroku server
+
+We use '&' to show the nodeman and watchify tasks should run in parallel
+
+Can put the line starting with nodemon ina .sh file and use \ to break lines to include veery new js file as they are added
+Add a command to package.json example "start-dev":nameofbashscript.sh
+Then npm run start-dev
+
+If does not run, need to tell system it is ok to run this script: chmod u+x nameofbashscript.sh
+chmod u+x ~/Desktop/studyusa_local/bash/nameofbashscript.sh
+
+My bash file:
+#!/usr/bin/env bash
+
+# filename: start-and-watch-dev.sh
+nodemon --exec heroku local --signal SIGTERM & \
+watchify \
+indexify.js \
+indexify2.js \
+-p [ factor-bundle \
+-o dist/indexify1.js \
+-o dist/indexify2.js \
+] \
+-o dist/common.js

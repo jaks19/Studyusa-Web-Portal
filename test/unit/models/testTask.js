@@ -1,8 +1,8 @@
-var expect = require('chai').use(require('chai-datetime')).expect;
+var expect = require('chai').expect;
 
 var Task = require('../../../models/task');
 
-var factory = require('../../helpers/unsaved-mongoose-docs');
+var factory = require('../../helpers/factory');
 
 describe('Task Model', function() {
 
@@ -12,7 +12,8 @@ describe('Task Model', function() {
         dateCreated: Date.now(),
         dateEdited: Date.now(),
         taskSubscribers: [ factory.taskSubscriber1, factory.taskSubscriber2 ],
-        archivedTaskSubscribers: [ factory.taskSubscriber3, factory.taskSubscriber4 ]
+        archivedTaskSubscribers: [ factory.taskSubscriber3, factory.taskSubscriber4 ],
+        useLock: false
     }
 
     let taskComplete = new Task(optionsComplete);
@@ -81,6 +82,13 @@ describe('Task Model', function() {
             let taskNoArchivedTaskSubscribers = new Task({title: 'This is a task'});
 
             expect(taskNoArchivedTaskSubscribers.archivedTaskSubscribers).to.be.an('array').that.is.empty;
+        });
+
+        it('Should have false for "useLock" if not provided', async function() {
+            let taskNoLock = new Task({title: 'Task Title 1'});
+
+            expect(taskNoLock).to.have.property('useLock');
+            expect(taskNoLock.useLock).to.be.false;
         });
     });
 });

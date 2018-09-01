@@ -20,6 +20,7 @@ app.set('view engine', 'ejs');
 const path = require('path');
 app.use('/tingle', express.static(__dirname + '/node_modules/tingle.js/dist/'));
 app.use('/scripts', express.static(__dirname + '/scripts/'));
+// app.use('/page-specific-scripts', express.static(__dirname + '/page-specific-scripts/'));
 app.use('/public', express.static(__dirname + '/public/'));
 
 
@@ -100,14 +101,14 @@ const invitationRoutes        = require('./routes/invitations');
 const taskRoutes              = require('./routes/tasks');
 // const addsRoutes              = require('./routes/adds');
 // const submissionRoutes        = require('./routes/submissions');
-// const amazons3Routes          = require('./routes/amazons3');
+const awsRoutes          = require('./routes/aws');
 
 app.use(authRoutes),
 app.use('/index', userRoutes),
 app.use('/index/:username/tasks/:taskId/comments', taskCommentsRoutes),
 // app.use('/index/:username/tasks/:taskId/responses', taskResponsesRoutes),
 // app.use('/index/:username/submit/:id/adds', addsRoutes);
-// app.use('/index/:username/submit/:id/s3/:subTitle', amazons3Routes);
+app.use('/index/:username/tasks/:taskId/aws', awsRoutes);
 // app.use('/index/:username/submit', submissionRoutes);
 // app.use('/index/:username/pay', paymentRoutes),
 app.use('/index/:username/messages', messageRoutes),
@@ -115,6 +116,15 @@ app.use('/index/:username/groups', groupRoutes),
 app.use('/index/:username/notifs', notifRoutes),
 app.use('/index/:username/invitations', invitationRoutes),
 app.use('/index/:username/tasks', taskRoutes);
+
+
+// const TaskSubscriber = require('./models/taskSubscriber');
+// // Test
+// app.get('/test', function(req, res){
+//
+// });
+
+
 
 
 // Catch Wandering Routes

@@ -1,4 +1,4 @@
-var expect = require('chai').use(require('chai-datetime')).expect;
+var expect = require('chai').expect;
 
 var User = require('../../../models/user');
 
@@ -61,6 +61,7 @@ describe('User Model', function() {
             timeTenSecondsInFuture = Date.now() + 10000;
 
         it('Should be initialized to non-admin by default', function() {
+            expect(userComplete).to.have.property('admin');
             expect(userComplete.admin).to.be.false
         });
 
@@ -77,11 +78,7 @@ describe('User Model', function() {
         });
 
         it('Should have empty field for "group"', function() {
-            let error;
-            try { userComplete.validate() }
-            catch (err) { error = err; }
-
-            expect(error).not.to.exist;
+            expect(userComplete).to.have.property('group');
             expect(userComplete.group).to.be.an('undefined');
         });
 

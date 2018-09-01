@@ -15,7 +15,7 @@ MongoDB locally
 
 
 
-npm install
+npm install OR 'npm ci' BETTER which installs from lock file
 
 populate .env with local keys (need to add keys to prod too if a new instance)
 

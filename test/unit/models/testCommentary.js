@@ -1,8 +1,8 @@
-var expect = require('chai').use(require('chai-datetime')).expect;
+var expect = require('chai').expect;
 
 var Commentary = require('../../../models/commentary');
 
-var factory = require('../../helpers/unsaved-mongoose-docs');
+var factory = require('../../helpers/factory');
 
 describe('Commentary Model', function() {
 
@@ -80,6 +80,7 @@ describe('Commentary Model', function() {
             catch (err) { error = err; }
 
             expect(error).not.to.exist;
+            expect(commentNoRecipient).to.have.property('recipient');
             expect(commentNoRecipient.recipient).to.be.an('undefined');
         });
 

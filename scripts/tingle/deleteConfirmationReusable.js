@@ -5,8 +5,6 @@
 //    name='name' of the object being deleted e.g. task name, to use in the prompt
 //    value='url' where to post the delete form,
 
-let buttonPressed;
-
 let modalDelete = new tingle.modal({
     footer: true,
     stickyFooter: false,
@@ -18,13 +16,25 @@ let modalDelete = new tingle.modal({
     }
 });
 
+let buttonPressed;
+
 $('button').click(function(e){
     if ($(this).hasClass('deletion')) {
         buttonPressed = $(this);
         modalDelete.open();
-        modalDelete.setContent(
-            "<div>Are you sure you want to delete <b>" + $(this).attr('name') + "</b>?<div>"
-        );
+
+        let content = "<div>Are you sure you want to <b>delete ";
+
+        // "the task" / "the group" etc
+        if ($(this).attr('object-type')){ content = content + "the " + $(this).attr('object-type') + " "; }
+        // Obligatory name of the object e.g. Task 1
+        content = content + $(this).attr('name') + "</b>?<div>"
+        // Next line has a custom message. Like: "All work will be lost"
+        if ($(this).attr('additional-message')){
+            content = content + "<div>" + $(this).attr('additional-message') + "<div>";
+        }
+
+        modalDelete.setContent(content);
     }
 });
 

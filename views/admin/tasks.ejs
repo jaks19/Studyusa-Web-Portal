@@ -66,7 +66,7 @@
                                                     <button type='button' title="Assign Users" data-toggle="modal" data-target="#task-users-dashboard<%=task._id%>" class='btn btn-sm glyphicon glyphicon-user' data-backdrop="static" data-keyboard="false"></button>
                                                     <% include ../modals/modalManageUsersTask %>
 
-                                                        <button type='button' value='/index/<%=user.username%>/tasks/<%=task._id%>?_method=Delete' name='<%=task.title%>' class='deletion btn btn-sm glyphicon glyphicon-trash'></button>
+                                                    <button type='button' value='/index/<%=user.username%>/tasks/<%=task._id%>?_method=Delete' name='<%=task.title%>' class='deletion btn btn-sm glyphicon glyphicon-trash' additional-message='All submitted work and feedback will be lost.' object-type='task'></button>
                                                 </td>
 
                                                 </tr>
@@ -259,7 +259,7 @@
                 "<div> Enter a <b>name</b> for the " + $(this).attr('name') + ": </div>" +
                 "<div style='padding-top: 5%; margin-bottom: -5%;'>" +
                     "<form action='" + buttonChosen.val() + "' method='POST'>" +
-                        "<input name='title' type='text' class='search' style='width:80%; color: black;' value='" + $(this).attr('id') + "' onfocus='this.setSelectionRange(0, this.value.length)' required />" +
+                        "<input name='title' type='text' style='width:80%; color: black;' value='" + $(this).attr('id') + "' onfocus='this.setSelectionRange(0, this.value.length)' required />" +
                         "<button id='naming-form-submit' type='submit' style='visibility:hidden;'></button>" +
                     "</form>" +
                  "</div>"

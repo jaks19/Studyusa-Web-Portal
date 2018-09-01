@@ -9,6 +9,6 @@ var addSchema = new mongoose.Schema({
     submission: {type: mongoose.Schema.Types.ObjectId, ref: "Submission"}
 }, {
     usePushEach: true
-});                  
+});
 
 module.exports = mongoose.model("Add", addSchema);

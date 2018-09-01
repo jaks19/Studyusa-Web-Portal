@@ -6,6 +6,8 @@ const userServices = require('../services/user-services');
 const authServices = require('../services/auth-services');
 const invitationServices = require('../services/invitation-services');
 const dbopsServices = require('../services/dbops-services');
+const taskServices = require('../services/task-services');
+const taskSubscriberServices = require('../services/task-subscriber-services');
 
 const User = require("../models/user");
 
@@ -97,6 +99,11 @@ router.delete('/:username', authServices.isAdmin, async function(req, res) {
             {'username': req.params.username}, [ ], true);
 
         await dbopsServices.findEntryByIdAndRemove(User, userToDelete._id);
+
+        // TaskSubscriberServices using this user are not deleted, but are unlined from the parent task
+        // So that they cannot be accessed, but stay in db for referencing
+        // When have more apps, make a service that unlinks user from everywhere necessary
+        await taskSubscriberServices.unlinkUserFromTask(userToDelete);
     }
 
     catch (error) {

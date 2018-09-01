@@ -1,8 +1,8 @@
-var expect = require('chai').use(require('chai-datetime')).expect;
+var expect = require('chai').expect;
 
 var Group = require('../../../models/group');
 
-var factory = require('../../helpers/unsaved-mongoose-docs');
+var factory = require('../../helpers/factory');
 
 describe('Group Model', function() {
 

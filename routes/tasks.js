@@ -62,7 +62,7 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
             taskServices.getWhoToArchiveAndUnarchive(idsFirstTime,  idsToUnarchive, idsToArchive, foundTask);
 
         let totallyNewSubscriberDocs =
-            await taskServices.getTotallyNewSubscriberDocuments(idsFirstTime, foundTask);
+            await taskServices.getTotallyNewSubscriberDocuments(idsFirstTime, foundTask, req);
 
         let [ keptAsSubscribers, keptAsArchived ] =
             taskServices.getStayingPutSubscribers(idsToUnarchive, idsToArchive, foundTask);
@@ -209,7 +209,7 @@ router.delete('/:taskId', authServices.isAdmin, async function(req, res) {
         let foundTask = await dbopsServices.findOneEntryAndDeepPopulate(Task, { '_id': req.params.taskId },
             [ 'taskSubscribers.user', 'archivedTaskSubscribers.user' ], true);
 
-        taskServices.recycleTaskSubscribers(foundTask);
+        // TaskSubscriber objects attached will not be deleted and will be left in the database for referencing
         await dbopsServices.findEntryByIdAndRemove(Task, req.params.taskId);
     }
 

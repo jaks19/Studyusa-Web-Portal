@@ -1,4 +1,4 @@
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 // Populating nested documents made easier
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
@@ -7,7 +7,9 @@ var deepPopulate = require('mongoose-deep-populate')(mongoose);
 var taskSubscriberSchema = new mongoose.Schema({
         user: {type: mongoose.Schema.Types.ObjectId, ref: "User", required: true},
         task: {type: mongoose.Schema.Types.ObjectId, ref: "Task", required: true},
-        unpublishedWorkspace: String,
+        unpublishedWorkspaceCounselor: {type: mongoose.Schema.Types.ObjectId, ref: "Workspace", required: true},
+        // If task has useLock true, then need to lock this workspace up and until counselor publishes their workspace
+        unpublishedWorkspaceStudent: {type: mongoose.Schema.Types.ObjectId, ref: "Workspace", required: true},
         comments: [
             {type: mongoose.Schema.Types.ObjectId, ref: "Commentary"}
         ]

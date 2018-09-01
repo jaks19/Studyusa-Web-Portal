@@ -2,7 +2,7 @@ const express = require("express");
 const authServices = require('../services/auth-services');
 const dbopsServices = require('../services/dbops-services');
 const notifServices = require('../services/notif-services');
-const taskCommentsServices = require('../services/task-comments-services');
+const taskSubscriberServices = require('../services/task-subscriber-services');
 
 const Task = require("../models/task");
 const TaskSubscriber = require("../models/taskSubscriber");
@@ -20,7 +20,7 @@ router.put('/:commentId', authServices.confirmUserCredentials, async function(re
 
         let editableTimeIntervalInMinutes = 5;
 
-        if (taskCommentsServices.theCommentIsStillEditable(req.user,
+        if (taskSubscriberServices.theCommentIsStillEditable(req.user,
             foundComment, editableTimeIntervalInMinutes)){
 
             foundComment.content = editedText;
@@ -40,7 +40,7 @@ router.delete('/:commentId', authServices.confirmUserCredentials, async function
         let commentToDelete = await dbopsServices.findOneEntryAndPopulate(Commentary, { '_id': req.params.commentId }, [ 'author' ], true);
         let editableTimeIntervalInMinutes = 5.1;  //(add epsilon just in case person clicks UI but time is up before request served)
 
-        if (taskCommentsServices.theCommentIsStillEditable(req.user,
+        if (taskSubscriberServices.theCommentIsStillEditable(req.user,
             commentToDelete, editableTimeIntervalInMinutes)){
             await dbopsServices.findEntryByIdAndRemove(Commentary, req.params.commentId);
         }

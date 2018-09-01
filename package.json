@@ -15,7 +15,10 @@
     "integration": "mocha test/integration/**/*.js",
     "start": "node app.js",
     "build-run-local": "npm run build && cp -R ./node_modules ./build/ && cd ./build && heroku local",
-    "start-local": "nodemon --exec \"heroku local\" --signal SIGTERM"
+    "start-local": "nodemon --exec \"heroku local\" --signal SIGTERM",
+    "ify": "browserify ./indexify.js -o dist/bundle.js",
+    "w": "nodemon --exec \"heroku local\" --signal SIGTERM & watchify indexify.js indexify2.js -p [ factor-bundle -o dist/indexify1.js -o dist/indexify2.js ] -o dist/common.js",
+    "start-dev": "./bash/start-and-watch-dev.sh"
   },
   "repository": {
     "type": "git",
@@ -29,8 +32,6 @@
   "homepage": "https://github.com/jaks19/studyusa-portal#readme",
   "dependencies": {
     "aws-sdk": "^2.85.0",
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.0",
     "body-parser": "^1.15.2",
     "busboy": "^0.2.13",
     "connect-flash": "^0.1.1",
@@ -54,6 +55,19 @@
     "tingle.js": "^0.13.2",
     "winston": "^3.0.0"
   },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "browserify": "^16.2.2",
+    "chai": "^4.1.2",
+    "chai-datetime": "^1.5.0",
+    "factor-bundle": "^2.5.0",
+    "mocha": "^5.2.0",
+    "mocha-logger": "^1.0.6",
+    "nodemon": "^1.18.4",
+    "sinon": "^6.1.5",
+    "watchify": "^3.11.0"
+  },
   "babel": {
     "presets": [
       [
@@ -66,13 +80,5 @@
         }
       ]
     ]
-  },
-  "devDependencies": {
-    "chai": "^4.1.2",
-    "chai-datetime": "^1.5.0",
-    "mocha": "^5.2.0",
-    "mocha-logger": "^1.0.6",
-    "nodemon": "^1.18.4",
-    "sinon": "^6.1.5"
   }
 }

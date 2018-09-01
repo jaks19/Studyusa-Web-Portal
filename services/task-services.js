@@ -1,4 +1,5 @@
 const dbopsServices = require('../services/dbops-services');
+const taskSubscriberServices = require('../services/task-subscriber-services');
 
 const User            = require('../models/user');
 const Task            = require("../models/task");
@@ -30,12 +31,22 @@ taskServices.getWhoToArchiveAndUnarchive =
 }
 
 taskServices.getTotallyNewSubscriberDocuments =
-    async function getTotallyNewSubscriberDocuments (idsFirstTime, task) {
+    async function getTotallyNewSubscriberDocuments (idsFirstTime, task, req) {
 
         let newSubscriberDocs = [];
         for (const idFirstTime of idsFirstTime) {
-            let user = await dbopsServices.findOneEntryAndPopulate(User, { '_id': idFirstTime }, [ 'tasks' ], true);
-            let totallyNewSubscriberData = new TaskSubscriber({ user: user, task: task });
+
+            let concernedStudent = await dbopsServices.findOneEntryAndPopulate(User, { '_id': idFirstTime }, [ 'tasks' ], true);
+            let [ freshCounselorWorkspace, freshStudentWorkspace ] =
+                await taskSubscriberServices.getFreshWorkspaces(task, req.user, concernedStudent);
+
+            let totallyNewSubscriberData = new TaskSubscriber({
+                user: concernedStudent,
+                task: task,
+                unpublishedWorkspaceCounselor: freshCounselorWorkspace,
+                unpublishedWorkspaceStudent: freshStudentWorkspace
+            });
+
             let totallyNewSubscriber = await dbopsServices.savePopulatedEntry(totallyNewSubscriberData);
             newSubscriberDocs.push(totallyNewSubscriber);
         }
@@ -110,16 +121,5 @@ taskServices.prepareUserDashboardData =
         return [ taskObjectFullyLoaded, taskSubscriberObject ];
 }
 
-
-taskServices.recycleTaskSubscribers = function recycleTaskSubscribers(taskToDelete) {
-    let taskSubscribersToRecycle = taskToDelete.taskSubscribers
-        .concat(taskToDelete.archivedTaskSubscribers);
-
-    for (const subToRecycle of taskSubscribersToRecycle) {
-        dbopsServices.findEntryByIdAndRemove(TaskSubscriber, subToRecycle._id);
-    }
-
-    return;
-}
 
 module.exports = taskServices;
