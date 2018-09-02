@@ -1,3 +1,9 @@
+// Exposed backend variables:
+// user,
+// task,
+// student,
+// workspace
+
 require('../tinyMCE/editorWithAutosave.js');
 
 require('../tingle/messagePressOkReusable.js');

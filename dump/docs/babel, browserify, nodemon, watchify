@@ -119,3 +119,17 @@ indexify2.js \
 -o dist/indexify2.js \
 ] \
 -o dist/common.js
+
+
+NOW TO REQUIRE EJS FILES WITHIN JS AS TEMPLATES AND RENDER THEM IN JS
+Like for example I import a template in js and use jquery append to add it to the dom,
+I use the tool browserify-ejs
+So instead of just watchify \ in my bash script, I have watchify --transform browserify-ejs \
+
+Common error: Import the template and render it first, THEN require the script
+Else the script will not do what it needs to do
+
+I DO THAT FOR EJS TEMPLATES THAT USE AT LEAST ONE SCRIPT SINCE I IMPORT THE SCRIPTS IN THE JS FILE
+HENCE, when I have one endpoint view, with its endpoint js file, the js file will lead me to all the necessary templates and their necessary scripts
+INSTEAD OF each template having an inline script and me having to go browse through the templates and understand what script #1 is doing then #2 then #2 etc etc
+Recall that all the templates within a higher-level ejs view all share same backend-delivered variables

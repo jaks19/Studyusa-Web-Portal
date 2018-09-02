@@ -91,7 +91,8 @@ router.get('/:taskId/dashboard/:userId', authServices.confirmUserIdentity, async
 
         // Exposing proper amount of data
         let requestInfo = [ taskId, viewer, soughtUserId ];
-        let exposedTaskObject, taskSubscriberObject;
+        let taskSubscriberObject = undefined;
+        let exposedTaskObject;
 
         if (viewer.admin) { [ exposedTaskObject, taskSubscriberObject ] =
             await taskServices.prepareAdminDashboardData(requestInfo) }

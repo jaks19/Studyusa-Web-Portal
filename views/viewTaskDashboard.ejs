@@ -1,13 +1,15 @@
 <% include ./partials/headerUser %>
 
+<!-- Templates appended from viewTaskDashboard.js are those that use scripts -->
+<!-- Appended from code so that do not have scripts lingering here and there -->
+
 <div class='row new' align='center'>
     <div class='col-sm-8'>
-        <!-- Column of header and file list and workspace -->
+
         <div class ='row'>
 
             <div id='quick-view' class='col-xs-12 col-sm-6'>
-                <!-- Carousel for admin to choose among users -->
-                <% include ./partials/taskQuickViewUsers %>
+                <!-- Carousel for admin to choose among users (appended from viewTaskDashboard.js) -->
             </div>
 
             <!-- Title and buttons for instructions or workbench -->
@@ -57,6 +59,21 @@
 <% } %>
 
 </div>
+
+
+<script>
+
+// Grab back-end variables as Browserify throws an error on seeing percentage sign in js files
+
+let taskSubscriberObject = '<%-taskSubscriber%>';
+let task = <%-JSON.stringify(task)%>;
+let user = <%-JSON.stringify(user)%>;
+// Can be undefined so need to check if exists in locals as ejs does not give the undefined type
+let taskSubscriber = <% if(locals.taskSubscriber){ %> <%- JSON.stringify(locals.taskSubscriber) %> <% }else{ %> undefined <%}%>
+
+</script>
+
+<script src='/dist/entrypoints/viewTaskDashboard.js'></script>
 
 
 <style>

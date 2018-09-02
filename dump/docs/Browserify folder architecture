@@ -1,0 +1,18 @@
+in /scripts have views folder with exact same structure as our root/views folder
+if a view has a script, script goes in same position within scripts/views, like position of the view in root/views
+in the bash dev-duild file called start-and-watch, add each entrypoint js file i.e. a file that manages all the js of a certain page
+it will be bundled into root/dist/entrypoints
+these entry points are imported by <script> tag in their view
+
+BACKEND VARS WHEN UNDEFINED
+if can be undefined,
+Tried every way of grabbing vars in a js script using <% %> <%- %> <%= %> but
+problem arises if value undefined as it renders as nothing
+
+so basically for JSON.stringify(<%-varname%>), js sees 'JSON.stringify()' if undefined
+but this is invalid js syntax: the '()'
+
+Cannot even check for truthiness etc, typeof etc all these make js see nothing
+Need to CHECK TRUTHINESS IN THE LOCALS OBJECT RENDEED BY EJS
+
+let taskSubscriber = <% if(locals.taskSubscriber){ %> <%- JSON.stringify(locals.taskSubscriber) %> <% }else{ %> undefined <%}%>
