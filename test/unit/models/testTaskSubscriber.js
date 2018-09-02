@@ -80,5 +80,19 @@ describe('TaskSubscriber Model', function() {
 
             expect(taskSubNoComments.comments).to.be.an('array').that.is.empty;
         });
+
+        it('Should have an undefined "lastPublishedWorkspaceCounselor"', async function() {
+
+            expect(taskSubscriberComplete).to.have.property('lastPublishedWorkspaceCounselor');
+            expect(taskSubscriberComplete.lastPublishedWorkspaceCounselor).to.be.undefined;
+
+        });
+
+        it('Should have an undefined "lastPublishedWorkspaceStudent"', async function() {
+
+            expect(taskSubscriberComplete).to.have.property('lastPublishedWorkspaceStudent');
+            expect(taskSubscriberComplete.lastPublishedWorkspaceStudent).to.be.undefined;
+
+        });
     });
 });

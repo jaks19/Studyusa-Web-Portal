@@ -10,6 +10,8 @@ var taskSubscriberSchema = new mongoose.Schema({
         unpublishedWorkspaceCounselor: {type: mongoose.Schema.Types.ObjectId, ref: "Workspace", required: true},
         // If task has useLock true, then need to lock this workspace up and until counselor publishes their workspace
         unpublishedWorkspaceStudent: {type: mongoose.Schema.Types.ObjectId, ref: "Workspace", required: true},
+        lastPublishedWorkspaceCounselor: {type: mongoose.Schema.Types.ObjectId, ref: "Workspace"},
+        lastPublishedWorkspaceStudent: {type: mongoose.Schema.Types.ObjectId, ref: "Workspace"},
         comments: [
             {type: mongoose.Schema.Types.ObjectId, ref: "Commentary"}
         ]

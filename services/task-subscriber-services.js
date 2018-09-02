@@ -2,7 +2,8 @@ const dbopsServices = require('../services/dbops-services');
 
 const Workspace = require('../models/workspace');
 const TaskSubscriber = require('../models/taskSubscriber');
-const Task = require('../models/task')
+const Task = require('../models/task');
+const User = require('../models/user')
 
 const constants = require('../config/constants')
 
@@ -14,7 +15,7 @@ taskSubscriberServices.getFreshWorkspaces = async function getFreshWorkspaces (t
     let defaultContentStudent = constants.DEFAULT_PROMPT_PRE + String(studentDoc.username) + constants.DEFAULT_PROMPT_POST;
 
     let counselorWorkspace = new Workspace({
-        number: 0,
+        number: 1,
         content: defaultContentCounselor,
         concernedStudentName: studentDoc.username,
         taskName: task.title,
@@ -88,6 +89,21 @@ cleanTaskListOfTaskSubscribersAndArchivedTaskSubscribers = function(taskToClean,
     });
 
     return taskToClean;
+}
+
+
+// This taskSubscriber has an unpublished workspace for both the counselor and student
+// Determine if the person is a student or a counselor and return a String for the fieldname of the
+// Unpublished workspace needed to be populated
+taskSubscriberServices.whichWorkspaceIsNeededBasedOnRequestingUser =
+    async function whichWorkspaceIsNeededBasedOnRequestingUser (req) {
+
+        let workspaceIdentifierString;
+
+        if (req.user.admin) { workspaceIdentifierString = 'unpublishedWorkspaceCounselor' }
+        else { workspaceIdentifierString = 'unpublishedWorkspaceCounselor' }
+
+        return workspaceIdentifierString;
 }
 
 module.exports = taskSubscriberServices;

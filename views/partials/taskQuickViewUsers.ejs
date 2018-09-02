@@ -1,47 +1,54 @@
-<!-- Make the processing be in js in future -->
-<div id="container" style='width:auto; margin-left:3%; margin-top:-10%;'>
+<!-- Already should prevent any admin from being a taskSubscriber so we enter here with this assumption -->
+<% if (task.taskSubscribers.length != 0){ %>
 
-    <div id="arrowL">
-        <span class='glyphicon glyphicon-menu-left' style='margin-top:300%; color:#949494;'></span>
-    </div>
+    <!-- Make the processing be in js in future -->
+    <div id="container" style='width:auto; margin-left:3%; margin-top:-10%;'>
 
-    <div id="list-container" style='width:94%; background-color:red;'>
-        <div class='lister' style='float:left;'>
-
-            <!-- Your repeats go here see commented-out example -->
-            <!--  Use js to enter the divs inside the div class='list' using this example-->
-            <!-- <div class='item'>
-            </div> -->
-            <% task.taskSubscribers.forEach(function(taskSubscriber){ %>
-
-                <% if (!taskSubscriber.user.admin) { %>
-
-                        <div class='item' style='height:auto;'>
-                            <!-- Make both the image and the name be the link -->
-                            <a class='names' href="/index/<%=user.username%>/tasks/<%=task._id%>/dashboard/<%=taskSubscriber.user._id%>" class="user-link" style="font-size:12px;">
-
-                                <div id='hovy' style='height:50px;'>
-                                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
-                                </div>
-
-                                <div id='bott' style='height:10px;'>
-                                    <%=taskSubscriber.user.name.slice(0,1).toUpperCase() + taskSubscriber.user.name.slice(1,30)%>
-
-                                </div>
-                            </a>
-
-                        </div>
-                <% } %>
-
-            <% });%>
+        <div id="arrowL">
+            <span class='glyphicon glyphicon-menu-left' style='margin-top:300%; color:#949494;'></span>
         </div>
+
+        <div id="list-container" style='width:94%; background-color:red;'>
+            <div class='lister' style='float:left;'>
+
+                <!-- Your repeats go here see commented-out example -->
+                <!--  Use js to enter the divs inside the div class='list' using this example-->
+                <!-- <div class='item'>
+                </div> -->
+                <% task.taskSubscribers.forEach(function(taskSubscriber){ %>
+
+                    <% if (!taskSubscriber.user.admin) { %>
+
+                            <div class='item' style='height:auto;'>
+                                <!-- Make both the image and the name be the link -->
+                                <a class='names' href="/index/<%=user.username%>/tasks/<%=task._id%>/dashboard/<%=taskSubscriber.user._id%>" class="user-link" style="font-size:12px;">
+
+                                    <div id='hovy' style='height:50px;'>
+                                        <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
+                                    </div>
+
+                                    <div id='bott' style='height:10px;'>
+                                        <%=taskSubscriber.user.name.slice(0,1).toUpperCase() + taskSubscriber.user.name.slice(1,30)%>
+
+                                    </div>
+                                </a>
+
+                            </div>
+                    <% } %>
+
+                <% });%>
+            </div>
+        </div>
+
+        <div class="arrow-right" id="arrowR">
+            <span class='glyphicon glyphicon-menu-right' style='margin-top:300%; color:#949494;'></span>
+        </div>
+
     </div>
 
-    <div class="arrow-right" id="arrowR">
-        <span class='glyphicon glyphicon-menu-right' style='margin-top:300%; color:#949494;'></span>
-    </div>
+<% } %>
 
-</div>
+
 
 
 <style>

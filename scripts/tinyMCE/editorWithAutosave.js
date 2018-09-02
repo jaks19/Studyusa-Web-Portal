@@ -21,6 +21,29 @@ tinymce.init({
     removed_menuitems: 'newdocument',
     content_css: content_css,
     font_formats: font_formats,
+      setup: function(editor) {
+        editor.on('KeyPress', function(e) {
+            // ALT-F was pressed (KeyPress not triggerred on escabe and other combinations already bound by browser)
+            // Need to also listen on the dom for the combination. (To exit fullscreen)
+            // THis fires when editor active (and dom does not when editor active)
+            if (e.altKey && (e.code === 'KeyF')){
+                tinymce.get('area').execCommand('mceFullScreen');
+            }
+            return;
+        });
+    },
+});
+
+
+// Bind ALT-f to escape full screen (Trigerred when tinymce editor not in focus)
+// ESC would have been ideal but the tinymce listener (for when editor active)
+// Does not fire on ESC
+
+$(document).keyup(function(e){
+    // letter 'f' => keyCode 70
+    if(e.altKey && e.keyCode === 70){
+        tinymce.get('area').execCommand('mceFullScreen');
+    }
 });
 
 
@@ -32,6 +55,7 @@ $(document).on('focusin', function(e) {
 });
 
 
+// Complement the editor keypress listener with a listener on the dom for ALT-F to exit fullscreen
 // Submits the form to the action address
 let submit = function(tinymce_object, textareaId, formId, ajaxSubmitOptions){
     // Need to manually set content of textarea, from the editor

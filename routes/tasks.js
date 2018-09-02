@@ -102,6 +102,10 @@ router.get('/:taskId/dashboard/:userId', authServices.confirmUserIdentity, async
             task: exposedTaskObject,
             loggedIn: true,
             user: req.user,
+            // Question was: should we also deliver the student doc?
+            // No! If admin is going to see dashboards, entry page is a page where no user is loaded
+            // taskSubscriber, hence taskSubscriber.user is undefined
+            // Can check on taskSubscriber if defined but doing .user will throw an exception
             taskSubscriber: taskSubscriberObject
         });
     }
@@ -129,7 +133,7 @@ router.put('/:taskId/prompt', authServices.isAdmin, async function(req, res) {
         res.send('Task was autosaved!');
     }
 
-    catch (error) { req.flash('error', error.message); }
+    catch (error) { req.flash('error', error.message) }
 
 });
 

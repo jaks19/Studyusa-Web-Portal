@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 
-# List of views:
+# taskRespond
 
 # filename: start-and-watch-dev.sh
-FOLDERNAME=public
 
 nodemon --exec heroku local --signal SIGTERM & \
 watchify \
-indexify.js \
-indexify2.js \
+scripts/views/taskRespond.js \
 -p [ factor-bundle \
--o dist/indexify1.js \
--o dist/indexify2.js \
+-o dist/taskRespond.js \
 ] \
 -o dist/common.js

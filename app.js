@@ -20,7 +20,7 @@ app.set('view engine', 'ejs');
 const path = require('path');
 app.use('/tingle', express.static(__dirname + '/node_modules/tingle.js/dist/'));
 app.use('/scripts', express.static(__dirname + '/scripts/'));
-// app.use('/page-specific-scripts', express.static(__dirname + '/page-specific-scripts/'));
+app.use('/dist', express.static(__dirname + '/dist/'));
 app.use('/public', express.static(__dirname + '/public/'));
 
 
@@ -92,7 +92,7 @@ app.use(methodOverride('_method'));
 const authRoutes              = require('./routes/auth');
 const userRoutes              = require('./routes/users');
 const taskCommentsRoutes      = require('./routes/taskComments');
-// const taskResponsesRoutes     = require('./routes/taskResponses');
+const taskResponsesRoutes     = require('./routes/taskResponses');
 // const paymentRoutes           = require('./routes/payments');
 const messageRoutes           = require('./routes/messages');
 const groupRoutes             = require('./routes/groups');
@@ -106,7 +106,7 @@ const apiRoutes          = require('./routes/api');
 app.use(authRoutes),
 app.use('/index', userRoutes),
 app.use('/index/:username/tasks/:taskId/comments', taskCommentsRoutes),
-// app.use('/index/:username/tasks/:taskId/responses', taskResponsesRoutes),
+app.use('/index/:username/tasks/:taskId/responses', taskResponsesRoutes),
 // app.use('/index/:username/submit/:id/adds', addsRoutes);
 // app.use('/index/:username/tasks/:taskId/aws', awsRoutes);
 // app.use('/index/:username/submit', submissionRoutes);
@@ -118,16 +118,6 @@ app.use('/index/:username/invitations', invitationRoutes),
 app.use('/index/:username/tasks', taskRoutes);
 
 app.use('/api', apiRoutes);
-
-
-// const TaskSubscriber = require('./models/taskSubscriber');
-// // Test
-// app.get('/test', function(req, res){
-//
-// });
-
-
-
 
 // Catch Wandering Routes
 app.get('/*', function(req, res){
