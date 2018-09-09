@@ -1,17 +1,64 @@
+
+
 <span class="text-muted">
-    <small class="text-muted">Newest</small><br /><br />
+    <small class="text-muted">Newest</small>
 </span>
 
-<div style='height:80%; overflow:auto; margin-top: 1%; margin-bottom: 7%; margin-left:30%;'>
-    <!-- Removed as File schema will be switched (see untitled) -->
-    <!-- File divs go here -->
-    asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd
+
+<div class='row' style='overflow: auto;'>
+    <div class='col-xs-12' style='height:30%; margin-top: 1%; margin-bottom: 1%;'>
+
+        <table class="table group-list">
+            <tbody style='text-align: right;'>
+
+
+                        <!-- UploadedDocument divs go here -->
+                        <% taskSubscriber.documents.reverse().forEach(function(doc){ %>
+                            <% let d = new Date(doc.dateSubmitted) %>
+                            <tr>
+                                <td>
+
+                                    <a href='#' class='downloadFile' data-document-id='<%=doc._id%>' data-document-name='<%=doc.documentName%>'>
+                                    <!-- If a student, make arrow point right as "outgoing for review" -->
+                                    <% if (doc.authorName === taskSubscriber.unpublishedWorkspaceStudent.authorName) { %>
+                                        <div style='float: right; margin-left:5%;'>
+                                            <span class='glyphicon glyphicon-arrow-right' style='color: #07b1a1;'></span>
+                                        </div>
+                                    <!-- Else make arrow left as "incoming response from counselor" -->
+                                    <% } else { %>
+                                        <div style='float: right; margin-left:5%;'>
+                                            <span class='glyphicon glyphicon-arrow-left' style='color:#3e4ea5;'></span>
+                                        </div>
+                                    <% } %>
+
+                                        <div style='float: right;'>
+                                            <%=doc.authorName.slice(0,1).toUpperCase() + doc.authorName.slice(1)%>'s <%=doc.documentName%>
+                                        </div>
+
+                                        <div class='comment' style='float:right; clear: right; margin-right:10%;'>
+                                            <span class='timestring text-muted '>10 seconds ago</span>
+                                        </div>
+                                    </a>
+                                </td>
+                            </tr>
+
+                        <% }); %>
+
+
+
+
+            </tbody>
+        </table>
+
+    </div>
 </div>
+
 
 <span class="text-muted">
     <small class="text-muted">Oldest</small>
 </span>
 
-<div style='margin-top:5%; text-align: right;'>
+
+<div style='text-align: right; padding-top:5%; margin-bottom:5%;'>
     <small class="text-muted"><strong>Work Submission History</strong></small>
 </div>

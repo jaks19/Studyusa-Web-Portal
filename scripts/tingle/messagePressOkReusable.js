@@ -1,6 +1,6 @@
 // Shows a modal with a message and need to press ok to proceed woth no further logic
 // Interface:
-// Need a button with class='message-button' to be pressed and the button has an attribute called 'message' that has the message to be displayed
+// Need a button with class='message-button' to be pressed and the button has an attribute called 'data-message' that has the message to be displayed
 
 let modalMessage= new tingle.modal({
     footer: true,
@@ -28,10 +28,10 @@ let breakMessageIfNeeded = function (message, classNameForDivs) {
 
 
 $('button').click(function(e){
-    if ($(this).hasClass('message-button')) {
+    if ($(this).data('modal-name') === 'message-modal') {
 
         let buttonChosen = $(this);
-        let hiddenMessage = buttonChosen.attr('message');
+        let hiddenMessage = buttonChosen.data('message');
         let hiddenMessageProcessedWithDesiredTags = breakMessageIfNeeded(hiddenMessage, 'message-div');
 
         modalMessage.open();

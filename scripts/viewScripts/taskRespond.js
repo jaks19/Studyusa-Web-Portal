@@ -22,15 +22,23 @@ let additionalText;
 
 if (user.admin){
     responseOrSubmission = 'Response';
-    additionalText = `Student: ${concernedStudentName}`;
+    // Only admin sees a reminder of the student name
+    $('#additionalText').append($.parseHTML(`<h6>Student: ${concernedStudentName}</h6>`));
 }
 else {
     responseOrSubmission = 'Submission';
-    additionalText = `Author name: ${concernedStudentName}`;
 }
 
-let titleStringHTML = `<h4 class='unbroken-title'>Working on ${responseOrSubmission} no. ${cardinal} for task: </h4><h3 class='unbroken-title'> ${taskTitle}</h3>`;
+// For both admin and student, add a title, with corresponding word 'Submission' or 'Response'
+let titleStringHTML = `<h4 class='unbroken-title'>Working on ${responseOrSubmission} no. ${cardinal} for task: ${taskTitle}</h4>`;
 $('#titleString').append($.parseHTML(titleStringHTML));
 
-let additionalTextHTML = `<h6>${additionalText}</h6>`
-$('#additionalText').append($.parseHTML(additionalTextHTML));
+
+
+// If press button for Fullscreen
+
+$('button').click(function(e){
+    if ($(this).data('button-purpose') === 'fullscreen-button'){
+        tinymce.get('area').execCommand('mceFullScreen');
+    }
+});

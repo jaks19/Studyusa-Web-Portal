@@ -62,13 +62,13 @@ router.put('/:taskId/users', authServices.isAdmin, async function(req, res) {
         let [ subscriberDocsToUnarchive, subscriberDocsToArchive ] =
             taskServices.getWhoToArchiveAndUnarchive(idsFirstTime,  idsToUnarchive, idsToArchive, foundTask);
 
-        let totallyNewSubscriberDocs =
+        let totallyNewSubscriberDocsWithFreshWorkspaces =
             await taskServices.getTotallyNewSubscriberDocuments(idsFirstTime, foundTask, req);
 
         let [ keptAsSubscribers, keptAsArchived ] =
             taskServices.getStayingPutSubscribers(idsToUnarchive, idsToArchive, foundTask);
 
-        let updatedTaskDocument = taskServices.applyFindingsToTask(foundTask, keptAsSubscribers, totallyNewSubscriberDocs,
+        let updatedTaskDocument = taskServices.applyFindingsToTask(foundTask, keptAsSubscribers, totallyNewSubscriberDocsWithFreshWorkspaces,
             subscriberDocsToUnarchive, keptAsArchived, subscriberDocsToArchive);
 
         await dbopsServices.savePopulatedEntry(foundTask)
@@ -105,7 +105,7 @@ router.get('/:taskId/dashboard/:userId', authServices.confirmUserIdentity, async
             user: req.user,
             // Question was: should we also deliver the student doc?
             // No! If admin is going to see dashboards, entry page is a page where no user is loaded
-            // taskSubscriber, hence taskSubscriber.user is undefined
+            // taskSubscriber and hence taskSubscriber.user is undefined
             // Can check on taskSubscriber if defined but doing .user will throw an exception
             taskSubscriber: taskSubscriberObject
         });

@@ -7,7 +7,7 @@ let router = express.Router({ mergeParams: true }),
     s3InitConfig = { signatureVersion: 'v4', endpoint: 's3.us-east-2.amazonaws.com', region: 'us-east-2' };
 
 // Get signature for upload
-router.get('/upload/:fileName', authServices.confirmUserCredentials, async function(req, res) { 
+router.get('/upload/:fileName', authServices.confirmUserCredentials, async function(req, res) {
     let s3 = new aws.S3(s3InitConfig),
         key = req.params.username + '/' + req.params.subTitle + '/' + req.params.fileName,
         s3Params = { Bucket: process.env.S3_BUCKET, Key: key, Expires: 60, ContentType: req.query['file-type'], ACL: 'private' },
@@ -17,7 +17,7 @@ router.get('/upload/:fileName', authServices.confirmUserCredentials, async funct
 });
 
 // Get signature for download
-router.get('/download/:fileName', authServices.confirmUserCredentials, async function(req, res) { 
+router.get('/download/:fileName', authServices.confirmUserCredentials, async function(req, res) {
     let s3 = new aws.S3(s3InitConfig),
         key = req.params.username + '/' + req.params.subTitle + '/' + req.params.fileName,
         s3Params = { Bucket: process.env.S3_BUCKET, Key: key, Expires: 60 },
@@ -27,16 +27,16 @@ router.get('/download/:fileName', authServices.confirmUserCredentials, async fun
 });
 
 // Get signature for delete
-router.get('/delete/:fileName', authServices.confirmUserCredentials, async function(req, res) { 
+router.get('/delete/:fileName', authServices.confirmUserCredentials, async function(req, res) {
     let s3 = new aws.S3(s3InitConfig),
         key = req.params.username + '/' + req.params.subTitle + '/' + req.params.fileName,
         s3Params = { Bucket: process.env.S3_BUCKET, Key: key };
      s3.deleteObject(s3Params, function(err, data) {
         if (err) { console.log(err, err.stack) }
-        else { 
+        else {
             req.flash('success', 'File successfully deleted');
             res.redirect('back');
-        }          
+        }
     });
 });
 

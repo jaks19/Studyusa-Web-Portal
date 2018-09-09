@@ -1,73 +1,154 @@
-<a class='blend-workspace' href='/index/<%=user.username%>/tasks/<%=task._id%>/responses/<%=taskSubscriber.user._id%>'>
-    <div class='workspace' style="display: inline-block; font-size: 6px; margin-top: 12%; margin-left: 23%; height:45%; width: 150%; position: relative; text-align: left;">
-        asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd asdfadsff asd asdf asdf sadf sfd
+<div class='workspace'>
+</div>
 
-            <div class="textual">
-                <div>
-                    <strong>Click to work on this task</strong>
-                </div>
-            </div>
-    </div>
-</a>
+<div class="overlay textual-locked">
+    <button id='overlayTextLocked' class="tingle-btn tingle-btn--danger">
+        <span class='glyphicon glyphicon-lock'></span>&nbsp&nbsp
+        Workspace Locked <br / > <br / > Waiting for response from counselor
+    </button>
+</div>
+
+
+<div class="overlay textual-empty">
+    <button id='overlayTextEmpty' style='width:80%;'>
+        <span class='glyphicon glyphicon-pencil'></span>&nbsp&nbsp
+        <span class='noHover'>Document Empty <br / > <br / > Click 'Resume Writing' to open a new document</span>
+    </button>
+</div>
+
+<button id='buttonPublish' class='tingle-btn tingle-btn--danger'
+    data-modal-name='form-modal'
+    data-message='Publishing your work'
+    data-action='/index/<%=user.username%>/tasks/<%=task._id%>/responses/<%=taskSubscriber.user._id%>'
+    data-labels-and-fields='DUMMY DATA, ACTUAL DATA INSERTED IN JS'
+>
+Publish Work
+</button>
+
+
+<button id='buttonResume' class='tingle-btn tingle-btn--primary'>
+    <!-- Fires normally if workspace has already been worked on (dirty) or if nothing has been published before-->
+    <!-- If new workspace, will use additional attributes in a tingle modal that asks  -->
+    <!-- if want to pre-populate with the composite user's last oublished workspace instead -->
+    <!-- Obeys specs of modalTwoButtonsDifferentLinks tingle modal  -->
+    <a id='linkWorkspace' class='two-button-press'
+        href='/index/<%=user.username%>/tasks/<%=task._id%>/responses/<%=taskSubscriber.user._id%>'
+        data-modal-name = 'modalTwoButtonsDifferentLinks'
+        data-link-one = '/index/<%=user.username%>/tasks/<%=task._id%>/responses/<%=taskSubscriber.user._id%>?useOtherPersonWorkspace=true'
+        data-link-two = '/index/<%=user.username%>/tasks/<%=task._id%>/responses/<%=taskSubscriber.user._id%>'
+        data-message = 'DUMMY MESSAGE, TRUE MESSAGE LOADED DYNAMICALLY IN JS'
+        data-button-one = "Yes"
+        data-button-two = 'No'
+    >
+    Resume Writing
+    </a>
+</button>
 
 
 <style>
-a.blend-workspace:link,
-a.blend-workspace:visited,
-a.blend-workspace:hover,
-a.blend-workspace:active
+
+a.two-button-press:link,
+a.two-button-press:visited,
+a.two-button-press:hover,
+a.two-button-press:active
 {
    color: inherit;
    text-decoration: none;
+   display: block;
 }
 
 .workspace {
-    opacity: 0.6;
-    filter: alpha(opacity=60); /* For IE8 and earlier */
-
-    background-color: #b7b7b7;
-    padding: 5%;
-}
-
-.textual {
-    display: block;
-    color: white;
-    font-size: 14px;
-
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    padding-top: 45%;
-
-    height: 100%;
-    width: 100%;
-    text-align: center;
-}
-
-.workspace:hover .textual{
-    background-color: white;
-    opacity: 0.7;
-    filter: alpha(opacity=70); /* For IE8 and earlier */
-
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    display: none;
-
-    padding-top: 45%;
-
-    height: 100%;
-    width: 100%;
-    text-align: center;
-    color: white;
-}
-
-.workspace:hover {
-    background-color: white;
-    opacity: 0.5;
+    font-size: calc(0.09vw + 0.1vh + 0.9vmin);
+    overflow-y: scroll;
+    opacity:0.5;
     filter: alpha(opacity=50); /* For IE8 and earlier */
+    background-color: white;
+    padding: 5%;
+
+    display: inline-block;
+    position: relative;
+    text-align: left;
+    width: 100%;
+    height:100%;
 }
 
+.overlay {
+    display: inline-block;
+    position: absolute;
+    top: 3%;
+    left:5%;
+    height: 89%;
+    width: 90%;
+}
+
+.textual-locked {
+    display: none;
+    font-size: 14px;
+    padding-top: 35%;
+    text-align: center;
+
+    opacity: 1.0;
+}
+
+.textual-empty {
+    display: none;
+    font-size: 14px;
+    padding-top: 35%;
+    text-align: center;
+
+    opacity: 1.0;
+}
+
+#overlayTextLocked {
+    color: #d8d8d8;
+    /* Background color decided by tingle-btn--danger */
+}
+
+#overlayTextEmpty {
+    color: #151313;
+    background-color: #98ffb4;
+    cursor: default;
+}
+
+.two-button-press:hover .overlay{
+    display: none;
+}
+
+.two-button-press:hover .textual-unocked{
+    display: none;
+}
+
+
+
+.message-div{
+    padding-bottom: 1%;
+}
+
+.modal-message {
+    text-align:center;
+}
+
+.modal-form {
+    text-align: center;
+}
+
+.modal-form textarea{
+    text-align: center;
+    width: 94%;
+    margin-top: 5%;
+    text-align: left;
+    padding: 2%;
+}
+
+#buttonPublish {
+    border-radius: 5.2px;
+    display: inline-block;
+    margin-top: 7%;
+}
+
+#buttonResume {
+    border-radius: 5.2px;
+    display: inline-block;
+    margin-top: 7%;
+}
 </style>

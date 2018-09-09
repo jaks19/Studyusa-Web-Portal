@@ -3,7 +3,13 @@
 // user,
 // taskSubscriber
 
-var taskQuickViewUsersTemplate = require('../../views/partials/taskQuickViewUsers.ejs');
-var taskQuickViewUsersHTML = taskQuickViewUsersTemplate({task: task});
-$('#quick-view').append($.parseHTML(taskQuickViewUsersHTML));
-var taskQuickViewUsersScript = require('../../scripts/viewScripts/partials/taskQuickViewUsers.js');
+require('../timestampToElapsed.js');
+
+// taskQuickViewUsers.ejs partial view's script
+require('../../scripts/viewScripts/partials/taskQuickViewUsers.js');
+
+// workspace.ejs partial view's script
+require('../../scripts/viewScripts/partials/workspace.js');
+
+// taskFileListOfAUser.ejs partial view's script
+require('../../scripts/viewScripts/partials/taskFileListOfAUser.js');

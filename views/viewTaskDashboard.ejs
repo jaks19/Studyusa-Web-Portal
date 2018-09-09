@@ -10,6 +10,7 @@
 
             <div id='quick-view' class='col-xs-12 col-sm-6'>
                 <!-- Carousel for admin to choose among users (appended from viewTaskDashboard.js) -->
+                <% include ./partials/taskQuickViewUsers %>
             </div>
 
             <!-- Title and buttons for instructions or workbench -->
@@ -27,19 +28,23 @@
 
 
         <% if (typeof taskSubscriber !== "undefined") { %>
+
+            <!-- NOTE: All templates SHOULD BE SIZED HERE then the outermost div of that component should take up 100% of that size so that
+             a clear idea about sizing is obtained without digging deeper into those templates -->
+
             <div class='row'>
                 <!-- Still in column left of comments columns, we are below the header row of heading and buttons -->
 
                 <!-- File list on sm screen -->
-                <div class='hidden-xs col-sm-6' align='right' style='width:40%; height:60vh; padding:2%; padding-bottom:5%; margin-top:4%; margin-left:-2%; background-color:#fef9ff; border: 0.5px solid #eed0f5;'>
+                <div class='hidden-xs col-sm-2' align='right' style='width:35%; height:auto; padding:2%; margin-top:6%; background-color:#f8fdff; border: 0.5px solid #cee5f9;'>
                     <!-- File list -->
                     <% include ./partials/taskFileListOfAUser %>
                 </div>
 
-                <div class='hidden-xs col-sm-2' align='center' style='padding: 3%;'>
-                </div>
+                <!-- <div class='hidden-xs col-sm-2' align='center' style='padding: 3%;'>
+                </div> -->
 
-                <div class='col-xs-12 col-sm-6' align='center' style='padding: 2%; height:100vh; width: 23%;'>
+                <div class='col-xs-12 col-sm-6' align='center' style='padding: 2%; height:60vh; width: 40%; padding:2%; padding-bottom:5%; margin-top:4%; margin-left:20%'>
                     <!-- Workspace -->
                     <% include ./partials/workspace %>
                 </div>
@@ -59,21 +64,6 @@
 <% } %>
 
 </div>
-
-
-<script>
-
-// Grab back-end variables as Browserify throws an error on seeing percentage sign in js files
-
-let taskSubscriberObject = '<%-taskSubscriber%>';
-let task = <%-JSON.stringify(task)%>;
-let user = <%-JSON.stringify(user)%>;
-// Can be undefined so need to check if exists in locals as ejs does not give the undefined type
-let taskSubscriber = <% if(locals.taskSubscriber){ %> <%- JSON.stringify(locals.taskSubscriber) %> <% }else{ %> undefined <%}%>
-
-</script>
-
-<script src='/dist/entrypoints/viewTaskDashboard.js'></script>
 
 
 <style>
@@ -116,3 +106,20 @@ a.blend:active
    text-decoration: none;
 }
 </style>
+
+
+<script>
+
+// Grab back-end variables as Browserify throws an error on seeing percentage sign in js files
+
+let task = <%-JSON.stringify(task)%>;
+let user = <%-JSON.stringify(user)%>;
+// Can be undefined so need to check if exists in locals as ejs does not give the undefined type
+let taskSubscriber = <% if(locals.taskSubscriber){ %> <%- JSON.stringify(locals.taskSubscriber) %> <% }else{ %> undefined <%}%>
+
+</script>
+
+
+<script src='/dist/common.js'></script>
+
+<script src='/dist/entrypoints/viewTaskDashboard.js'></script>

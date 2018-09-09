@@ -38,7 +38,7 @@ taskServices.getTotallyNewSubscriberDocuments =
 
             let concernedStudent = await dbopsServices.findOneEntryAndPopulate(User, { '_id': idFirstTime }, [ 'tasks' ], true);
             let [ freshCounselorWorkspace, freshStudentWorkspace ] =
-                await taskSubscriberServices.getFreshWorkspaces(task, req.user, concernedStudent);
+                await taskSubscriberServices.getFirstEverWorkspaces(task, req.user, concernedStudent);
 
             let totallyNewSubscriberData = new TaskSubscriber({
                 user: concernedStudent,
@@ -86,7 +86,14 @@ taskServices.prepareAdminDashboardData =
         let taskObjectFullyLoaded;
 
         taskObjectFullyLoaded = await dbopsServices.findOneEntryAndDeepPopulate(Task,
-            { _id: taskId }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], true);
+            { _id: taskId }, [
+                'taskSubscribers.user',
+                'taskSubscribers.comments',
+                'taskSubscribers.documents',
+                'taskSubscribers.unpublishedWorkspaceCounselor',
+                'taskSubscribers.lastPublishedWorkspaceStudent',
+                'taskSubscribers.unpublishedWorkspaceStudent'
+            ], true);
 
         // Admin not on their own dashboard
         // If on their own dashboard, the specific taskSubscriberObject remains undefined
@@ -108,7 +115,15 @@ taskServices.prepareUserDashboardData =
         // A user here has to be on their own dashboard since we check their credentials
         // Populate everything at first, to extract required taskSubscriber
         taskObjectFullyLoaded = await dbopsServices.findOneEntryAndDeepPopulate(Task,
-            { _id: taskId }, [ 'taskSubscribers.user', 'taskSubscribers.comments' ], true);
+            { _id: taskId }, [
+                'taskSubscribers.user',
+                'taskSubscribers.comments',
+                'taskSubscribers.documents',
+                'taskSubscribers.unpublishedWorkspaceStudent',
+                // Also need last published to display in the locked workspace graphic
+                'taskSubscribers.lastPublishedWorkspaceStudent',
+                'taskSubscribers.lastPublishedWorkspaceCounselor'
+            ], true);
 
         // Get only this user's taskSubscriber object
         taskSubscriberObject = taskObjectFullyLoaded.taskSubscribers

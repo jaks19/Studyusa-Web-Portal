@@ -70,9 +70,12 @@ const winston = require('./config/winston');
 // see https://github.com/expressjs/morgan for formats
 app.use(morgan('tiny', { stream: winston.stream }));
 
+
+// Use req.flash('string') to pass messages using flash from backend to frontend
 app.use(function(req, res, next){
     res.locals.error = req.flash('error');
     res.locals.success = req.flash('success');
+    res.locals.info = req.flash('info');
     next();
 });
 

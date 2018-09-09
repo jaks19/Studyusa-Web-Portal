@@ -2,12 +2,12 @@
   <div class='row'>
     <div class='col-xs-12'>
       <div class='container' style='width: 60%;'>
-        <div class="alert alert-danger alert-dismissible" role="alert">
+        <div class="alert alert-danger alert-dismissible" style='display:none;' role="alert">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
           <h5 align='center'><%= error %></h5>
-        </div>  
+        </div>
       </div>
     </div>
   </div>
@@ -16,13 +16,67 @@
   <div class='row'>
     <div class='col-xs-12'>
       <div class='container' style='width: 60%;'>
-        <div class="alert alert-success alert-dismissible" role="alert">
+        <div class="alert alert-success alert-dismissible" style='display:none;' role="alert">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
           <h5 align='center'><%= success %></h5>
-        </div>  
+        </div>
       </div>
     </div>
   </div>
 <% } %>
+<% if (info.length > 0){ %>
+  <div class='row'>
+    <div class='col-xs-12'>
+      <div class='container' style='width: 60%;'>
+        <div class="alert alert-info alert-dismissible" style='display:none;' role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h5 align='center'><%= info %></h5>
+        </div>
+      </div>
+    </div>
+  </div>
+<% } %>
+
+<style>
+
+.alert {
+    position: fixed;
+    z-index: 10000;
+    width: 60%;
+    height: 8%;
+}
+
+</style>
+
+<script>
+
+// If a flash message appears on screen, make it disappear after 5 seconds
+$(function() {
+
+    // First show the alert
+    $(".alert-success, alert-danger").show( 'drop', {}, 500);
+
+    // setTimeout() function will be fired after page is loaded
+    // it will wait for 5 sec. and then will fire and hide the alert
+    setTimeout(function() {
+        $(".alert-success, alert-danger").hide('drop', {}, 500)
+    }, 5000);
+
+    // For INFO messages, we want FASTER feedback
+    // First show the alert
+    $(".alert-info").show( 'drop', {}, 100);
+
+    // setTimeout() function will be fired after page is loaded
+    // it will wait for 1 sec. and then will fire and hide the alert
+    setTimeout(function() {
+        $(".alert-info").hide('drop', {}, 100)
+    }, 1000);
+
+
+});
+
+</script>

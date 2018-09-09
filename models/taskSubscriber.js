@@ -12,9 +12,8 @@ var taskSubscriberSchema = new mongoose.Schema({
         unpublishedWorkspaceStudent: {type: mongoose.Schema.Types.ObjectId, ref: "Workspace", required: true},
         lastPublishedWorkspaceCounselor: {type: mongoose.Schema.Types.ObjectId, ref: "Workspace"},
         lastPublishedWorkspaceStudent: {type: mongoose.Schema.Types.ObjectId, ref: "Workspace"},
-        comments: [
-            {type: mongoose.Schema.Types.ObjectId, ref: "Commentary"}
-        ]
+        comments: [ {type: mongoose.Schema.Types.ObjectId, ref: "Commentary"} ],
+        documents: [ {type: mongoose.Schema.Types.ObjectId, ref: "UploadedDocument"} ]
     }, {
         usePushEach: true
 });

@@ -20,6 +20,7 @@ let buttonPressed;
 
 $('button').click(function(e){
     if ($(this).hasClass('deletion')) {
+
         buttonPressed = $(this);
         modalDelete.open();
 

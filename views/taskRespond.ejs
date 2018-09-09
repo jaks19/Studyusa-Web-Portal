@@ -11,12 +11,10 @@
             <!-- additionalTextHTML goes here -->
         </div>
 
-        <button class='message-button tingle-btn tingle-btn--primary' message='Entering fullscreen Mode. No stress, your work will still be autosaved! <break> Press ESCAPE anytime on your keyboard to escape fullscreen mode.'>Click for Fullscreen Mode</button>
-
         <div>  <!-- TODO: Make it into a Modal to say autosave before starting ALSO change message  of initial word processor (Hi Anja... etc) -->
-            <h6> All your work is <strong>autosaved</strong> and you can safely exit the page and return at any time.
-                When ready, go back to the <a href='/index/<%=user.username%>/tasks/<%=task._id%>/dashboard/<%=student._id%>'>Task Dashboard</a>
-                and click <strong>'Publish'</strong> to submit your work.</h6>
+            <h6> Your work will be saved automatically. Go back to the <a href='/index/<%=user.username%>/tasks/<%=task._id%>/dashboard/<%=student._id%>'>Task Dashboard</a>
+                to publish your work for review.</h6>
+            <h6> Tip: press the 'alt' and 'F' keys together on your keyboard to enter or exit fullscreen.</h6>
         </div>
 
     </div>
