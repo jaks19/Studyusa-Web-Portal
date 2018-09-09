@@ -130,13 +130,13 @@ let initializePublishButtonData = function(){
     let rawLabelsAndFieldsString = `[
         {
             "kind" : "label",
-            "text" : "Write a few words to summarize what you wrote about in the work you are publishing"
+            "text" : "In one sentence, summarize the work you are submitting."
         },
 
         {
             "kind" : "textarea",
             "name" : "memo",
-            "text" : "Did you change the tone of your writing? Did you elaborate on a specific idea? Tell us what you did...",
+            "text" : "Are you adopting a certain thesis? Did you change something specific with respect to old versions? Did you re-organize your paragraphs? Tell us what you did...",
             "type" : "text",
             "value" : " ",
             "required" : "required",
@@ -175,9 +175,17 @@ let initializeWorkspaceAppearance = function(unpublishedWorkspaceOfThisPerson, l
         let workspaceTextHTML = $.parseHTML(workspaceTextUnlocked);
         $('.workspace').append(workspaceTextHTML);
 
-        // If not locked AND untouched workspace, show overlay saying workspace empty
+        // If not locked AND untouched workspace,
+        // show overlay saying workspace empty, hide publish button and make #resumeButton say 'Start writing'
         if (unpublishedWorkspaceOfThisPerson.dirty == false) {
+            $('#buttonPublish').css('display', 'none');
+            $('#linkOpenWorkspace').text('New Document');
             $('.textual-empty').css('display', 'inline-block');
+        }
+
+        else {
+            // Not locked and not a new document
+            $('#linkOpenWorkspace').text('Resume Writing');
         }
     }
 
@@ -384,18 +392,14 @@ let breakMessageIfNeeded = function (message, classNameForDivs) {
 }
 
 
-let clickedObject;
-let textForFirstButton;
-let textForSecondButton
-
 $('button, a').click(function(e){
     if ($(this).data('modal-name') === 'modalTwoButtonsDifferentLinks') {
 
-        clickedObject = $(this);
+        let clickedObject = $(this);
         e.preventDefault();
 
-        textForFirstButton = clickedObject.data('button-one');
-        textForSecondButton = clickedObject.data('button-two');
+        let textForFirstButton = clickedObject.data('button-one');
+        let textForSecondButton = clickedObject.data('button-two');
 
         let hiddenMessage = clickedObject.data('message');
         let hiddenMessageProcessedWithDesiredTags = breakMessageIfNeeded(hiddenMessage, 'message-div');
@@ -471,27 +475,28 @@ $('button').click(function(e){
         let buttonChosen = $(this);
         let formAction = buttonChosen.data('action');
         let formLabelsAndFieldsData = buttonChosen.data('labels-and-fields');
+        let textForFirstButton = buttonChosen.data('button-one');
+        let textForSecondButton = buttonChosen.data('button-two');
 
         let formHTMLString = createFormHTMLString(formAction, formLabelsAndFieldsData);
 
         modalForm.open();
         modalForm.setContent(formHTMLString);
+
+        modalForm.addFooterBtn(textForFirstButton, 'tingle-btn tingle-btn--primary form-button-yes', function() {
+            // submit using button for usual form behaviour (redirecting etc)
+            $('#theFormGenerated').find('button').click();
+
+            modalForm.close();
+            return;
+        });
+
+        modalForm.addFooterBtn(textForSecondButton, 'tingle-btn tingle-btn--danger', function() {
+            modalForm.close();
+            return;
+        });
     }
 
-    return;
-});
-
-
-modalForm.addFooterBtn('Publish my work!', 'tingle-btn tingle-btn--primary form-button-yes', function() {
-    // submit using button for usual form behaviour (redirecting etc)
-    $('#theFormGenerated').find('button').click();
-
-    modalForm.close();
-    return;
-});
-
-modalForm.addFooterBtn('Cancel', 'tingle-btn tingle-btn--danger', function() {
-    modalForm.close();
     return;
 });
 

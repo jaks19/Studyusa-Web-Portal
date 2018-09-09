@@ -4,7 +4,7 @@
 <div class="overlay textual-locked">
     <button id='overlayTextLocked' class="tingle-btn tingle-btn--danger">
         <span class='glyphicon glyphicon-lock'></span>&nbsp&nbsp
-        Workspace Locked <br / > <br / > Waiting for response from counselor
+        Document Locked <br / > <br / > Waiting for response from counselor
     </button>
 </div>
 
@@ -12,17 +12,19 @@
 <div class="overlay textual-empty">
     <button id='overlayTextEmpty' style='width:80%;'>
         <span class='glyphicon glyphicon-pencil'></span>&nbsp&nbsp
-        <span class='noHover'>Document Empty <br / > <br / > Click 'Resume Writing' to open a new document</span>
+        <span>Document Empty <br / > <br / > Click 'New document' to open a blank page and start writing</span>
     </button>
 </div>
 
 <button id='buttonPublish' class='tingle-btn tingle-btn--danger'
     data-modal-name='form-modal'
-    data-message='Publishing your work'
+    data-message='Submitting your work'
+    data-button-one='Submit'
+    data-button-two='Cancel'
     data-action='/index/<%=user.username%>/tasks/<%=task._id%>/responses/<%=taskSubscriber.user._id%>'
     data-labels-and-fields='DUMMY DATA, ACTUAL DATA INSERTED IN JS'
 >
-Publish Work
+Submit Document
 </button>
 
 
@@ -31,7 +33,7 @@ Publish Work
     <!-- If new workspace, will use additional attributes in a tingle modal that asks  -->
     <!-- if want to pre-populate with the composite user's last oublished workspace instead -->
     <!-- Obeys specs of modalTwoButtonsDifferentLinks tingle modal  -->
-    <a id='linkWorkspace' class='two-button-press'
+    <a id='linkOpenWorkspace' class='two-button-press'
         href='/index/<%=user.username%>/tasks/<%=task._id%>/responses/<%=taskSubscriber.user._id%>'
         data-modal-name = 'modalTwoButtonsDifferentLinks'
         data-link-one = '/index/<%=user.username%>/tasks/<%=task._id%>/responses/<%=taskSubscriber.user._id%>?useOtherPersonWorkspace=true'
@@ -40,7 +42,7 @@ Publish Work
         data-button-one = "Yes"
         data-button-two = 'No'
     >
-    Resume Writing
+    <!-- Text for button set dynamically to 'Start Writing' or 'Resume Writing' -->
     </a>
 </button>
 

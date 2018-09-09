@@ -112,13 +112,13 @@ let initializePublishButtonData = function(){
     let rawLabelsAndFieldsString = `[
         {
             "kind" : "label",
-            "text" : "Write a few words to summarize what you wrote about in the work you are publishing"
+            "text" : "In one sentence, summarize the work you are submitting."
         },
 
         {
             "kind" : "textarea",
             "name" : "memo",
-            "text" : "Did you change the tone of your writing? Did you elaborate on a specific idea? Tell us what you did...",
+            "text" : "Are you adopting a certain thesis? Did you change something specific with respect to old versions? Did you re-organize your paragraphs? Tell us what you did...",
             "type" : "text",
             "value" : " ",
             "required" : "required",
@@ -157,9 +157,17 @@ let initializeWorkspaceAppearance = function(unpublishedWorkspaceOfThisPerson, l
         let workspaceTextHTML = $.parseHTML(workspaceTextUnlocked);
         $('.workspace').append(workspaceTextHTML);
 
-        // If not locked AND untouched workspace, show overlay saying workspace empty
+        // If not locked AND untouched workspace,
+        // show overlay saying workspace empty, hide publish button and make #resumeButton say 'Start writing'
         if (unpublishedWorkspaceOfThisPerson.dirty == false) {
+            $('#buttonPublish').css('display', 'none');
+            $('#linkOpenWorkspace').text('New Document');
             $('.textual-empty').css('display', 'inline-block');
+        }
+
+        else {
+            // Not locked and not a new document
+            $('#linkOpenWorkspace').text('Resume Writing');
         }
     }
 

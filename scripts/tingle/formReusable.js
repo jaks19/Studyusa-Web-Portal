@@ -38,27 +38,28 @@ $('button').click(function(e){
         let buttonChosen = $(this);
         let formAction = buttonChosen.data('action');
         let formLabelsAndFieldsData = buttonChosen.data('labels-and-fields');
+        let textForFirstButton = buttonChosen.data('button-one');
+        let textForSecondButton = buttonChosen.data('button-two');
 
         let formHTMLString = createFormHTMLString(formAction, formLabelsAndFieldsData);
 
         modalForm.open();
         modalForm.setContent(formHTMLString);
+
+        modalForm.addFooterBtn(textForFirstButton, 'tingle-btn tingle-btn--primary form-button-yes', function() {
+            // submit using button for usual form behaviour (redirecting etc)
+            $('#theFormGenerated').find('button').click();
+
+            modalForm.close();
+            return;
+        });
+
+        modalForm.addFooterBtn(textForSecondButton, 'tingle-btn tingle-btn--danger', function() {
+            modalForm.close();
+            return;
+        });
     }
 
-    return;
-});
-
-
-modalForm.addFooterBtn('Publish my work!', 'tingle-btn tingle-btn--primary form-button-yes', function() {
-    // submit using button for usual form behaviour (redirecting etc)
-    $('#theFormGenerated').find('button').click();
-
-    modalForm.close();
-    return;
-});
-
-modalForm.addFooterBtn('Cancel', 'tingle-btn tingle-btn--danger', function() {
-    modalForm.close();
     return;
 });
 

@@ -33,18 +33,14 @@ let breakMessageIfNeeded = function (message, classNameForDivs) {
 }
 
 
-let clickedObject;
-let textForFirstButton;
-let textForSecondButton
-
 $('button, a').click(function(e){
     if ($(this).data('modal-name') === 'modalTwoButtonsDifferentLinks') {
 
-        clickedObject = $(this);
+        let clickedObject = $(this);
         e.preventDefault();
 
-        textForFirstButton = clickedObject.data('button-one');
-        textForSecondButton = clickedObject.data('button-two');
+        let textForFirstButton = clickedObject.data('button-one');
+        let textForSecondButton = clickedObject.data('button-two');
 
         let hiddenMessage = clickedObject.data('message');
         let hiddenMessageProcessedWithDesiredTags = breakMessageIfNeeded(hiddenMessage, 'message-div');
