@@ -4,7 +4,7 @@
 // student,
 // workspace
 
-require('../tinyMCE/editorWithAutosave.js');
+require('../tinyMCEWithAutosave.js');
 
 require('../tingle/messagePressOkReusable.js');
 

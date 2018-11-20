@@ -17,7 +17,7 @@ const configForS3Object = {
 };
 
 
-// TODO: new auth here, just need to be ownser of workspace
+// Need more sophisticated auth that checks if document to be retrieved belongs to this user of if user is an admin
 router.get('/s3upload/:workspaceId', async function(req, res) {
     let fetchedWorkspace = await dbopsServices.findOneEntryAndPopulate(Workspace,
         { '_id': req.params.workspaceId }, [ ], true);
@@ -34,7 +34,7 @@ router.get('/s3upload/:workspaceId', async function(req, res) {
 });
 
 
-// TODO: auth here, check if wner of file asking to be downloaded
+// Need more sophisticated auth that checks if document to be retrieved belongs to this user of if user is an admin
 router.get('/s3download/:uploadedDocumentId', async function(req, res) {
     let s3 = new aws.S3(configForS3Object);
     let uploadedDocumentDoc = await dbopsServices.findOneEntryAndPopulate(UploadedDocument,

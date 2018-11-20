@@ -69,8 +69,6 @@ $('button, a').click(function(e){
             modalTwoButtonsDifferentLinks.close();
             return;
         });
-
     }
-
     return;
 });

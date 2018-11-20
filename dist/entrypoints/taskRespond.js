@@ -5,7 +5,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 // student,
 // workspace
 
-require('../tinyMCE/editorWithAutosave.js');
+require('../tinyMCEWithAutosave.js');
 
 require('../tingle/messagePressOkReusable.js');
 
@@ -44,7 +44,7 @@ $('button').click(function(e){
     }
 });
 
-},{"../tingle/messagePressOkReusable.js":3,"../tinyMCE/editorWithAutosave.js":5}],5:[function(require,module,exports){
+},{"../tingle/messagePressOkReusable.js":3,"../tinyMCEWithAutosave.js":5}],5:[function(require,module,exports){
 // tinyMCE init settings
 let plugins         = 'print emoticons code searchreplace autolink directionality visualchars fullscreen image link media table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools mediaembed linkchecker contextmenu colorpicker textpattern help',
     toolbar1        = 'formatselect | bold italic strikethrough forecolor backcolor | fontselect | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | emoticons',

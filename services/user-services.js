@@ -1,7 +1,5 @@
-
 const notifServices = require('./notif-services');
 const dbopsServices = require('./dbops-services');
-const apiServices = require('./api-services');
 const invitationServices = require('./invitation-services');
 
 const User = require("../models/user");
@@ -33,7 +31,7 @@ userServices.registerUser = function registerUser(makeAdmin=false, req) {
 
 userServices.loadUserData = async function loadUserData(username, req) {
     let userData = {};
-    
+
     userData.populatedUser = await dbopsServices.findOneEntryAndPopulate(User, {'username': username}, ['notifs', 'tasks', 'group'], false);
     userData.allNotifs = userData.populatedUser.notifs.reverse();
     userData.unseenNotifs = notifServices.getBothSeenAndUnseenNotifs(userData.populatedUser.notifs)[1];
@@ -45,7 +43,8 @@ userServices.loadUserData = async function loadUserData(username, req) {
         userData.groupToLoad = req.query.groupId || -1;
     }
 
-    else {  userData.articles = await apiServices.retrieveNews() }
+    // else {  userData.articles = await apiServices.retrieveNews() }
+    else {  userData.articles = [] }
 
     return userData;
 }
